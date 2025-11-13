@@ -29,7 +29,7 @@ DEFAULT_LAKE_PATH = f'{HOME_DIR}/.elan/bin/lake'
 DEFAULT_LEAN_WORKSPACE = f'{HOME_DIR}/lean/mathlib4/'
 MEMORY_USAGE_THRESHOLD = 15
 DEFAULT_TIMEOUT = 200
-LEAN_HEADER = 'import miniF2F\nimport Aesop\nset_option maxHeartbeats 0\n'
+LEAN_HEADER = 'import Mathlib\nimport Aesop\nset_option maxHeartbeats 0\n'
 TEST_BATCH_SIZE = 40
 
 MEMORY_THRESHOLD = 75.0  # Memory usage percentage to trigger waiting
@@ -310,13 +310,23 @@ def create_ray_lean4_actors(
     print('Creating ray actors...')
     ray_workers = []
     
+    # For GPU/local single-node setups, we need to create workers on the head node too
+    # For TPU multi-node setups, workers are created on worker nodes only
+    nodes = ray.nodes()
+    is_single_node = len(nodes) == 1
+    
     for i, node in enumerate(ray.nodes()):
         ip = node['NodeManagerAddress']
         nr_cpus = int(node['Resources']['CPU']) - reserved_cpus
         nr_local_workers = int(nr_cpus / cpus_per_task)
 
-        if ip == head_ip:
+        # Skip head node only in multi-node setups (TPU), but use it in single-node setups (GPU/local)
+        if ip == head_ip and not is_single_node:
             continue
+
+        # For single-node setups, create at least 1 worker even if CPUs are limited
+        if is_single_node and nr_local_workers == 0:
+            nr_local_workers = 1
 
         print(f'Creating {nr_local_workers} workers on node {ip}, host name {node["NodeManagerHostname"]}')
         pg = placement_group([{"CPU": nr_local_workers * cpus_per_task,
