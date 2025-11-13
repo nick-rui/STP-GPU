@@ -1,4 +1,6 @@
-# The official implementation of "Self-play LLM Theorem Provers with Iterative Conjecturing and Proving"
+# Fork of "Self-play LLM Theorem Provers with Iterative Conjecturing and Proving"
+
+NOTHING BELOW IS MINE!
 
 This is an official implementation of the Self-play Theorem Prover as described in the paper [https://arxiv.org/abs/2502.00212](https://arxiv.org/abs/2502.00212). The code is based on [levanter](https://github.com/stanford-crfm/levanter/), [DeepSeek-Prover-V1.5](https://github.com/deepseek-ai/DeepSeek-Prover-V1.5), and [LeanDojo](https://leandojo.org/). Please cite the paper and star this repo if you find STP useful. Thank you!
 
