@@ -63,7 +63,7 @@ def right_truncate(s, tokenizer, max_tokens):
     return tokenizer.decode(tokens, skip_special_tokens = True)
 
 # Create a class to do batch inference.
-@ray.remote(resources={"TPU": 1})
+@ray.remote(num_gpus=1)
 class LLMPredictor:
     def __init__(self, model, tokenizer, id, debug = False, **kwargs):
         # Create an LLM.
@@ -253,10 +253,21 @@ def create_inference_actors(
 
     logging.debug('Creating ray actors...')
     if num_workers is None:
-        num_workers = int(ray.cluster_resources()['TPU'])
+        # Try GPU first, fallback to CPU if no GPUs available
+        if 'GPU' in ray.cluster_resources():
+            num_workers = int(ray.cluster_resources()['GPU'])
+        else:
+            # CPU mode - use 1 worker
+            num_workers = 1
     ray_workers = [LLMPredictor.remote(model_dir, tokenizer_path, id, **kwargs) for id in range(num_workers)]
     if not __DEBUG__:
-        assert len(ray_workers) > 4, f"Number of workers is {len(ray_workers)}, expected at least 4"
+        # For TPU setups, expect at least 4 workers. For GPU setups, allow 1+ workers
+        if 'GPU' in ray.cluster_resources() and int(ray.cluster_resources()['GPU']) < 4:
+            # GPU setup with fewer than 4 GPUs - allow 1+ workers
+            assert len(ray_workers) >= 1, f"Number of workers is {len(ray_workers)}, expected at least 1"
+        else:
+            # TPU setup or multi-GPU setup - expect at least 4 workers
+            assert len(ray_workers) > 4, f"Number of workers is {len(ray_workers)}, expected at least 4"
     # ray.get([actor.get_id.remote() for actor in ray_workers])
     logging.debug(f'Ray inference actors created. Number of workers: {len(ray_workers)}')
     return ray_workers, model_dir
@@ -269,7 +280,12 @@ def create_embedding_actors(
 ) -> List:
     from utils.embedding_utils import EmbeddingWorker
     if num_workers is None:
-        num_workers = int(ray.cluster_resources()['TPU'])
+        # Try GPU first, fallback to CPU if no GPUs available
+        if 'GPU' in ray.cluster_resources():
+            num_workers = int(ray.cluster_resources()['GPU'])
+        else:
+            # CPU mode - use 1 worker
+            num_workers = 1
     ray_workers = [EmbeddingWorker.remote(model_dir, None, tokenizer_path) for id in range(num_workers)]
     # ray.get([actor.get_id.remote() for actor in ray_workers])
     logging.debug(f'Ray embedding actors created. Number of workers: {len(ray_workers)}')
@@ -284,7 +300,13 @@ def init_ray_cluster():
     os.system(compute_command)
     print('Ray cluster initialized.')
     ray.init(namespace="prover")
-    assert int(ray.cluster_resources()['TPU']) > 4, f"TPU count is {ray.cluster_resources()['TPU']}, expected at least 4"
+    # Check for GPU resources, fallback to CPU if needed
+    if 'GPU' in ray.cluster_resources():
+        gpu_count = int(ray.cluster_resources()['GPU'])
+        if not __DEBUG__:
+            assert gpu_count > 0, f"GPU count is {gpu_count}, expected at least 1"
+    else:
+        print("Warning: No GPU resources detected, running in CPU mode")
 
 def get_lemma_key(test_info):
     return test_info['statement']

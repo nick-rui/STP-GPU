@@ -2,8 +2,6 @@ import os
 os.environ['TOKENIZERS_PARALLELISM'] = 'false'
 import ray
 import torch
-import torch_xla
-import torch_xla.core.xla_model as xm
 from transformers import AutoTokenizer, AutoModel
 import argparse
 import time
@@ -25,12 +23,12 @@ class LockManager:
     def release(self):
         self.locked += 1
 
-@ray.remote(resources={"TPU": 1})  # Allocate one TPU per worker
+@ray.remote(num_gpus=1)  # Allocate one GPU per worker
 class EmbeddingWorker:
     def __init__(self, model_name: str, model_load_lock: ray.actor.ActorHandle = None, tokenizer_path: str = "deepseek-ai/DeepSeek-Prover-V1.5-SFT"):
         """
         Initializes the ModelWorker by loading the tokenizer and model.
-        The model is set to half-precision for faster inference and moved to the TPU device.
+        The model is set to half-precision for faster inference and moved to the GPU device.
 
         Args:
             model_name (str): The name of the Hugging Face model to load.
@@ -49,8 +47,12 @@ class EmbeddingWorker:
             # Load the model from Hugging Face
             self.model = AutoModel.from_pretrained(model_name)
             self.model.eval()
-            self.model.half()  # Use half-precision for faster inference; adjust if necessary for TPUs
-            self.device = xm.xla_device()  # Set device to TPU
+            # Use half-precision for faster inference on GPU
+            if torch.cuda.is_available():
+                self.model = self.model.half()  # Use half-precision for faster inference
+                self.device = torch.device("cuda")
+            else:
+                self.device = torch.device("cpu")
             self.model.to(self.device)
         finally:
             # Ensure the lock is released even if an error occurs
@@ -58,7 +60,7 @@ class EmbeddingWorker:
                 ray.get(model_load_lock.release.remote())
 
         # Compile the model for optimized performance if possible
-        # Note: Torch XLA may handle optimizations differently
+        # Note: Model compilation can improve inference speed on GPU
         # if hasattr(torch, "compile"):
         #    self.model = torch.compile(self.model, dynamic=True)
         #    self.model = torch.compile(self.model)
@@ -84,7 +86,7 @@ class EmbeddingWorker:
             return_tensors="pt"        # Return PyTorch tensors
         )
         
-        # Move input tensors to the TPU device
+        # Move input tensors to the device (GPU or CPU)
         inputs = {key: value.to(self.device) for key, value in inputs.items()}
 
         # Forward pass through the model without computing gradients
@@ -121,9 +123,6 @@ class EmbeddingWorker:
         # Compute the mean by dividing the summed hidden states by the number of tokens
         # Shape: [batch_size, hidden_size]
         mean_hidden = sum_hidden / num_tokens  # Shape: [batch_size, 768]
-
-        # Synchronize XLA device to ensure computations are complete
-        xm.mark_step()
 
         # Move the tensor to CPU and convert to NumPy array for serialization
         return mean_hidden.cpu().numpy().tolist()

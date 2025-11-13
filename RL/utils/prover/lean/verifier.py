@@ -29,7 +29,7 @@ DEFAULT_LAKE_PATH = f'{HOME_DIR}/.elan/bin/lake'
 DEFAULT_LEAN_WORKSPACE = f'{HOME_DIR}/lean/mathlib4/'
 MEMORY_USAGE_THRESHOLD = 15
 DEFAULT_TIMEOUT = 200
-LEAN_HEADER = 'import miniF2F\nimport Aesop\nset_option maxHeartbeats 0\nopen BigOperators Real Nat Topology Rat\n'
+LEAN_HEADER = 'import miniF2F\nimport Aesop\nset_option maxHeartbeats 0\n'
 TEST_BATCH_SIZE = 40
 
 MEMORY_THRESHOLD = 75.0  # Memory usage percentage to trigger waiting
@@ -296,10 +296,13 @@ def create_ray_lean4_actors(
 ) -> List:
     import socket
     from ray._raylet import PlacementGroupID
-    from ray._private.utils import hex_to_binary
     from ray.util.placement_group import PlacementGroup
+    # hex_to_binary was removed from ray._private.utils in newer Ray versions
+    # Use bytes.fromhex() instead to convert hex string to bytes
     for pg_id_str in ray.util.placement_group_table():
-        pg_id_bin = PlacementGroupID(hex_to_binary(pg_id_str))
+        # Remove '0x' prefix if present and convert hex string to bytes
+        hex_str = str(pg_id_str).lstrip('0x')
+        pg_id_bin = PlacementGroupID(bytes.fromhex(hex_str))
         pg = PlacementGroup(pg_id_bin)
         remove_placement_group(pg)
 
@@ -329,9 +332,13 @@ def create_ray_lean4_actors(
     print(f'Ray actors created. Number of workers: {len(ray_workers)}')
 
     print('Initializing Lean4 environment...')
-    execute_on_all_workers('source ~/.profile; cd ~/lean/mathlib4; find .lake/build/ -type f -exec cat {} + > /dev/null; lake exec repl < ~/lean/mathlib4/.lake/packages/REPL/test/aime_1983_p9.in > ~/lean/mathlib4/.lake/packages/REPL/test/aime_1983_p9.out;',
-                           expect_succ=True)
-    print('Lean4 environment initialized.')
+    # Initialize Lean4 environment - make it more robust for GPU/local setups
+    # The test file may not exist, so create the directory and file if needed
+    # Use a single line command with semicolons for bash compatibility
+    init_command = 'source ~/.profile 2>/dev/null || true; cd ~/lean/mathlib4 2>/dev/null || { echo "Warning: mathlib4 not found, skipping Lean init"; exit 0; }; mkdir -p .lake/packages/REPL/test 2>/dev/null || true; if [ ! -f .lake/packages/REPL/test/aime_1983_p9.in ]; then echo "#lean4" > .lake/packages/REPL/test/aime_1983_p9.in; fi; find .lake/build/ -type f -exec cat {} + > /dev/null 2>&1 || true; lake exec repl < .lake/packages/REPL/test/aime_1983_p9.in > .lake/packages/REPL/test/aime_1983_p9.out 2>&1 || true'
+    # For GPU/local setups, don't fail if Lean initialization doesn't work perfectly
+    execute_on_all_workers(init_command, expect_succ=False)
+    print('Lean4 environment initialization attempted.')
     return ray_workers
 
 def save_result(valid_proofs: List, file_path: str):

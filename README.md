@@ -104,10 +104,80 @@ In our experiments, we alternate between Stage 2 and Stage 3 to stabilize the tr
 
 ### 3.5. GPU Support
 
-This codebase does not directly support GPUs. However, both the training and inference frameworks (Levanter and vLLM) support GPUs. Therefore, the required changes should be somewhat manageable. Below is a (possibly incomplete) list of platform-specific code changes needed:
+The codebase now supports GPU inference! The following changes have been made to enable GPU support:
 
-1. We use ray to manage the TPU and CPU resources on multiple nodes. Please modify the function `init_ray_cluster` in `RL/utils/model_utils.py` to start the ray cluster.
-2. Please modify the `execute_on_all_workers` function in `RL/utils/gcloud_utils.py` to execute bash commands on all nodes. This function is used to (a) copy model checkpoints to local disk, and (b) cleanup the CPU resources used by Lean verifier.
+1. **Ray cluster setup**: Modified `run_inference.sh` to detect GPUs and configure Ray with GPU resources instead of TPU resources.
+2. **Model utilities**: Updated `RL/utils/model_utils.py` to use GPU resources in Ray actors.
+3. **Embedding workers**: Updated `RL/utils/embedding_utils.py` to use CUDA instead of TPU-specific PyTorch XLA.
+
+#### Running Inference on GPU
+
+**Prerequisites:**
+- A machine with one or more NVIDIA GPUs
+- CUDA toolkit installed
+- Python environment with required dependencies (see `venv310.txt`)
+
+**Steps:**
+
+1. **Set up your environment:**
+   ```sh
+   # Activate your virtual environment
+   source ~/venv_vllm/bin/activate
+   
+   # Navigate to the STP directory
+   cd ~/STP
+   ```
+
+2. **Initialize Ray cluster with GPUs:**
+   ```sh
+   # This will automatically detect available GPUs and start Ray
+   bash run_inference.sh
+   ```
+
+   The script will:
+   - Detect the number of GPUs using `nvidia-smi`
+   - Start Ray head node with GPU resources
+   - Print the head worker IP for multi-node setups (if needed)
+
+3. **Run inference:**
+   ```sh
+   cd ~/STP/RL
+   source .bash_alias.sh  # If this file exists
+   
+   # For evaluation/inference using the evaluation scripts
+   cd ~/STP/evaluation
+   python run_evaluation.py \
+     --model_name kfdong/STP_model_Lean_0320 \
+     --dataset_path assets/data/test/miniF2F_lean.json \
+     --device cuda \
+     --batch_size 8 \
+     --max_tokens 1024
+   ```
+
+   Or use the RL generation scripts:
+   ```sh
+   cd ~/STP/RL
+   # Set environment variables (no TPU needed)
+   export EXP_DIR=./results
+   
+   # Option 1: Use the wrapper script (handles TPU/GPU detection automatically)
+   bash run_generation_and_test.sh kfdong/STP_model_Lean_0320 $EXP_DIR
+   
+   # Option 2: Run directly
+   python generate_and_test.py \
+     --model kfdong/STP_model_Lean_0320 \
+     --exp_dir $EXP_DIR \
+     --temperature 1.0 \
+     --save_file_name "tests" \
+     --raw_dataset_config ./dataset_configs/miniF2F_ProofNet.json \
+     --seed 1
+   ```
+
+**Notes:**
+- The code automatically detects GPUs. If no GPUs are found, it falls back to CPU mode.
+- You can override GPU selection using `CUDA_VISIBLE_DEVICES` environment variable.
+- For multi-GPU setups, Ray will automatically distribute workers across available GPUs.
+- The `execute_on_all_workers` function in `RL/utils/gcloud_utils.py` still uses TPU-specific commands. For GPU setups on a single machine, this function may not be needed. For multi-node GPU setups, you'll need to modify it to use standard SSH commands instead of `gcloud compute tpus tpu-vm ssh`.
 
 ## License
 -  **Code:** This project is licensed under the MIT License. However, the code in the `levanter/` directory is licensed under the Apache License 2.0.

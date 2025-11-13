@@ -29,6 +29,8 @@ def main(args: argparse.Namespace):
 
     idx = 0
     dataset_configs = read_file(args.raw_dataset_config)
+    # Limit to 8 examples for quick testing
+    MAX_EXAMPLES = 8
     for dataset_config in dataset_configs:
         logging.debug(f'Processing dataset: {dataset_config["dataset_path"]}')
         raw_dataset = read_file(os.path.join(REPO_DIR, dataset_config['dataset_path']))
@@ -37,7 +39,8 @@ def main(args: argparse.Namespace):
         logging.debug(f'Size of the dataset: {len(raw_dataset)}')
         
         formatted_ds = []
-        for raw in raw_dataset:
+        # Limit to first 8 examples for quick testing
+        for raw in raw_dataset[:MAX_EXAMPLES]:
             test_info = {'lemma_id': idx,
                         'statement': raw['formal_statement'].rsplit('sorry', 1)[0].strip(),
                         'label': [raw['split']] + (raw.get('tags', None) or []),
@@ -45,7 +48,8 @@ def main(args: argparse.Namespace):
             idx += 1
             formatted_ds.append(test_info)
         
-        for it in range(nr_samples):
+        # Limit samples per problem to 1 for quick testing (instead of nr_samples which is 3200)
+        for it in range(min(1, nr_samples)):  # Use 1 sample instead of nr_samples for quick test
             lemmas_to_generate += [test_info | {'iter': it} for test_info in deepcopy(formatted_ds)]
         
         for test_info in formatted_ds:

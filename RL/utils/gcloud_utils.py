@@ -129,8 +129,17 @@ def move_file(source, target):
 
 def execute_on_all_workers(command, expect_succ = False):
     # Execute a command on all workers
-    compute_command = f'gcloud compute tpus tpu-vm ssh {TPU_NAME} --zone {ZONE} --worker=all --command "{command}"'
-    exit_status = os.system(compute_command)
+    # For TPU setups, use gcloud to execute on all TPU workers
+    # For GPU setups (single machine), execute locally using bash
+    if TPU_NAME and ZONE:
+        compute_command = f'gcloud compute tpus tpu-vm ssh {TPU_NAME} --zone {ZONE} --worker=all --command "{command}"'
+        exit_status = os.system(compute_command)
+    else:
+        # GPU setup - execute command locally using bash (needed for 'source' command)
+        # Use bash -c to ensure bash-specific commands like 'source' work
+        # Properly escape the command for bash -c
+        import shlex
+        exit_status = os.system(f'bash -c {shlex.quote(command)}')
     if expect_succ and (exit_status != 0):
         raise ValueError(f"Command failed with exit status {exit_status}")
 

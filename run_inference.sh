@@ -16,37 +16,54 @@ function retry {
   done
 }
 
-# Default values
-TPU_NAME=$(retry curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/description)
-ZONE_FULL_PATH=$(retry curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/zone)
-ZONE=$(echo "$ZONE_FULL_PATH" | awk -F'/' '{print $NF}')
+# Detect number of GPUs available
+NUM_GPUS=$(nvidia-smi -L 2>/dev/null | wc -l)
+if [ -z "$NUM_GPUS" ] || [ "$NUM_GPUS" -eq 0 ]; then
+  echo "Warning: No GPUs detected. Using CPU mode."
+  NUM_GPUS=0
+fi
 
-VENV_PATH="~/venv_vllm/bin/activate"
+# Allow override via environment variable
+if [ -n "$CUDA_VISIBLE_DEVICES" ]; then
+  # Count GPUs from CUDA_VISIBLE_DEVICES
+  NUM_GPUS=$(echo "$CUDA_VISIBLE_DEVICES" | tr ',' '\n' | wc -l)
+fi
 
 # Print the values of the variables
-echo "TPU_NAME: $TPU_NAME"
-echo "ZONE: $ZONE"
+echo "Number of GPUs: $NUM_GPUS"
+if [ -n "$CUDA_VISIBLE_DEVICES" ]; then
+  echo "CUDA_VISIBLE_DEVICES: $CUDA_VISIBLE_DEVICES"
+fi
 
-gcloud compute tpus tpu-vm ssh $TPU_NAME --zone $ZONE --worker=all \
---command "source $VENV_PATH; ray stop; singularity instance stop -a"
+# Source bash aliases if they exist
+if [ -f ~/STP/RL/.bash_alias.sh ]; then
+  source ~/STP/RL/.bash_alias.sh
+fi
 
-# init ray on the head worker
-gcloud compute tpus tpu-vm ssh $TPU_NAME --zone $ZONE --worker 0 \
---command "source $VENV_PATH; source ~/STP/RL/.bash_alias.sh; \
-TPU_VISIBLE_DEVICES=0,1,2,3 ray start --head --resources='{\"TPU\": 4}';"
+# Stop any existing Ray processes
+ray stop 2>/dev/null || true
 
-HEAD_WORKER_IP=$(gcloud compute tpus tpu-vm ssh $TPU_NAME --zone $ZONE --worker 0 \
---command "hostname -I")
-HEAD_WORKER_IP=$(echo $HEAD_WORKER_IP | awk '{print $1}')
+# Start Ray head node
+if [ "$NUM_GPUS" -gt 0 ]; then
+  # Use GPU resources - only use --num-gpus (GPU is a built-in resource, not custom)
+  echo "Starting Ray head node with $NUM_GPUS GPU(s)..."
+  ray start --head --num-gpus=$NUM_GPUS
+else
+  # CPU-only mode
+  echo "Starting Ray head node in CPU mode..."
+  ray start --head
+fi
 
-echo "Starting node workers"
-gcloud compute tpus tpu-vm ssh $TPU_NAME --zone $ZONE --worker=all \
---command "source $VENV_PATH; source ~/STP/RL/.bash_alias.sh; \
-CURRENT_IP=\$(hostname -I | awk '{print \$1}'); \
-if [[ \$CURRENT_IP == $HEAD_WORKER_IP ]]; then \
-  echo \"Head worker, skipping\"; \
-else \
-  TPU_VISIBLE_DEVICES=0,1,2,3 ray start --address=$HEAD_WORKER_IP:6379 --resources='{\"TPU\": 4}'; \
-fi"
+HEAD_WORKER_IP=$(hostname -I | awk '{print $1}')
+echo "Ray head node started at: $HEAD_WORKER_IP"
 
-echo "Started ray server."
+# For multi-node setups, you can add worker nodes here
+# Example (uncomment and modify as needed):
+# WORKER_IPS=("worker1-ip" "worker2-ip")
+# for WORKER_IP in "${WORKER_IPS[@]}"; do
+#   echo "Starting worker at $WORKER_IP..."
+#   ssh $WORKER_IP "if [ -f ~/STP/RL/.bash_alias.sh ]; then source ~/STP/RL/.bash_alias.sh; fi; \
+#     ray start --address=$HEAD_WORKER_IP:6379 --num-gpus=$NUM_GPUS"
+# done
+
+echo "Started Ray server."
