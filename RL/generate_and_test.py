@@ -29,8 +29,7 @@ def main(args: argparse.Namespace):
 
     idx = 0
     dataset_configs = read_file(args.raw_dataset_config)
-    # Limit to 8 examples for quick testing
-    MAX_EXAMPLES = 8
+
     for dataset_config in dataset_configs:
         logging.debug(f'Processing dataset: {dataset_config["dataset_path"]}')
         raw_dataset = read_file(os.path.join(REPO_DIR, dataset_config['dataset_path']))
@@ -39,8 +38,7 @@ def main(args: argparse.Namespace):
         logging.debug(f'Size of the dataset: {len(raw_dataset)}')
         
         formatted_ds = []
-        # Limit to first 8 examples for quick testing
-        for raw in raw_dataset[:MAX_EXAMPLES]:
+        for raw in raw_dataset[:args.max_examples]:
             test_info = {'lemma_id': idx,
                         'statement': raw['formal_statement'].rsplit('sorry', 1)[0].strip(),
                         'label': [raw['split']] + (raw.get('tags', None) or []),
@@ -81,6 +79,6 @@ if __name__ == "__main__":
     parser.add_argument("--raw_dataset_config", type=str, default=None)
     parser.add_argument("--temperature", type=float, default=0.7)
     parser.add_argument("--seed", type=int, default=0)
-
+    parser.add_argument("--max_examples", type=int, default=8)
     parsed_args = parser.parse_args()
     main(parsed_args)

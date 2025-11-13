@@ -297,14 +297,40 @@ def create_ray_lean4_actors(
     import socket
     from ray._raylet import PlacementGroupID
     from ray.util.placement_group import PlacementGroup
+    # Clean up any existing placement groups (optional cleanup)
     # hex_to_binary was removed from ray._private.utils in newer Ray versions
-    # Use bytes.fromhex() instead to convert hex string to bytes
-    for pg_id_str in ray.util.placement_group_table():
-        # Remove '0x' prefix if present and convert hex string to bytes
-        hex_str = str(pg_id_str).lstrip('0x')
-        pg_id_bin = PlacementGroupID(bytes.fromhex(hex_str))
-        pg = PlacementGroup(pg_id_bin)
-        remove_placement_group(pg)
+    # Handle placement group cleanup more robustly
+    try:
+        pg_table = ray.util.placement_group_table()
+        # pg_table is a dict: {pg_id: pg_info, ...}
+        for pg_id_str, pg_info in pg_table.items():
+            # Skip placement groups that are already removed
+            if pg_info.get('state') == 'REMOVED':
+                continue
+            try:
+                # Remove '0x' prefix if present and convert hex string to bytes
+                pg_id_str_clean = str(pg_id_str).strip()
+                # Only strip '0x' if it's actually a prefix (not just any leading 0)
+                if pg_id_str_clean.startswith('0x') or pg_id_str_clean.startswith('0X'):
+                    hex_str = pg_id_str_clean[2:]
+                else:
+                    hex_str = pg_id_str_clean
+                # Validate hex string (must be even length and contain only hex chars)
+                if len(hex_str) % 2 != 0:
+                    # Pad with leading zero if odd length
+                    hex_str = '0' + hex_str
+                if not all(c in '0123456789abcdefABCDEF' for c in hex_str):
+                    continue
+                pg_id_bin = PlacementGroupID(bytes.fromhex(hex_str))
+                pg = PlacementGroup(pg_id_bin)
+                remove_placement_group(pg)
+            except (ValueError, TypeError, AttributeError) as e:
+                # Skip placement groups that can't be converted (non-critical cleanup)
+                print(f"Warning: Could not remove placement group {pg_id_str}: {e}")
+                continue
+    except Exception as e:
+        # If placement group cleanup fails, continue anyway (non-critical)
+        print(f"Warning: Placement group cleanup failed: {e}")
 
     head_ip = socket.gethostbyname(socket.gethostname())
     print('Creating ray actors...')

@@ -16,7 +16,7 @@ def main():
     parser.add_argument('--json', action='store_true', help='Output as JSON')
     parser.add_argument('--verified', action='store_true', help='Show only verified proofs')
     parser.add_argument('--failed', action='store_true', help='Show only failed proofs')
-    parser.add_argument('--file', type=str, default='results/generated_proofs_tests.jsonl.gz', 
+    parser.add_argument('--file', type=str, default='results/test_run/generated_proofs_tests.jsonl.gz', 
                        help='Input file (default: results/generated_proofs_tests.jsonl.gz)')
     
     args = parser.parse_args()
