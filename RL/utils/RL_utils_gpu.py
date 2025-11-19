@@ -69,6 +69,7 @@ CONJECTURE_THRESHOLD = 0.25
 NR_FOLD = 5
 EARLY_STOP_THRESHOLD = 0.1
 CPU_PER_TASK = 1.5
+SINGLE_GPU_MAX_BATCH = 4
 
 __DEBUG__ = os.getenv("DEBUG", 'False').lower() in ('true', '1', 't')
 REPO_DIR = os.path.abspath(os.path.join(__file__, '../../..'))
@@ -125,7 +126,7 @@ class SimpleLLMPredictor:
                 model=self.model_path,
                 dtype='bfloat16',
                 max_model_len=1024,
-                gpu_memory_utilization=0.85,
+                gpu_memory_utilization=0.45,
                 **self.kwargs
             )
         
@@ -517,158 +518,92 @@ def generate_and_test(
     group_by_header: bool = False,
     collect_premises: bool = True,
 ) -> List[Dict]:
-    """
-    Generate and test proofs for selected lemmas without Ray.
-    
-    This is the main orchestration function that coordinates proof generation
-    and verification. It processes lemmas in shards, generates proofs,
-    deduplicates them, and verifies them in parallel. Results are saved
-    periodically and can be resumed from cache.
-    
-    The function operates in two stages:
-    1. Stage 1: Generate and verify proofs in batches (faster, shared context)
-    2. Stage 2: Retry failed/timed-out proofs one-by-one (slower, more resources)
-    
-    Args:
-        selected_lemmas: List of test_info dictionaries to generate proofs for
-        collect_traj: Function that generates proofs. Should have signature:
-                     collect_traj(predictor, lemmas, max_length, seed, temperature, cache_dir)
-        predictor: SimpleLLMPredictor instance for model inference
-        lemma_mapping: Dictionary mapping lemma statements to IDs
-        seed: Random seed for reproducibility
-        save_dir: Directory to save intermediate results (None = no saving)
-        temperature: Sampling temperature for proof generation (default: 0.7)
-        cpus_per_task: CPU resources per verification task (unused in GPU version)
-        cpus_per_task_stage2: CPU resources per task in stage 2 (unused in GPU version)
-        test_batch_size: Number of proofs to verify per batch
-        group_by_header: If True, group proofs by header for efficient verification
-        collect_premises: Whether to extract premise information for successful proofs
-        
-    Returns:
-        List of test_info dictionaries with generated proofs and verification results.
-        Each dictionary includes:
-        - Original lemma information (statement, lemma_id, etc.)
-        - Generated proof text
-        - Verification results (complete, errors, sorries, etc.)
-    """
-    # Create verifier instance
-    verifier = SimpleLean4Verifier(collect_premises=collect_premises, timeout=DEFAULT_TIMEOUT * test_batch_size)
-    
-    # Setup save files
-    save_file_generation = os.path.join(save_dir, f'generated_proofs.json') if save_dir else None
+    """Generate and test proofs for selected lemmas without Ray."""
+    effective_batch_size = max(1, min(test_batch_size, SINGLE_GPU_MAX_BATCH))
+    verifier = SimpleLean4Verifier(
+        collect_premises=collect_premises,
+        timeout=DEFAULT_TIMEOUT * effective_batch_size,
+    )
+    retry_verifier = SimpleLean4Verifier(
+        collect_premises=collect_premises,
+        timeout=DEFAULT_TIMEOUT,
+    )
+
+    save_file_generation = os.path.join(save_dir, 'generated_proofs.json') if save_dir else None
     generated_proofs_dedup = read_file(save_file_generation) if save_file_generation else None
-    save_file_tests = os.path.join(save_dir, f'test_results.pkl') if save_dir else None
+    save_file_tests = os.path.join(save_dir, 'test_results.pkl') if save_dir else None
     test_results = (read_file(save_file_tests) if save_file_tests else None) or {}
-    
-    total_test_tasks = 0
-    total_test_instances = 0
-    
-    pool_lock = threading.Lock()
+
     pbar = tqdm(total=len(selected_lemmas))
-    finished_generation = False
-    
-    def aggregate_results(early_stop_threshold: int = 0):
-        """
-        Background thread function to collect and save test results.
-        
-        This function runs in a separate thread and continuously collects
-        verification results as they complete, updating progress and saving
-        periodically.
-        
-        Args:
-            early_stop_threshold: Stop early if remaining tasks <= this threshold
-        """
-        save_interval = 900  # Save every 15 minutes
-        last_save_time = time.time()
-        nr_finished_jobs = 0
-        nr_tests_correct = 0
-        nr_tests_done = 0
-        cached_pbar_n = 0
-        
-        while len(test_queue) > 0 or (not finished_generation):
-            if finished_generation and (total_test_tasks - nr_finished_jobs <= early_stop_threshold):
-                break
-            
-            # Also break if generation is finished and we've processed all expected tasks
-            if finished_generation and nr_finished_jobs >= total_test_tasks:
-                break
-            
-            if len(test_queue) == 0:
-                time.sleep(2)
-                continue
-            
-            try:
-                # Get next batch of results from queue
-                with pool_lock:
-                    if len(test_queue) == 0:
-                        continue
-                    results = test_queue.pop(0)
-                
-                nr_finished_jobs += 1
-                
-                # Store results
-                for result in results:
-                    test_results[get_deduplication_key(result)] = get_result_items(result)
-                
-                nr_tests_done += len(results)
-                nr_tests_correct += sum(result.get('complete', False) for result in results)
-                
-                # Periodic save
-                current_time = time.time()
-                if (current_time - last_save_time >= save_interval) and (save_file_tests is not None):
-                    save_result(test_results, save_file_tests)
-                    last_save_time = current_time
-                
-                cached_pbar_n += len(results)
-                if finished_generation:
-                    pbar.update(cached_pbar_n)
-                    cached_pbar_n = 0
-                    
-            except Exception as e:
-                logging.error(f"Error in aggregate_results: {e}")
-                time.sleep(2)
-        
-        # Final save
+    testing_start = None
+
+    def persist_results() -> None:
         if save_file_tests is not None:
             save_result(test_results, save_file_tests)
-    
-    # Queue for test results (replaces Ray pool)
-    test_queue = []
-    test_queue_lock = threading.Lock()
-    
-    # Store temperature for use in collect_traj calls
-    # Note: collect_traj is a lambda that captures temperature, but we need it here too
-    # For compatibility, we'll create a wrapper if needed
-    if generated_proofs_dedup is None:
-        # Start background aggregator thread
-        monitoring_thread = threading.Thread(
-            target=aggregate_results,
-            args=(int(EARLY_STOP_THRESHOLD),)
+
+    def run_single_retry(test_info: Dict) -> None:
+        key = get_deduplication_key(test_info)
+        try:
+            result = retry_verifier.run([test_info], batched=False)[0]
+            test_results[key] = get_result_items(result)
+        except Exception as e:
+            logging.error(f"Error verifying single proof: {e}")
+            test_results[key] = {
+                'complete': False,
+                'system_errors': str(e),
+            }
+
+    def verify_blocks(testing_tasks: List[Dict]) -> None:
+        nonlocal testing_start
+        if not testing_tasks:
+            return
+        if testing_start is None:
+            testing_start = datetime.now()
+        batches = split_test_blocks(
+            testing_tasks,
+            effective_batch_size,
+            group_by_header,
         )
-        monitoring_thread.daemon = True
-        monitoring_thread.start()
-        
+        for block in batches:
+            try:
+                results = verifier.run(block, batched=len(block) > 1)
+            except Exception as e:
+                logging.error(f"Error verifying batch: {e}")
+                for test_info in block:
+                    run_single_retry(test_info)
+                pbar.update(len(block))
+                persist_results()
+                continue
+
+            for test_info, result in zip(block, results):
+                key = get_deduplication_key(test_info)
+                test_results[key] = get_result_items(result)
+                if 'complete' not in test_results[key]:
+                    run_single_retry(test_info)
+            pbar.update(len(block))
+            persist_results()
+
+    if generated_proofs_dedup is None:
         start_time = datetime.now()
         generated_proofs_dedup = []
         deduplicate_index = {}
         batch_size = (len(selected_lemmas) + NR_FOLD - 1) // NR_FOLD
-        
-        # Process in shards (NR_FOLD = 5)
+
         for shard in range(NR_FOLD):
             logging.debug(f'Processing shard {shard}/{NR_FOLD}...')
             batch = selected_lemmas[batch_size * shard: batch_size * (shard + 1)]
-            
-            # Generate proofs for this shard
-            # collect_traj signature: (predictor, num_workers, selected_lemmas, lemma_mapping, seed)
-            # It internally calls collect_trajectories with temperature and cache_dir from closure
+            if not batch:
+                continue
+
             generated_proofs = collect_traj(
-                predictor, 1, batch, lemma_mapping,
-                seed * NR_FOLD + shard
+                predictor,
+                1,
+                batch,
+                lemma_mapping,
+                seed * NR_FOLD + shard,
             )
-            
+
             start_idx = len(generated_proofs_dedup)
-            
-            # Deduplicate proofs before testing
             for test_info in generated_proofs:
                 key = get_deduplication_key(test_info)
                 if key not in deduplicate_index:
@@ -676,186 +611,56 @@ def generate_and_test(
                     generated_proofs_dedup.append(test_info | {'multiplicity': 1})
                 else:
                     generated_proofs_dedup[deduplicate_index[key]]['multiplicity'] += 1
-            
-            # Submit new proofs for testing (if not already tested)
+
             new_testing_tasks = [
-                test_info for test_info in generated_proofs_dedup[start_idx:]
+                test_info
+                for test_info in generated_proofs_dedup[start_idx:]
                 if get_deduplication_key(test_info) not in test_results
             ]
-            total_test_instances += len(new_testing_tasks)
-            pbar.total = total_test_instances
-            new_testing_tasks = split_test_blocks(new_testing_tasks, test_batch_size, group_by_header)
-            
-            # Submit verification tasks (run in background)
-            def verify_batch(testing_block):
-                """Verify a batch of proofs and add results to queue."""
-                try:
-                    results = verifier.run(testing_block, batched=True)
-                    with test_queue_lock:
-                        test_queue.append(results)
-                except Exception as e:
-                    logging.error(f"Error verifying batch: {e}")
-                    # Add failed results
-                    failed_results = [
-                        test_info | {'complete': False, 'system_errors': str(e)}
-                        for test_info in testing_block
-                    ]
-                    with test_queue_lock:
-                        test_queue.append(failed_results)
-            
-            verification_threads = []
-            with pool_lock:
-                for testing_block in new_testing_tasks:
-                    # Run verification in background thread
-                    thread = threading.Thread(target=verify_batch, args=(testing_block,))
-                    thread.daemon = True
-                    thread.start()
-                    verification_threads.append(thread)
-                    total_test_tasks += 1
-        
-        finished_generation = True
+            verify_blocks(new_testing_tasks)
+
         logging.info(f'Finished generation. #generated lemmas = {len(generated_proofs_dedup)}.')
         duration = datetime.now() - start_time
         logging.info('Inference time: ' + str(duration))
-        
-        logging.info(f'Start testing {total_test_tasks} tasks...')
-        start_time = datetime.now()
-        
-        # Wait for all verification threads to complete
-        logging.info(f"Waiting for {len(verification_threads)} verification threads to complete...")
-        for i, thread in enumerate(verification_threads):
-            thread.join(timeout=600)  # Wait up to 10 minutes per thread
-            if thread.is_alive():
-                logging.warning(f"Verification thread {i} did not complete within timeout (600s)")
-            else:
-                logging.debug(f"Verification thread {i} completed successfully")
-        
-        # Give monitoring thread a moment to process any remaining results
-        logging.info(f"Waiting for monitoring thread to process remaining results (queue size: {len(test_queue)})...")
-        # Wait a bit for queue to be processed
-        max_wait = 120  # 2 minutes max
-        wait_time = 0
-        while len(test_queue) > 0 and wait_time < max_wait:
-            time.sleep(2)
-            wait_time += 2
-            if wait_time % 10 == 0:
-                logging.info(f"Still waiting for queue to empty... ({len(test_queue)} items remaining, waited {wait_time}s)")
-        
-        monitoring_thread.join(timeout=30)  # Wait up to 30 seconds for final processing
-        if monitoring_thread.is_alive():
-            logging.warning("Monitoring thread did not complete within timeout, but continuing anyway")
-        else:
-            logging.debug("Monitoring thread completed successfully")
-        pbar.close()
-        
-        # Stage 2: Retry failed/timed-out proofs
-        print('Stage 2: rerunning timed-out jobs...')
-        
-        # Create new verifier with more resources for stage 2
-        verifier_stage2 = SimpleLean4Verifier(
-            collect_premises=collect_premises,
-            timeout=DEFAULT_TIMEOUT
-        )
-        
-        new_testing_tasks = []
-        for test_info in generated_proofs_dedup:
-            key = get_deduplication_key(test_info)
-            if (key not in test_results) or ('complete' not in test_results[key]):
-                new_testing_tasks.append([test_info])  # One at a time
-        
-        logging.info(f'Number of lemmas to test in stage 2: {len(new_testing_tasks)}')
-        pbar = tqdm(total=len(new_testing_tasks))
-        
-        # Reset queue for stage 2
-        test_queue = []
-        finished_generation = False
-        total_test_tasks = len(new_testing_tasks)
-        
-        # Start new monitoring thread
-        monitoring_thread = threading.Thread(target=aggregate_results)
-        monitoring_thread.daemon = True
-        monitoring_thread.start()
-        
-        # Verify one-by-one in stage 2
-        def verify_single(test_info_list):
-            """Verify a single proof and add result to queue."""
-            try:
-                results = verifier_stage2.run(test_info_list, batched=False)
-                with test_queue_lock:
-                    test_queue.append(results)
-            except Exception as e:
-                logging.error(f"Error verifying single proof: {e}")
-                failed_results = [
-                    test_info | {'complete': False, 'system_errors': str(e)}
-                    for test_info in test_info_list
-                ]
-                with test_queue_lock:
-                    test_queue.append(failed_results)
-        
-        stage2_threads = []
-        for testing_block in new_testing_tasks:
-            thread = threading.Thread(target=verify_single, args=(testing_block,))
-            thread.daemon = True
-            thread.start()
-            stage2_threads.append(thread)
-        
-        # Wait for all stage 2 threads
-        logging.info(f"Waiting for {len(stage2_threads)} stage 2 verification threads to complete...")
-        for i, thread in enumerate(stage2_threads):
-            thread.join(timeout=600)  # Wait up to 10 minutes per thread
-            if thread.is_alive():
-                logging.warning(f"Stage 2 verification thread {i} did not complete within timeout (600s)")
-            else:
-                logging.debug(f"Stage 2 verification thread {i} completed successfully")
-        
-        finished_generation = True
-        
-        # Give monitoring thread a moment to process any remaining results
-        logging.info(f"Waiting for stage 2 monitoring thread to process remaining results (queue size: {len(test_queue)})...")
-        max_wait = 120  # 2 minutes max
-        wait_time = 0
-        while len(test_queue) > 0 and wait_time < max_wait:
-            time.sleep(2)
-            wait_time += 2
-            if wait_time % 10 == 0:
-                logging.info(f"Still waiting for queue to empty... ({len(test_queue)} items remaining, waited {wait_time}s)")
-        
-        monitoring_thread.join(timeout=30)  # Wait up to 30 seconds for final processing
-        if monitoring_thread.is_alive():
-            logging.warning("Stage 2 monitoring thread did not complete within timeout, but continuing anyway")
-        else:
-            logging.debug("Stage 2 monitoring thread completed successfully")
-        pbar.close()
-        
-        duration = datetime.now() - start_time
-        logging.info('Testing time: ' + str(duration))
-        
-        # Merge test results back into generated_proofs
-        nr_failed = 0
-        for test_info in generated_proofs_dedup:
-            key = get_deduplication_key(test_info)
-            if key in test_results:
-                test_info |= test_results[key]
-            else:
-                nr_failed += 1
-                test_info['complete'] = False
-                test_info['system_errors'] = 'test failed'
-        
-        # Validate failure rate
-        max_allowed_failures = len(generated_proofs_dedup) * 0.005
-        if nr_failed >= max_allowed_failures:
-            if __DEBUG__ or len(generated_proofs_dedup) < 100:
-                print(f"Warning: Failed to test {nr_failed}/{len(generated_proofs_dedup)} lemmas "
-                      f"(Lean verification may not be working). Continuing anyway...")
-            else:
-                assert False, f'Failed to test {nr_failed} lemmas (expected < {max_allowed_failures})'
-        
-        if save_file_generation:
-            write_data(json.dumps(generated_proofs_dedup), save_file_generation, 'json')
     else:
         print(f'Loaded {len(generated_proofs_dedup)} lemmas from {save_file_generation}')
         for test_info in generated_proofs_dedup:
             update_lemma_mapping(lemma_mapping, test_info)
-    
+
+    remaining_tests = [
+        test_info
+        for test_info in generated_proofs_dedup
+        if get_deduplication_key(test_info) not in test_results
+    ]
+    verify_blocks(remaining_tests)
+
+    if testing_start is not None:
+        logging.info('Testing time: ' + str(datetime.now() - testing_start))
+    pbar.close()
+
+    nr_failed = 0
+    for test_info in generated_proofs_dedup:
+        key = get_deduplication_key(test_info)
+        if key in test_results:
+            test_info |= test_results[key]
+        else:
+            nr_failed += 1
+            test_info['complete'] = False
+            test_info['system_errors'] = 'test failed'
+
+    max_allowed_failures = len(generated_proofs_dedup) * 0.005
+    if nr_failed >= max_allowed_failures:
+        if __DEBUG__ or len(generated_proofs_dedup) < 100:
+            print(
+                f"Warning: Failed to test {nr_failed}/{len(generated_proofs_dedup)} lemmas "
+                f"(Lean verification may not be working). Continuing anyway..."
+            )
+        else:
+            assert False, f'Failed to test {nr_failed} lemmas (expected < {max_allowed_failures})'
+
+    if save_file_generation:
+        write_data(json.dumps(generated_proofs_dedup), save_file_generation, 'json')
+    persist_results()
+
     return generated_proofs_dedup
 

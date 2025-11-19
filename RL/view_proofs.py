@@ -11,8 +11,8 @@ from utils.gcloud_utils import read_file
 
 def main():
     parser = argparse.ArgumentParser(description='View individual proof')
-    parser.add_argument('--file', type=str, default='results/test_run/generated_proofs_tests.jsonl.gz',
-                       help='Input file (default: results/test_run/generated_proofs_tests.jsonl.gz)')
+    parser.add_argument('--file', type=str, default='results/generated_proofs_tests.jsonl.gz',
+                       help='Input file (default: results/generated_proofs_tests.jsonl.gz)')
     parser.add_argument('--id', type=int, help='Lemma ID to view')
     parser.add_argument('--index', type=int, default=1, 
                        help='1-based index to view (default: 1, ignored if --id is specified)')

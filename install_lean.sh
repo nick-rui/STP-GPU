@@ -117,7 +117,7 @@ else
     print_warning "REPL already exists"
 fi
 
-# Add REPL to mathlib if not already there
+# Add REPL to mathlib if not already there (THIS STEP IS INCORRECT for lakefile.lean... so YOU'LL NEED TO MANUALLY DO THIS)
 cd "$LEAN_WORKSPACE/mathlib4"
 if ! grep -q "REPL" lakefile.lean 2>/dev/null && ! grep -q "repl" lakefile.toml 2>/dev/null; then
     print_status "Adding REPL dependency..."
