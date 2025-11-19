@@ -50,6 +50,7 @@ def build_decomposer_prompt(test_info: Dict) -> str:
         <base prompt>
         <statement>
         <sketch>
+        -- instruction
 
     Model should output: sketch with sorry placeholders, then </sketch>
     """
@@ -63,6 +64,7 @@ def build_decomposer_prompt(test_info: Dict) -> str:
         f"{prompt}\n"
         f"{test_info['statement'].strip()}\n"
         f"{SKETCH_START}\n"
+        f"-- Break into steps using sorry for unproved subgoals:\n"
     )
 
 
@@ -93,6 +95,7 @@ def build_prover_prompt(sketch: str, test_info: Dict) -> str:
         f"{sketch.strip()}\n"
         f"{SKETCH_END}\n"
         f"{PROOF_START}\n"
+        f"-- Complete proof by replacing all sorry:\n"
     )
 
 
