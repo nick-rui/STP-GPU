@@ -589,6 +589,10 @@ def generate_and_test(
             if finished_generation and (total_test_tasks - nr_finished_jobs <= early_stop_threshold):
                 break
             
+            # Also break if generation is finished and we've processed all expected tasks
+            if finished_generation and nr_finished_jobs >= total_test_tasks:
+                break
+            
             if len(test_queue) == 0:
                 time.sleep(2)
                 continue
@@ -699,12 +703,14 @@ def generate_and_test(
                     with test_queue_lock:
                         test_queue.append(failed_results)
             
+            verification_threads = []
             with pool_lock:
                 for testing_block in new_testing_tasks:
                     # Run verification in background thread
                     thread = threading.Thread(target=verify_batch, args=(testing_block,))
                     thread.daemon = True
                     thread.start()
+                    verification_threads.append(thread)
                     total_test_tasks += 1
         
         finished_generation = True
@@ -716,10 +722,30 @@ def generate_and_test(
         start_time = datetime.now()
         
         # Wait for all verification threads to complete
-        while threading.active_count() > 1:  # Main thread + monitoring thread
-            time.sleep(1)
+        logging.info(f"Waiting for {len(verification_threads)} verification threads to complete...")
+        for i, thread in enumerate(verification_threads):
+            thread.join(timeout=600)  # Wait up to 10 minutes per thread
+            if thread.is_alive():
+                logging.warning(f"Verification thread {i} did not complete within timeout (600s)")
+            else:
+                logging.debug(f"Verification thread {i} completed successfully")
         
-        monitoring_thread.join(timeout=300)  # Wait up to 5 minutes
+        # Give monitoring thread a moment to process any remaining results
+        logging.info(f"Waiting for monitoring thread to process remaining results (queue size: {len(test_queue)})...")
+        # Wait a bit for queue to be processed
+        max_wait = 120  # 2 minutes max
+        wait_time = 0
+        while len(test_queue) > 0 and wait_time < max_wait:
+            time.sleep(2)
+            wait_time += 2
+            if wait_time % 10 == 0:
+                logging.info(f"Still waiting for queue to empty... ({len(test_queue)} items remaining, waited {wait_time}s)")
+        
+        monitoring_thread.join(timeout=30)  # Wait up to 30 seconds for final processing
+        if monitoring_thread.is_alive():
+            logging.warning("Monitoring thread did not complete within timeout, but continuing anyway")
+        else:
+            logging.debug("Monitoring thread completed successfully")
         pbar.close()
         
         # Stage 2: Retry failed/timed-out proofs
@@ -764,17 +790,38 @@ def generate_and_test(
                 with test_queue_lock:
                     test_queue.append(failed_results)
         
+        stage2_threads = []
         for testing_block in new_testing_tasks:
             thread = threading.Thread(target=verify_single, args=(testing_block,))
             thread.daemon = True
             thread.start()
+            stage2_threads.append(thread)
             total_test_tasks = len(new_testing_tasks)
         
         # Wait for all stage 2 threads
-        while threading.active_count() > 1:
-            time.sleep(1)
+        logging.info(f"Waiting for {len(stage2_threads)} stage 2 verification threads to complete...")
+        for i, thread in enumerate(stage2_threads):
+            thread.join(timeout=600)  # Wait up to 10 minutes per thread
+            if thread.is_alive():
+                logging.warning(f"Stage 2 verification thread {i} did not complete within timeout (600s)")
+            else:
+                logging.debug(f"Stage 2 verification thread {i} completed successfully")
         
-        monitoring_thread.join(timeout=600)  # Wait up to 10 minutes
+        # Give monitoring thread a moment to process any remaining results
+        logging.info(f"Waiting for stage 2 monitoring thread to process remaining results (queue size: {len(test_queue)})...")
+        max_wait = 120  # 2 minutes max
+        wait_time = 0
+        while len(test_queue) > 0 and wait_time < max_wait:
+            time.sleep(2)
+            wait_time += 2
+            if wait_time % 10 == 0:
+                logging.info(f"Still waiting for queue to empty... ({len(test_queue)} items remaining, waited {wait_time}s)")
+        
+        monitoring_thread.join(timeout=30)  # Wait up to 30 seconds for final processing
+        if monitoring_thread.is_alive():
+            logging.warning("Stage 2 monitoring thread did not complete within timeout, but continuing anyway")
+        else:
+            logging.debug("Stage 2 monitoring thread completed successfully")
         pbar.close()
         
         duration = datetime.now() - start_time
