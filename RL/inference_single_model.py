@@ -32,70 +32,39 @@ from utils.RL_utils_gpu import (
 )
 from utils.gcloud_utils import read_file, write_data
 
-# Marker tokens for role differentiation (similar to STP approach)
-SKETCH_START = '<sketch>'
-SKETCH_END = '</sketch>'
-PROOF_START = '<proof>'
-PROOF_END = '</proof>'
+# Role-specific system prompts for the single model
+DECOMPOSER_PROMPT = """You are a Lean 4 proof assistant in DECOMPOSER mode.
+Given a goal statement, break it into intermediate steps and emit Lean 4 code
+where subgoals end with `sorry` placeholders. Focus on the high-level proof structure.
 
-# Base prompt for Lean 4 code completion
-BASE_PROMPT = 'Complete the following Lean 4 code:\n\n```lean4\nimport Mathlib\nimport Aesop\nset_option maxHeartbeats 0\nopen BigOperators Real Nat Topology Rat\n'
+Return only Lean 4 code with `sorry` for unresolved subproofs."""
+
+PROVER_PROMPT = """You are a Lean 4 proof assistant in PROVER mode.
+Given a Lean proof sketch containing `sorry` placeholders, replace each placeholder
+with a valid tactic proof. Complete all sorry placeholders. 
+
+Return only the completed Lean 4 code with no remaining `sorry`."""
 
 
 def build_decomposer_prompt(test_info: Dict) -> str:
-    """
-    Build prompt for decomposer role using markers.
-
-    Format:
-        <base prompt>
-        <statement>
-        <sketch>
-        -- instruction
-
-    Model should output: sketch with sorry placeholders, then </sketch>
-    """
+    """Build prompt for decomposer role."""
     header = test_info.get("header")
-    if header is not None:
-        prompt = f'Complete the following Lean 4 code:\n\n```lean4\n{header}'
-    else:
-        prompt = BASE_PROMPT
-
+    prefix = f"{header}\n" if header else ""
     return (
-        f"{prompt}\n"
-        f"{test_info['statement'].strip()}\n"
-        f"{SKETCH_START}\n"
-        f"-- Break into steps using sorry for unproved subgoals:\n"
+        f"{DECOMPOSER_PROMPT}\n\n"
+        f"```lean4\n{prefix}"
+        f"-- Goal:\n{test_info['statement']}\n```\n\n"
+        "Write a proof sketch with `sorry` placeholders:"
     )
 
 
 def build_prover_prompt(sketch: str, test_info: Dict) -> str:
-    """
-    Build prompt for prover role using markers.
-
-    Format:
-        <base prompt>
-        <statement>
-        <sketch>
-        <sketch content>
-        </sketch>
-        <proof>
-
-    Model should output: completed proof, then </proof>
-    """
-    header = test_info.get("header")
-    if header is not None:
-        prompt = f'Complete the following Lean 4 code:\n\n```lean4\n{header}'
-    else:
-        prompt = BASE_PROMPT
-
+    """Build prompt for prover role."""
     return (
-        f"{prompt}\n"
-        f"{test_info['statement'].strip()}\n"
-        f"{SKETCH_START}\n"
-        f"{sketch.strip()}\n"
-        f"{SKETCH_END}\n"
-        f"{PROOF_START}\n"
-        f"-- Complete proof by replacing all sorry:\n"
+        f"{PROVER_PROMPT}\n\n"
+        f"Theorem statement:\n```lean4\n{test_info['statement']}\n```\n\n"
+        f"Sketch to complete:\n```lean4\n{sketch}\n```\n\n"
+        "Complete the proof (replace all `sorry`):"
     )
 
 
@@ -134,7 +103,6 @@ def run_completion(
     max_tokens: int,
     seed: int,
     cache_dir: str | None = None,
-    end_marker: str | None = None,
 ) -> str:
     """Run a single completion using the predictor."""
     completions = direct_completion(
@@ -145,13 +113,7 @@ def run_completion(
         seed=seed,
         cache_dir=cache_dir,
     )
-    text = completions[0]["text"].strip()
-
-    # Extract content before end marker if specified
-    if end_marker and end_marker in text:
-        text = text.split(end_marker)[0].strip()
-
-    return text
+    return completions[0]["text"].strip()
 
 
 def run_pipeline(args: argparse.Namespace) -> List[Dict]:
@@ -191,7 +153,6 @@ def run_pipeline(args: argparse.Namespace) -> List[Dict]:
             max_tokens=args.max_tokens,
             seed=args.seed + idx,
             cache_dir=args.cache_dir,
-            end_marker=SKETCH_END,
         )
 
         # Phase 2: Prover - fill in the sorry placeholders
@@ -204,7 +165,6 @@ def run_pipeline(args: argparse.Namespace) -> List[Dict]:
             max_tokens=args.max_tokens,
             seed=args.seed + idx + 10_000,
             cache_dir=args.cache_dir,
-            end_marker=PROOF_END,
         )
 
         # Build result
