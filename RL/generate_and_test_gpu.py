@@ -20,6 +20,7 @@ Usage:
         --exp_dir <output_directory> \\
         --raw_dataset_config <dataset_config.json> \\
         --temperature 0.7 \\
+        --save_file_name "tests" \\
         --max_examples 8
 """
 

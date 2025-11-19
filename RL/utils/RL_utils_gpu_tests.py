@@ -16,12 +16,15 @@ def test_simple_valid_proof():
         'proof': 'trivial'
     }]
     results = verifier.run(test_input, batched=True)
+
+    print(results)
     
     assert len(results) == 1
     assert results[0]['complete'] == True
     assert results[0]['pass'] == True
     assert len(results[0]['errors']) == 0
     assert len(results[0]['sorries']) == 0
+
     print("✓ Simple valid proof test passed")
     return results
 
@@ -34,6 +37,7 @@ def test_proof_with_error():
         'proof': 'trivial'  # This should fail - can't prove False with trivial
     }]
     results = verifier.run(test_input, batched=True)
+    print(results)
     
     assert len(results) == 1
     assert results[0]['complete'] == False
@@ -51,6 +55,7 @@ def test_proof_with_sorry():
         'proof': 'sorry'  # Incomplete proof
     }]
     results = verifier.run(test_input, batched=True)
+    print(results)
     
     assert len(results) == 1
     assert results[0]['complete'] == False  # Should be False because of sorry
@@ -77,6 +82,7 @@ def test_batch_verification():
         }
     ]
     results = verifier.run(test_inputs, batched=True)
+    print(results)
     
     assert len(results) == 3
     assert results[0]['complete'] == True
@@ -95,6 +101,9 @@ def test_proof_with_header():
         'header': 'import Mathlib.Data.Nat.Basic\n'
     }]
     results = verifier.run(test_input, batched=True)
+
+    print(results)
+
     
     assert len(results) == 1
     # Should work with proper header
@@ -110,6 +119,7 @@ def test_non_batched_mode():
         'proof': 'trivial'
     }]
     results = verifier.run(test_input, batched=False)
+    print(results)
     
     assert len(results) == 1
     assert results[0]['complete'] == True
@@ -128,6 +138,7 @@ def test_empty_proof():
         'proof': ''  # Empty proof
     }]
     results = verifier.run(test_input, batched=True)
+    print(results)
     
     assert len(results) == 1
     # Empty proof should fail
@@ -147,6 +158,7 @@ def test_real_world_example():
         'proof': '\n  rw [sq]\n  apply mul_self_nonneg'
     }]
     results = verifier.run(test_input, batched=True)
+    print(results)
     
     assert len(results) == 1
     # This is a real proof, should verify if Lean4 is set up correctly
@@ -162,6 +174,7 @@ def test_premise_extraction():
         'proof': 'trivial'
     }]
     results = verifier.run(test_input, batched=True)
+    print(results)
     
     assert len(results) == 1
     if results[0]['complete']:

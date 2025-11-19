@@ -768,6 +768,8 @@ def generate_and_test(
         
         # Reset queue for stage 2
         test_queue = []
+        finished_generation = False
+        total_test_tasks = len(new_testing_tasks)
         
         # Start new monitoring thread
         monitoring_thread = threading.Thread(target=aggregate_results)
@@ -796,7 +798,6 @@ def generate_and_test(
             thread.daemon = True
             thread.start()
             stage2_threads.append(thread)
-            total_test_tasks = len(new_testing_tasks)
         
         # Wait for all stage 2 threads
         logging.info(f"Waiting for {len(stage2_threads)} stage 2 verification threads to complete...")
@@ -806,6 +807,8 @@ def generate_and_test(
                 logging.warning(f"Stage 2 verification thread {i} did not complete within timeout (600s)")
             else:
                 logging.debug(f"Stage 2 verification thread {i} completed successfully")
+        
+        finished_generation = True
         
         # Give monitoring thread a moment to process any remaining results
         logging.info(f"Waiting for stage 2 monitoring thread to process remaining results (queue size: {len(test_queue)})...")
