@@ -126,7 +126,7 @@ class SimpleLLMPredictor:
                 model=self.model_path,
                 dtype='bfloat16',
                 max_model_len=1024,
-                gpu_memory_utilization=0.45,
+                gpu_memory_utilization=0.85,
                 **self.kwargs
             )
         

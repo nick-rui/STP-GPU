@@ -21,6 +21,7 @@ import json
 import logging
 import os
 from typing import List, Dict
+from tqdm import tqdm
 
 from utils.RL_utils_gpu import (
     SimpleLLMPredictor,
@@ -29,6 +30,7 @@ from utils.RL_utils_gpu import (
     get_result_items,
     MAX_LENGTH,
     REPO_DIR,
+    split_test_blocks,
 )
 from utils.gcloud_utils import read_file, write_data
 
@@ -54,7 +56,7 @@ def build_decomposer_prompt(test_info: Dict) -> str:
         f"{DECOMPOSER_PROMPT}\n\n"
         f"```lean4\n{prefix}"
         f"-- Goal:\n{test_info['statement']}\n```\n\n"
-        "Write a proof sketch with `sorry` placeholders:"
+        "Write a proof sketch in Lean 4with `sorry` placeholders:"
     )
 
 
@@ -138,61 +140,108 @@ def run_pipeline(args: argparse.Namespace) -> List[Dict]:
         collect_premises=args.collect_premises, timeout=args.timeout
     )
 
-    results = []
+    if not lemmas:
+        logging.warning("No lemmas loaded; nothing to do.")
+        return []
 
-    for idx, test_info in enumerate(lemmas):
-        logging.info(f"Processing lemma {idx + 1}/{len(lemmas)} (id: {test_info['lemma_id']})")
+    # --- Phase 1: Decomposer (batched generation) ---
+    sketches: List[str] = [""] * len(lemmas)
+    gen_batch_size = max(1, args.generation_batch_size)
 
-        # Phase 1: Decomposer - generate proof sketch
-        logging.info("  Phase 1: Generating proof sketch (decomposer role)...")
-        decomposer_prompt = build_decomposer_prompt(test_info)
-        sketch = run_completion(
+    decomposer_pbar = tqdm(total=len(lemmas), desc="Generating decomposer sketches")
+    for start in range(0, len(lemmas), gen_batch_size):
+        end = min(start + gen_batch_size, len(lemmas))
+        batch_lemmas = lemmas[start:end]
+        prompts = [build_decomposer_prompt(t) for t in batch_lemmas]
+
+        completions = direct_completion(
             predictor,
-            decomposer_prompt,
+            prompts,
             temperature=args.decomposer_temperature,
             max_tokens=args.max_tokens,
-            seed=args.seed + idx,
+            seed=args.seed + start,
             cache_dir=args.cache_dir,
         )
+        for i, completion in enumerate(completions):
+            sketches[start + i] = completion["text"].strip()
 
-        # Phase 2: Prover - fill in the sorry placeholders
-        logging.info("  Phase 2: Completing proof (prover role)...")
-        prover_prompt = build_prover_prompt(sketch, test_info)
-        full_proof = run_completion(
+        decomposer_pbar.update(len(batch_lemmas))
+    decomposer_pbar.close()
+
+    # --- Phase 2: Prover (batched generation) ---
+    full_proofs: List[str] = [""] * len(lemmas)
+
+    prover_pbar = tqdm(total=len(lemmas), desc="Generating prover completions")
+    for start in range(0, len(lemmas), gen_batch_size):
+        end = min(start + gen_batch_size, len(lemmas))
+        batch_lemmas = lemmas[start:end]
+        batch_sketches = sketches[start:end]
+        prompts = [
+            build_prover_prompt(sketch, test_info)
+            for sketch, test_info in zip(batch_sketches, batch_lemmas)
+        ]
+
+        completions = direct_completion(
             predictor,
-            prover_prompt,
+            prompts,
             temperature=args.prover_temperature,
             max_tokens=args.max_tokens,
-            seed=args.seed + idx + 10_000,
+            seed=args.seed + 10_000 + start,
             cache_dir=args.cache_dir,
         )
+        for i, completion in enumerate(completions):
+            full_proofs[start + i] = completion["text"].strip()
 
-        # Build result
-        proof_info = test_info.copy()
+        prover_pbar.update(len(batch_lemmas))
+    prover_pbar.close()
+
+    # Build proof infos
+    proof_infos: List[Dict] = []
+    for lemma, sketch, proof in zip(lemmas, sketches, full_proofs):
+        proof_info = lemma.copy()
+        decomposer_prompt = build_decomposer_prompt(lemma)
+        prover_prompt = build_prover_prompt(sketch, lemma)
         proof_info["proof_sketch"] = sketch
-        proof_info["proof"] = full_proof
+        proof_info["proof"] = proof
         proof_info["decomposer_prompt"] = decomposer_prompt
         proof_info["prover_prompt"] = prover_prompt
+        proof_infos.append(proof_info)
 
-        # Phase 3: Verify with Lean4
-        logging.info("  Phase 3: Verifying with Lean4...")
+    # --- Phase 3: Verification (batched, with graceful fallback) ---
+    results: List[Dict] = []
+    verify_batch_size = max(1, args.verify_batch_size)
+
+    batches = split_test_blocks(proof_infos, batch_size=verify_batch_size, group_by_header=False)
+    verify_pbar = tqdm(total=len(proof_infos), desc="Verifying proofs")
+
+    for block in batches:
         try:
-            verification = verifier.run([proof_info], batched=False)[0]
-            proof_info.update(verification)
+            verified_block = verifier.run(block, batched=len(block) > 1)
         except Exception as exc:
-            logging.error(f"Lean verification failed for lemma {test_info['lemma_id']}: {exc}")
-            proof_info["complete"] = False
-            proof_info["system_errors"] = str(exc)
+            logging.error(f"Lean batch verification failed for lemmas {[t['lemma_id'] for t in block]}: {exc}")
+            verified_block = []
+            for proof_info in block:
+                try:
+                    single_verified = verifier.run([proof_info], batched=False)[0]
+                except Exception as single_exc:
+                    logging.error(f"Lean single verification failed for lemma {proof_info['lemma_id']}: {single_exc}")
+                    fallback = proof_info.copy()
+                    fallback["complete"] = False
+                    fallback["system_errors"] = str(single_exc)
+                    single_verified = fallback
+                verified_block.append(single_verified)
 
-        proof_info.update(get_result_items(proof_info))
-        results.append(proof_info)
+        for verified in verified_block:
+            verified.update(get_result_items(verified))
+            results.append(verified)
 
-        status = "✓" if proof_info.get("complete", False) else "✗"
-        logging.info(f"  Result: {status}")
+        verify_pbar.update(len(block))
+
+    verify_pbar.close()
 
     # Save results
     save_path = os.path.join(
-        args.exp_dir, f"proofs_{args.save_file_name or 'single_model'}.jsonl"
+        args.exp_dir, f"{args.save_file_name}.jsonl"
     )
     write_data("\n".join(json.dumps(r) for r in results), save_path, "jsonl")
 
@@ -214,8 +263,20 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--tokenizer_path", required=False, help="Tokenizer path (defaults to model)")
     parser.add_argument("--exp_dir", required=True, help="Output directory")
     parser.add_argument("--raw_dataset_config", required=True, help="Dataset config JSON")
-    parser.add_argument("--save_file_name", default="single_model", help="Output file name")
+    parser.add_argument("--save_file_name", default="test_results", help="Output file name")
     parser.add_argument("--max_examples", type=int, default=8, help="Max examples per dataset")
+    parser.add_argument(
+        "--generation_batch_size",
+        type=int,
+        default=8,
+        help="Batch size for decomposer/prover generation",
+    )
+    parser.add_argument(
+        "--verify_batch_size",
+        type=int,
+        default=16,
+        help="Batch size for Lean4 verification",
+    )
     parser.add_argument("--decomposer_temperature", type=float, default=0.7)
     parser.add_argument("--prover_temperature", type=float, default=0.7)
     parser.add_argument("--max_tokens", type=int, default=MAX_LENGTH)
