@@ -118,6 +118,25 @@ def run_completion(
     return completions[0]["text"].strip()
 
 
+def _strip_code_fences(text: str) -> str:
+    """
+    Remove leading/trailing Markdown code fences from a completion.
+
+    This makes the string valid Lean code even if the model wraps it in ```lean4 ... ```.
+    """
+    if not text:
+        return text
+
+    lines = text.strip().splitlines()
+    # Remove leading fence line
+    if lines and lines[0].lstrip().startswith("```"):
+        lines = lines[1:]
+    # Remove trailing fence lines
+    while lines and lines[-1].strip().startswith("```"):
+        lines = lines[:-1]
+    return "\n".join(lines).strip()
+
+
 def run_pipeline(args: argparse.Namespace) -> List[Dict]:
     """
     Run the single-model decomposer → prover pipeline.
@@ -163,7 +182,8 @@ def run_pipeline(args: argparse.Namespace) -> List[Dict]:
             cache_dir=args.cache_dir,
         )
         for i, completion in enumerate(completions):
-            sketches[start + i] = completion["text"].strip()
+            raw_text = completion["text"].strip()
+            sketches[start + i] = _strip_code_fences(raw_text)
 
         decomposer_pbar.update(len(batch_lemmas))
     decomposer_pbar.close()
@@ -190,7 +210,8 @@ def run_pipeline(args: argparse.Namespace) -> List[Dict]:
             cache_dir=args.cache_dir,
         )
         for i, completion in enumerate(completions):
-            full_proofs[start + i] = completion["text"].strip()
+            raw_text = completion["text"].strip()
+            full_proofs[start + i] = _strip_code_fences(raw_text)
 
         prover_pbar.update(len(batch_lemmas))
     prover_pbar.close()
@@ -205,6 +226,8 @@ def run_pipeline(args: argparse.Namespace) -> List[Dict]:
         proof_info["proof"] = proof
         proof_info["decomposer_prompt"] = decomposer_prompt
         proof_info["prover_prompt"] = prover_prompt
+        # Full Lean code sent to the verifier; allow model to emit the whole theorem
+        proof_info["code"] = proof
         proof_infos.append(proof_info)
 
     # --- Phase 3: Verification (batched, with graceful fallback) ---
@@ -277,8 +300,8 @@ def parse_args() -> argparse.Namespace:
         default=16,
         help="Batch size for Lean4 verification",
     )
-    parser.add_argument("--decomposer_temperature", type=float, default=0.7)
-    parser.add_argument("--prover_temperature", type=float, default=0.7)
+    parser.add_argument("--decomposer_temperature", type=float, default=1.0)
+    parser.add_argument("--prover_temperature", type=float, default=1.0)
     parser.add_argument("--max_tokens", type=int, default=MAX_LENGTH)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--timeout", type=int, default=300, help="Lean verification timeout")

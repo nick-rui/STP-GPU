@@ -355,9 +355,16 @@ class SimpleLean4Verifier:
         
         if batched:
             # Batch verification - faster, shared header context
-            codes = [test_info['statement'] + '\n' + test_info['proof'] for test_info in inputs]
-            headers = [test_info.get('header', None) for test_info in inputs]
-            
+            codes = []
+            headers = []
+            for test_info in inputs:
+                code = test_info.get(
+                    'code',
+                    test_info.get('statement', '') + '\n' + test_info.get('proof', '')
+                )
+                codes.append(code)
+                headers.append(test_info.get('header', None))
+
             results = verify_lean4_file(
                 codes=codes,
                 headers=headers,
@@ -381,8 +388,12 @@ class SimpleLean4Verifier:
             # Single verification - one at a time with full premise extraction
             assert len(inputs) == 1, "Single input only for non-batched mode"
             test_info = inputs[0]
+            code = test_info.get(
+                'code',
+                test_info.get('statement', '') + '\n' + test_info.get('proof', '')
+            )
             premise_result = verify_lean4_file_premises(
-                code=test_info['statement'] + '\n' + test_info['proof'],
+                code=code,
                 header=test_info.get('header', None),
                 premises=True,
                 ast=True,
