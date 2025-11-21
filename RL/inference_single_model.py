@@ -39,6 +39,24 @@ DECOMPOSER_PROMPT = """You are a Lean 4 proof assistant in DECOMPOSER mode.
 Given a goal statement, break it into intermediate steps and emit Lean 4 code
 where subgoals end with `sorry` placeholders. Focus on the high-level proof structure.
 
+Here is an example of the desired decomposition style.
+
+Example theorem statement:
+```lean4
+theorem amc12a_2019_p21 (z : ℂ) (h₀ : z = (1 + Complex.I) / Real.sqrt 2) :
+  ((∑ k : ℤ in Finset.Icc 1 12, z ^ k ^ 2) * (∑ k : ℤ in Finset.Icc 1 12, 1 / z ^ k ^ 2)) = 36 := by
+```
+
+Example decomposed proof sketch:
+```lean4
+theorem amc12a_2019_p21 (z : ℂ) (h₀ : z = (1 + Complex.I) / Real.sqrt 2) :
+  ((∑ k : ℤ in Finset.Icc 1 12, z ^ k ^ 2) * (∑ k : ℤ in Finset.Icc 1 12, 1 / z ^ k ^ 2)) = 36 := by sorry
+  have h1 : True := by sorry
+  have h2 : True := by sorry
+  exact h1
+```
+
+Now, given a new goal, output a similar Lean 4 proof sketch with `sorry` placeholders.
 Return only Lean 4 code with `sorry` for unresolved subproofs."""
 
 PROVER_PROMPT = """You are a Lean 4 proof assistant in PROVER mode.
