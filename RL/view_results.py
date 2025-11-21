@@ -6,9 +6,21 @@ Usage: python view_results.py [--summary|--json|--verified|--failed]
 
 import sys
 import argparse
-sys.path.insert(0, '.')
-from utils.gcloud_utils import read_file
+import gzip
 import json
+
+def read_file(filepath):
+    """Read a .jsonl or .jsonl.gz file and return list of records."""
+    open_fn = gzip.open if filepath.endswith('.gz') else open
+    mode = 'rt' if filepath.endswith('.gz') else 'r'
+
+    data = []
+    with open_fn(filepath, mode, encoding='utf-8') as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                data.append(json.loads(line))
+    return data
 
 def main():
     parser = argparse.ArgumentParser(description='View test results')
