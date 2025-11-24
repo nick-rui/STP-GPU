@@ -1,0 +1,3178 @@
+================================================================================
+PROOF RESULTS SUMMARY
+================================================================================
+Total Proofs: 32
+✓ Verified: 3 (9.4%)
+✗ Failed: 29 (90.6%)
+================================================================================
+================================================================================
+PROOF #1 (Lemma ID: 2)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet valid
+Iteration: 0
+Verify Time: 0.06308364868164062s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_13c {f : ℂ → ℂ} (Ω : Set ℂ) (a b : Ω) (h : IsOpen Ω)
+  (hf : DifferentiableOn ℂ f Ω) (hc : ∃ (c : ℝ), ∀ z ∈ Ω, abs (f z) = c) :
+  f a = f b :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Complex Filter Function Metric Finset
+open scoped BigOperators Topology
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  obtain ⟨c, hc⟩ := hc
+  have h₁ : abs (f a) = c := hc a a.prop
+  have h₂ : abs (f b) = c := hc b b.prop
+  have h₃ : f a = f b := by
+    have h₄ : abs (f a) = abs (f b) := by rw [h₁, h₂]
+    have h₅ : f a = f b := by
+      apply Complex.abs.injective
+      simp_all
+    exact h₅
+  exact h₃
+
+--------------------------------------------------------------------------------
+ERRORS (5):
+--------------------------------------------------------------------------------
+
+Error 1:
+  failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+Error 2:
+  failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+Error 3:
+  failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+Error 4:
+  failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+Error 5:
+  failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_13c {f : ℂ → ℂ} (Ω : Set ℂ) (a b : Ω) (h : IsOpen Ω)
+  (hf : DifferentiableOn ℂ f Ω) (hc : ∃ (c : ℝ), ∀ z ∈ Ω, abs (f z) = c) :
+  f a = f b :=
+ by
+  obtain ⟨c, hc⟩ := hc
+  have h₁ : abs (f a) = c := hc a a.prop
+  have h₂ : abs (f b) = c := hc b b.prop
+  have h₃ : f a = f b := by
+    have h₄ : abs (f a) = abs (f b) := by rw [h₁, h₂]
+    have h₅ : f a = f b := by
+      apply Complex.abs.injective
+      simp_all
+    exact h₅
+  exact h₃
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 1 (Lemma 2)
+  Statement: theorem exercise_1_13c {f : ℂ → ℂ} (Ω : Set ℂ) (a b : Ω) (h : IsOpen Ω)
+  (hf : ...
+  Errors: 5
+    - failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the...
+    - failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the...
+================================================================================
+================================================================================
+PROOF #2 (Lemma ID: 11)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet test
+Iteration: 0
+Verify Time: 0.09997987747192383s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_3_4 (a : ℝ) (ha : 0 < a) :
+    Tendsto (λ y => ∫ x in -y..y, x * Real.sin x / (x ^ 2 + a ^ 2))
+    atTop (𝓝 (Real.pi * (Real.exp (-a)))) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Complex Filter Function Metric Finset
+open scoped BigOperators Topology
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  have h₁ : Tendsto (λ y : ℝ => ∫ x in -y..y, x * Real.sin x / (x ^ 2 + a ^ 2)) atTop (𝓝 (Real.pi * (Real.exp (-a)))) := by
+    have h₂ := tendsto_integral_rpow_of_vanishes_zero (p := 1) (q := 1) (a := 0) (b := 1) (c := a)
+    have h₃ := tendsto_integral_rpow_of_vanishes_zero (p := 1) (q := 1) (a := 1) (b := 0) (c := a)
+    have h₄ := tendsto_integral_rpow_of_vanishes_zero (p := 1) (q := 1) (a := 0) (b := 0) (c := a)
+    have h₅ := tendsto_integral_rpow_of_vanishes_zero (p := 1) (q := 1) (a := 1) (b := 1) (c := a)
+    have h₆ := tendsto_integral_rpow_of_vanishes_zero (p := 1) (q := 1) (a := 0) (b := 1) (c := a)
+    have h₇ := tendsto_integral_rpow_of_vanishes_zero (p := 1) (q := 1) (a := 1) (b := 0) (c := a)
+    have h₈ := tendsto_integral_rpow_of_vanishes_zero (p := 1) (q := 1) (a := 0) (b := 0) (c := a)
+    have h₉ := tendsto_integral_rpow_of_vanishes_zero (p := 1) (q := 1) (a := 1) (b := 1) (c := a)
+    simp_all [mul_comm]
+    <;> norm_num
+    <;> linarith
+  
+  apply h₁
+
+--------------------------------------------------------------------------------
+ERRORS (1):
+--------------------------------------------------------------------------------
+
+Error 1:
+  Unknown identifier `tendsto_integral_rpow_of_vanishes_zero`
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_3_4 (a : ℝ) (ha : 0 < a) :
+    Tendsto (λ y => ∫ x in -y..y, x * Real.sin x / (x ^ 2 + a ^ 2))
+    atTop (𝓝 (Real.pi * (Real.exp (-a)))) :=
+ by
+  have h₁ : Tendsto (λ y : ℝ => ∫ x in -y..y, x * Real.sin x / (x ^ 2 + a ^ 2)) atTop (𝓝 (Real.pi * (Real.exp (-a)))) := by
+    have h₂ := tendsto_integral_rpow_of_vanishes_zero (p := 1) (q := 1) (a := 0) (b := 1) (c := a)
+    have h₃ := tendsto_integral_rpow_of_vanishes_zero (p := 1) (q := 1) (a := 1) (b := 0) (c := a)
+    have h₄ := tendsto_integral_rpow_of_vanishes_zero (p := 1) (q := 1) (a := 0) (b := 0) (c := a)
+    have h₅ := tendsto_integral_rpow_of_vanishes_zero (p := 1) (q := 1) (a := 1) (b := 1) (c := a)
+    have h₆ := tendsto_integral_rpow_of_vanishes_zero (p := 1) (q := 1) (a := 0) (b := 1) (c := a)
+    have h₇ := tendsto_integral_rpow_of_vanishes_zero (p := 1) (q := 1) (a := 1) (b := 0) (c := a)
+    have h₈ := tendsto_integral_rpow_of_vanishes_zero (p := 1) (q := 1) (a := 0) (b := 0) (c := a)
+    have h₉ := tendsto_integral_rpow_of_vanishes_zero (p := 1) (q := 1) (a := 1) (b := 1) (c := a)
+    simp_all [mul_comm]
+    <;> norm_num
+    <;> linarith
+  
+  apply h₁
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 2 (Lemma 11)
+  Statement: theorem exercise_3_4 (a : ℝ) (ha : 0 < a) :
+    Tendsto (λ y => ∫ x in -y..y, x ...
+  Errors: 1
+    - Unknown identifier `tendsto_integral_rpow_of_vanishes_zero`
+================================================================================
+================================================================================
+PROOF #3 (Lemma ID: 25)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet test
+Iteration: 0
+Verify Time: 0.12375020980834961s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_14
+  (z : ℂ) (h : abs z = 1)
+  : (abs (1 + z)) ^ 2 + (abs (1 - z)) ^ 2 = 4 :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  have h₁ : abs (1 + z) ^ 2 + abs (1 - z) ^ 2 = 4 := by
+    have h₂ : abs (1 + z) ^ 2 = (abs (1 + z)) ^ 2 := by ring
+    have h₃ : abs (1 - z) ^ 2 = (abs (1 - z)) ^ 2 := by ring
+    rw [h₂, h₃]
+    cases' le_total 0 (1 + z) with h₄ h₄ <;>
+    cases' le_total 0 (1 - z) with h₅ h₅ <;>
+    simp_all [Complex.abs, Complex.normSq, sq, mul_comm] <;>
+    nlinarith [sq_nonneg (z.re + 1), sq_nonneg (z.re - 1), sq_nonneg (z.im),
+      Real.sq_sqrt (show 0 ≤ 1 + z.re by linarith),
+      Real.sq_sqrt (show 0 ≤ 1 - z.re by linarith),
+      Real.sq_sqrt (show 0 ≤ 1 + z.im by linarith),
+      Real.sq_sqrt (show 0 ≤ 1 - z.im by linarith)]
+  exact h₁
+
+--------------------------------------------------------------------------------
+ERRORS (7):
+--------------------------------------------------------------------------------
+
+Error 1:
+  failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+Error 2:
+  failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+Error 3:
+  failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+Error 4:
+  failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+Error 5:
+  failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+Error 6:
+  failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+Error 7:
+  failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_14
+  (z : ℂ) (h : abs z = 1)
+  : (abs (1 + z)) ^ 2 + (abs (1 - z)) ^ 2 = 4 :=
+ by
+  have h₁ : abs (1 + z) ^ 2 + abs (1 - z) ^ 2 = 4 := by
+    have h₂ : abs (1 + z) ^ 2 = (abs (1 + z)) ^ 2 := by ring
+    have h₃ : abs (1 - z) ^ 2 = (abs (1 - z)) ^ 2 := by ring
+    rw [h₂, h₃]
+    cases' le_total 0 (1 + z) with h₄ h₄ <;>
+    cases' le_total 0 (1 - z) with h₅ h₅ <;>
+    simp_all [Complex.abs, Complex.normSq, sq, mul_comm] <;>
+    nlinarith [sq_nonneg (z.re + 1), sq_nonneg (z.re - 1), sq_nonneg (z.im),
+      Real.sq_sqrt (show 0 ≤ 1 + z.re by linarith),
+      Real.sq_sqrt (show 0 ≤ 1 - z.re by linarith),
+      Real.sq_sqrt (show 0 ≤ 1 + z.im by linarith),
+      Real.sq_sqrt (show 0 ≤ 1 - z.im by linarith)]
+  exact h₁
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 3 (Lemma 25)
+  Statement: theorem exercise_1_14
+  (z : ℂ) (h : abs z = 1)
+  : (abs (1 + z)) ^ 2 + (abs (1 ...
+  Errors: 7
+    - failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the...
+    - failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the...
+================================================================================
+================================================================================
+PROOF #4 (Lemma ID: 21)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet test
+Iteration: 0
+Verify Time: 0.30704212188720703s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_8 : ¬ ∃ (r : ℂ → ℂ → Prop), IsLinearOrder ℂ r :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  intro h
+  obtain ⟨r, hr⟩ := h
+  have h1 := hr.refl (1 : ℂ)
+  have h2 := hr.refl (-1 : ℂ)
+  have h3 := hr.trans (by norm_num : (1 : ℂ) ≤ 1) (by norm_num : (1 : ℂ) ≤ 1)
+  have h4 := hr.trans (by norm_num : (-1 : ℂ) ≤ 1) (by norm_num : (1 : ℂ) ≤ 1)
+  have h5 := hr.trans (by norm_num : (-1 : ℂ) ≤ 1) (by norm_num : (-1 : ℂ) ≤ 1)
+  norm_num [Complex.ext_iff] at h1 h2 h3 h4 h5
+  <;> simp_all [Complex.ext_iff]
+  <;> nlinarith
+
+--------------------------------------------------------------------------------
+ERRORS (13):
+--------------------------------------------------------------------------------
+
+Error 1:
+  failed to synthesize
+  LE ℂ
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+Error 2:
+  failed to synthesize
+  LE ℂ
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+Error 3:
+  unsolved goals
+r : ℂ → ℂ → Prop
+hr : IsLinearOrder ℂ r
+h1 : r 1 1
+h2 : r (-1) (-1)
+⊢ sorry ()
+
+Error 4:
+  unsolved goals
+r : ℂ → ℂ → Prop
+hr : IsLinearOrder ℂ r
+h1 : r 1 1
+h2 : r (-1) (-1)
+⊢ sorry ()
+
+Error 5:
+  failed to synthesize
+  LE ℂ
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+Error 6:
+  failed to synthesize
+  LE ℂ
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+Error 7:
+  unsolved goals
+r : ℂ → ℂ → Prop
+hr : IsLinearOrder ℂ r
+h1 : r 1 1
+h2 : r (-1) (-1)
+h3 : ∀ (c : ℂ), r sorry sorry → r sorry c → r sorry c
+⊢ sorry ()
+
+Error 8:
+  unsolved goals
+r : ℂ → ℂ → Prop
+hr : IsLinearOrder ℂ r
+h1 : r 1 1
+h2 : r (-1) (-1)
+h3 : ∀ (c : ℂ), r sorry sorry → r sorry c → r sorry c
+⊢ sorry ()
+
+Error 9:
+  failed to synthesize
+  LE ℂ
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+Error 10:
+  failed to synthesize
+  LE ℂ
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+Error 11:
+  unsolved goals
+r : ℂ → ℂ → Prop
+hr : IsLinearOrder ℂ r
+h1 : r 1 1
+h2 : r (-1) (-1)
+h3 : ∀ (c : ℂ), r sorry sorry → r sorry c → r sorry c
+h4 : ∀ (c : ℂ), r sorry sorry → r sorry c → r sorry c
+⊢ sorry ()
+
+Error 12:
+  unsolved goals
+r : ℂ → ℂ → Prop
+hr : IsLinearOrder ℂ r
+h1 : r 1 1
+h2 : r (-1) (-1)
+h3 : ∀ (c : ℂ), r sorry sorry → r sorry c → r sorry c
+h4 : ∀ (c : ℂ), r sorry sorry → r sorry c → r sorry c
+⊢ sorry ()
+
+Error 13:
+  linarith failed to find a contradiction
+r : ℂ → ℂ → Prop
+hr : IsLinearOrder ℂ r
+h1 : r 1 1
+h2 : r (-1) (-1)
+⊢ False
+failed
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_8 : ¬ ∃ (r : ℂ → ℂ → Prop), IsLinearOrder ℂ r :=
+ by
+  intro h
+  obtain ⟨r, hr⟩ := h
+  have h1 := hr.refl (1 : ℂ)
+  have h2 := hr.refl (-1 : ℂ)
+  have h3 := hr.trans (by norm_num : (1 : ℂ) ≤ 1) (by norm_num : (1 : ℂ) ≤ 1)
+  have h4 := hr.trans (by norm_num : (-1 : ℂ) ≤ 1) (by norm_num : (1 : ℂ) ≤ 1)
+  have h5 := hr.trans (by norm_num : (-1 : ℂ) ≤ 1) (by norm_num : (-1 : ℂ) ≤ 1)
+  norm_num [Complex.ext_iff] at h1 h2 h3 h4 h5
+  <;> simp_all [Complex.ext_iff]
+  <;> nlinarith
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 4 (Lemma 21)
+  Statement: theorem exercise_1_8 : ¬ ∃ (r : ℂ → ℂ → Prop), IsLinearOrder ℂ r :=
+  Errors: 13
+    - failed to synthesize
+  LE ℂ
+
+Hint: Additional diagnostic information may be available using the `set...
+    - failed to synthesize
+  LE ℂ
+
+Hint: Additional diagnostic information may be available using the `set...
+================================================================================
+================================================================================
+PROOF #5 (Lemma ID: 10)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet valid
+Iteration: 0
+Verify Time: 0.09039521217346191s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_3_3 (a : ℝ) (ha : 0 < a) :
+    Tendsto (λ y => ∫ x in -y..y, Real.cos x / (x ^ 2 + a ^ 2))
+    atTop (𝓝 (Real.pi * (Real.exp (-a) / a))) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Complex Filter Function Metric Finset
+open scoped BigOperators Topology
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  have h₁ : Tendsto (fun y => ∫ x in -y..y, Real.cos x / (x ^ 2 + a ^ 2)) atTop (𝓝 (Real.pi * (Real.exp (-a) / a))) := by
+    have h₂ := integral_cos_div_sq_add_sq_atTop a
+    have h₃ := integral_cos_div_sq_add_sq_atTop 0
+    simp_all [ha.ne', Real.pi_ne_zero]
+    <;> norm_num
+    <;> field_simp [Real.pi_ne_zero, Real.exp_ne_zero] at *
+    <;> ring_nf at *
+    <;> norm_num at *
+    <;> norm_num at *
+    <;> linarith
+  
+  exact h₁
+
+--------------------------------------------------------------------------------
+ERRORS (1):
+--------------------------------------------------------------------------------
+
+Error 1:
+  Unknown identifier `integral_cos_div_sq_add_sq_atTop`
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_3_3 (a : ℝ) (ha : 0 < a) :
+    Tendsto (λ y => ∫ x in -y..y, Real.cos x / (x ^ 2 + a ^ 2))
+    atTop (𝓝 (Real.pi * (Real.exp (-a) / a))) :=
+ by
+  have h₁ : Tendsto (fun y => ∫ x in -y..y, Real.cos x / (x ^ 2 + a ^ 2)) atTop (𝓝 (Real.pi * (Real.exp (-a) / a))) := by
+    have h₂ := integral_cos_div_sq_add_sq_atTop a
+    have h₃ := integral_cos_div_sq_add_sq_atTop 0
+    simp_all [ha.ne', Real.pi_ne_zero]
+    <;> norm_num
+    <;> field_simp [Real.pi_ne_zero, Real.exp_ne_zero] at *
+    <;> ring_nf at *
+    <;> norm_num at *
+    <;> norm_num at *
+    <;> linarith
+  
+  exact h₁
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 5 (Lemma 10)
+  Statement: theorem exercise_3_3 (a : ℝ) (ha : 0 < a) :
+    Tendsto (λ y => ∫ x in -y..y, Re...
+  Errors: 1
+    - Unknown identifier `integral_cos_div_sq_add_sq_atTop`
+================================================================================
+================================================================================
+PROOF #6 (Lemma ID: 4)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet valid
+Iteration: 0
+Verify Time: 0.025230884552001953s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_19b (z : ℂ) (hz : abs z = 1) (s : ℕ → ℂ)
+    (h : s = (λ n => ∑ i in (range n), i * z / i ^ 2)) :
+    ∃ y, Tendsto s atTop (𝓝 y) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Complex Filter Function Metric Finset
+open scoped BigOperators Topology
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  use ∑' n : ℕ, n * z / n ^ 2
+  simp_all [tendsto_const_nhds]
+  <;>
+  exact tendsto_const_nhds
+
+--------------------------------------------------------------------------------
+ERRORS (1):
+--------------------------------------------------------------------------------
+
+Error 1:
+  unexpected token 'in'; expected ','
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_19b (z : ℂ) (hz : abs z = 1) (s : ℕ → ℂ)
+    (h : s = (λ n => ∑ i in (range n), i * z / i ^ 2)) :
+    ∃ y, Tendsto s atTop (𝓝 y) :=
+ by
+  use ∑' n : ℕ, n * z / n ^ 2
+  simp_all [tendsto_const_nhds]
+  <;>
+  exact tendsto_const_nhds
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 6 (Lemma 4)
+  Statement: theorem exercise_1_19b (z : ℂ) (hz : abs z = 1) (s : ℕ → ℂ)
+    (h : s = (λ n =>...
+  Errors: 1
+    - unexpected token 'in'; expected ','
+================================================================================
+================================================================================
+PROOF #7 (Lemma ID: 29)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet test
+Iteration: 0
+Verify Time: 0.10645365715026855s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  intro h
+  obtain ⟨y, hy⟩ := h 0
+  simp_all
+
+--------------------------------------------------------------------------------
+ERRORS (1):
+--------------------------------------------------------------------------------
+
+Error 1:
+  unsolved goals
+y : ℝ
+h : ∀ (x : ℝ), ∃ y, ¬y = 0 ∧ (x = 0 ∨ y = 0)
+hy : ¬y = 0
+⊢ False
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 :=
+ by
+  intro h
+  obtain ⟨y, hy⟩ := h 0
+  simp_all
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 7 (Lemma 29)
+  Statement: theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 :=
+  Errors: 1
+    - unsolved goals
+y : ℝ
+h : ∀ (x : ℝ), ∃ y, ¬y = 0 ∧ (x = 0 ∨ y = 0)
+hy : ¬y = 0
+⊢ False
+================================================================================
+================================================================================
+PROOF #8 (Lemma ID: 16)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet valid
+Iteration: 0
+Verify Time: 0.01130366325378418s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_1a
+  (x : ℝ) (y : ℚ) :
+  ( Irrational x ) -> Irrational ( x + y ) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  intro hx
+  exact hx.add_rat y
+
+--------------------------------------------------------------------------------
+ERRORS (1):
+--------------------------------------------------------------------------------
+
+Error 1:
+  Invalid field `add_rat`: The environment does not contain `Function.add_rat`
+  hx
+has type
+  x ∈ Set.range Rat.cast → False
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_1a
+  (x : ℝ) (y : ℚ) :
+  ( Irrational x ) -> Irrational ( x + y ) :=
+ by
+  intro hx
+  exact hx.add_rat y
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 8 (Lemma 16)
+  Statement: theorem exercise_1_1a
+  (x : ℝ) (y : ℚ) :
+  ( Irrational x ) -> Irrational ( x +...
+  Errors: 1
+    - Invalid field `add_rat`: The environment does not contain `Function.add_rat`
+  hx
+has type
+  x ∈ Set...
+================================================================================
+================================================================================
+PROOF #9 (Lemma ID: 23)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet test
+Iteration: 0
+Verify Time: 0.04473757743835449s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_12 (n : ℕ) (f : ℕ → ℂ) :
+  abs (∑ i in range n, f i) ≤ ∑ i in range n, abs (f i) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  induction' n with n hn
+  · simp
+  · simp_all [Finset.sum_range_succ, Complex.abs.nonneg]
+    exact
+      le_trans (Complex.abs.add_le _ _) (add_le_add_right hn _)
+
+--------------------------------------------------------------------------------
+ERRORS (1):
+--------------------------------------------------------------------------------
+
+Error 1:
+  unexpected token 'in'; expected ','
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_12 (n : ℕ) (f : ℕ → ℂ) :
+  abs (∑ i in range n, f i) ≤ ∑ i in range n, abs (f i) :=
+ by
+  induction' n with n hn
+  · simp
+  · simp_all [Finset.sum_range_succ, Complex.abs.nonneg]
+    exact
+      le_trans (Complex.abs.add_le _ _) (add_le_add_right hn _)
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 9 (Lemma 23)
+  Statement: theorem exercise_1_12 (n : ℕ) (f : ℕ → ℂ) :
+  abs (∑ i in range n, f i) ≤ ∑ i in...
+  Errors: 1
+    - unexpected token 'in'; expected ','
+================================================================================
+================================================================================
+PROOF #10 (Lemma ID: 6)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet valid
+Iteration: 0
+Verify Time: 11.873120546340942s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_26
+  (f F₁ F₂ : ℂ → ℂ) (Ω : Set ℂ) (h1 : IsOpen Ω) (h2 : IsConnected Ω)
+  (hF₁ : DifferentiableOn ℂ F₁ Ω) (hF₂ : DifferentiableOn ℂ F₂ Ω)
+  (hdF₁ : ∀ x ∈ Ω, deriv F₁ x = f x) (hdF₂ : ∀ x ∈ Ω, deriv F₂ x = f x)
+  : ∃ c : ℂ, ∀ x, F₁ x = F₂ x + c :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Complex Filter Function Metric Finset
+open scoped BigOperators Topology
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  use F₁ (0 : ℂ) - F₂ (0 : ℂ)
+  intro x
+  have h3 : DifferentiableOn ℂ (F₁ - F₂) Ω := by
+    apply DifferentiableOn.sub hF₁ hF₂
+  have h4 : ∀ x ∈ Ω, deriv (F₁ - F₂) x = deriv F₁ x - deriv F₂ x := by
+    intro x hx
+    rw [deriv_sub (hF₁ x hx) (hF₂ x hx)]
+  have h5 : ∀ x ∈ Ω, deriv (F₁ - F₂) x = f x - f x := by
+    intro x hx
+    rw [h4 x hx]
+    rw [hdF₁ x hx, hdF₂ x hx]
+  have h6 : deriv (F₁ - F₂) = fun x => 0 := by
+    funext x
+    have h7 : x ∈ Ω → deriv (F₁ - F₂) x = f x - f x := h5 x
+    by_cases hx : x ∈ Ω <;> simp_all
+    <;> aesop
+  have h7 : (F₁ - F₂) = fun x => F₁ (0 : ℂ) - F₂ (0 : ℂ) := by
+    apply IsOpen.eqOn_const_of_deriv_eq_zero h1 h2 h3 h6
+  simp_all [sub_eq_add_neg]
+  <;> aesop
+
+--------------------------------------------------------------------------------
+ERRORS (4):
+--------------------------------------------------------------------------------
+
+Error 1:
+  Application type mismatch: The argument
+  hF₁ x hx
+has type
+  DifferentiableWithinAt ℂ F₁ Ω x
+but is expected to have type
+  DifferentiableAt ?m.134 ?m.139 ?m.141
+in the application
+  deriv_sub (hF₁ x hx)
+
+Error 2:
+  tactic 'aesop' failed, made no progress
+Initial goal:
+  case neg
+  f F₁ F₂ : ℂ → ℂ
+  Ω : Set ℂ
+  h1 : IsOpen Ω
+  h2 : IsConnected Ω
+  hF₁ : DifferentiableOn ℂ F₁ Ω
+  hF₂ : DifferentiableOn ℂ F₂ Ω
+  hdF₁ : ∀ x ∈ Ω, deriv F₁ x = f x
+  hdF₂ : ∀ x ∈ Ω, deriv F₂ x = f x
+  x✝ x : ℂ
+  h5 : ∀ x ∈ Ω, deriv (F₁ - F₂) x = 0
+  hx : x ∉ Ω
+  ⊢ deriv (F₁ - F₂) x = 0
+
+Error 3:
+  Unknown constant `IsOpen.eqOn_const_of_deriv_eq_zero`
+
+Error 4:
+  tactic 'aesop' failed, made no progress
+Initial goal:
+  case h
+  f F₁ F₂ : ℂ → ℂ
+  Ω : Set ℂ
+  h1 : IsOpen Ω
+  h2 : IsConnected Ω
+  hF₁ : DifferentiableOn ℂ F₁ Ω
+  hF₂ : DifferentiableOn ℂ F₂ Ω
+  hdF₁ : ∀ x ∈ Ω, deriv F₁ x = f x
+  hdF₂ : ∀ x ∈ Ω, deriv F₂ x = f x
+  x : ℂ
+  h7 : F₁ + -F₂ = fun x => F₁ 0 + -F₂ 0
+  ⊢ F₁ x = F₂ x + (F₁ 0 + -F₂ 0)
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_26
+  (f F₁ F₂ : ℂ → ℂ) (Ω : Set ℂ) (h1 : IsOpen Ω) (h2 : IsConnected Ω)
+  (hF₁ : DifferentiableOn ℂ F₁ Ω) (hF₂ : DifferentiableOn ℂ F₂ Ω)
+  (hdF₁ : ∀ x ∈ Ω, deriv F₁ x = f x) (hdF₂ : ∀ x ∈ Ω, deriv F₂ x = f x)
+  : ∃ c : ℂ, ∀ x, F₁ x = F₂ x + c :=
+ by
+  use F₁ (0 : ℂ) - F₂ (0 : ℂ)
+  intro x
+  have h3 : DifferentiableOn ℂ (F₁ - F₂) Ω := by
+    apply DifferentiableOn.sub hF₁ hF₂
+  have h4 : ∀ x ∈ Ω, deriv (F₁ - F₂) x = deriv F₁ x - deriv F₂ x := by
+    intro x hx
+    rw [deriv_sub (hF₁ x hx) (hF₂ x hx)]
+  have h5 : ∀ x ∈ Ω, deriv (F₁ - F₂) x = f x - f x := by
+    intro x hx
+    rw [h4 x hx]
+    rw [hdF₁ x hx, hdF₂ x hx]
+  have h6 : deriv (F₁ - F₂) = fun x => 0 := by
+    funext x
+    have h7 : x ∈ Ω → deriv (F₁ - F₂) x = f x - f x := h5 x
+    by_cases hx : x ∈ Ω <;> simp_all
+    <;> aesop
+  have h7 : (F₁ - F₂) = fun x => F₁ (0 : ℂ) - F₂ (0 : ℂ) := by
+    apply IsOpen.eqOn_const_of_deriv_eq_zero h1 h2 h3 h6
+  simp_all [sub_eq_add_neg]
+  <;> aesop
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 10 (Lemma 6)
+  Statement: theorem exercise_1_26
+  (f F₁ F₂ : ℂ → ℂ) (Ω : Set ℂ) (h1 : IsOpen Ω) (h2 : IsCo...
+  Errors: 4
+    - Application type mismatch: The argument
+  hF₁ x hx
+has type
+  DifferentiableWithinAt ℂ F₁ Ω x
+but is...
+    - tactic 'aesop' failed, made no progress
+Initial goal:
+  case neg
+  f F₁ F₂ : ℂ → ℂ
+  Ω : Set ℂ
+  h1 ...
+================================================================================
+================================================================================
+PROOF #11 (Lemma ID: 18)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet valid
+Iteration: 0
+Verify Time: 0.9934587478637695s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_2 : ¬ ∃ (x : ℚ), ( x ^ 2 = 12 ) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  intro h
+  obtain ⟨x, hx⟩ := h
+  have hx' : (x : ℝ) ^ 2 = 12 := by norm_cast at hx ⊢
+  have hx'' : (x : ℝ) = 2 * √3 ∨ (x : ℝ) = -2 * √3 := by
+    apply or_iff_not_imp_left.mpr
+    intro h1
+    apply mul_left_cancel₀ (sub_ne_zero.mpr h1)
+    nlinarith [sq_sqrt (show 0 ≤ (3 : ℝ) by norm_num)]
+  cases' hx'' with h1 h1
+  · norm_cast at h1
+    have h2 : Irrational (√3) := by
+      apply Nat.Prime.irrational_sqrt
+      norm_num
+    exact h2 ⟨x / 2, by
+      field_simp [h1]
+      <;> ring_nf
+      <;> norm_num
+      <;> linarith [h2]⟩
+  · norm_cast at h1
+    have h2 : Irrational (√3) := by
+      apply Nat.Prime.irrational_sqrt
+      norm_num
+    exact h2 ⟨-x / 2, by
+      field_simp [h1]
+      <;> ring_nf
+      <;> norm_num
+      <;> linarith [h2]⟩
+
+--------------------------------------------------------------------------------
+ERRORS (1):
+--------------------------------------------------------------------------------
+
+Error 1:
+  linarith failed to find a contradiction
+case h1.h
+x : ℚ
+hx : x ^ 2 = 12
+hx' : ↑x ^ 2 = 12
+h1 : ↑x = ↑(Int.negSucc 1) * √3
+h2 : Irrational √3
+a✝ : -(↑x * (1 / 2)) < √3
+⊢ False
+failed
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_2 : ¬ ∃ (x : ℚ), ( x ^ 2 = 12 ) :=
+ by
+  intro h
+  obtain ⟨x, hx⟩ := h
+  have hx' : (x : ℝ) ^ 2 = 12 := by norm_cast at hx ⊢
+  have hx'' : (x : ℝ) = 2 * √3 ∨ (x : ℝ) = -2 * √3 := by
+    apply or_iff_not_imp_left.mpr
+    intro h1
+    apply mul_left_cancel₀ (sub_ne_zero.mpr h1)
+    nlinarith [sq_sqrt (show 0 ≤ (3 : ℝ) by norm_num)]
+  cases' hx'' with h1 h1
+  · norm_cast at h1
+    have h2 : Irrational (√3) := by
+      apply Nat.Prime.irrational_sqrt
+      norm_num
+    exact h2 ⟨x / 2, by
+      field_simp [h1]
+      <;> ring_nf
+      <;> norm_num
+      <;> linarith [h2]⟩
+  · norm_cast at h1
+    have h2 : Irrational (√3) := by
+      apply Nat.Prime.irrational_sqrt
+      norm_num
+    exact h2 ⟨-x / 2, by
+      field_simp [h1]
+      <;> ring_nf
+      <;> norm_num
+      <;> linarith [h2]⟩
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 11 (Lemma 18)
+  Statement: theorem exercise_1_2 : ¬ ∃ (x : ℚ), ( x ^ 2 = 12 ) :=
+  Errors: 1
+    - linarith failed to find a contradiction
+case h1.h
+x : ℚ
+hx : x ^ 2 = 12
+hx' : ↑x ^ 2 = 12
+h1 : ↑x = ...
+================================================================================
+================================================================================
+PROOF #12 (Lemma ID: 26)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet valid
+Iteration: 0
+Verify Time: 0.9580934047698975s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_16a
+  (n : ℕ)
+  (d r : ℝ)
+  (x y z : EuclideanSpace ℝ (Fin n)) -- R^n
+  (h₁ : n ≥ 3)
+  (h₂ : ‖x - y‖ = d)
+  (h₃ : d > 0)
+  (h₄ : r > 0)
+  (h₅ : 2 * r > d)
+  : Set.Infinite {z : EuclideanSpace ℝ (Fin n) | ‖z - x‖ = r ∧ ‖z - y‖ = r} :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  have h₆ : 2 * r > d := by linarith
+  have h₇ : 0 < r := by linarith
+  have h₈ : 0 < d := by linarith
+  have h₉ : Set.Infinite {z : EuclideanSpace ℝ (Fin n) | ‖z - x‖ = r ∧ ‖z - y‖ = r} := by
+    -- We use the fact that for any z in the set, the distances to x and y are fixed.
+    -- This implies that there are infinitely many z in the set due to the geometry of the situation.
+    have : ∀ z : EuclideanSpace ℝ (Fin n), ‖z - x‖ = r ∧ ‖z - y‖ = r → ‖z - x‖ = r ∧ ‖z - y‖ = r := by
+      intro z hz
+      exact hz
+    apply Set.infinite_of_injective_forall_mem this
+    -- We need to show that for any two distinct z and w, the distances to x and y are different.
+    -- This is true because the distances are determined by the geometry of the situation.
+    <;> simp_all [sub_eq_add_neg, norm_eq_zero]
+    <;> intro z w hz hw
+    <;> simp_all [sub_eq_add_neg, norm_eq_zero]
+    <;> linarith
+  exact h₉
+
+--------------------------------------------------------------------------------
+ERRORS (3):
+--------------------------------------------------------------------------------
+
+Error 1:
+  Application type mismatch: The argument
+  this
+has type
+  ∀ (z : EuclideanSpace ℝ (Fin n)), ‖z - x‖ = r ∧ ‖z - y‖ = r → ‖z - x‖ = r ∧ ‖z - y‖ = r
+but is expected to have type
+  Function.Injective ?m.152
+in the application
+  Set.infinite_of_injective_forall_mem this
+
+Error 2:
+  simp_all made no progress
+
+Error 3:
+  simp_all made no progress
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_16a
+  (n : ℕ)
+  (d r : ℝ)
+  (x y z : EuclideanSpace ℝ (Fin n)) -- R^n
+  (h₁ : n ≥ 3)
+  (h₂ : ‖x - y‖ = d)
+  (h₃ : d > 0)
+  (h₄ : r > 0)
+  (h₅ : 2 * r > d)
+  : Set.Infinite {z : EuclideanSpace ℝ (Fin n) | ‖z - x‖ = r ∧ ‖z - y‖ = r} :=
+ by
+  have h₆ : 2 * r > d := by linarith
+  have h₇ : 0 < r := by linarith
+  have h₈ : 0 < d := by linarith
+  have h₉ : Set.Infinite {z : EuclideanSpace ℝ (Fin n) | ‖z - x‖ = r ∧ ‖z - y‖ = r} := by
+    -- We use the fact that for any z in the set, the distances to x and y are fixed.
+    -- This implies that there are infinitely many z in the set due to the geometry of the situation.
+    have : ∀ z : EuclideanSpace ℝ (Fin n), ‖z - x‖ = r ∧ ‖z - y‖ = r → ‖z - x‖ = r ∧ ‖z - y‖ = r := by
+      intro z hz
+      exact hz
+    apply Set.infinite_of_injective_forall_mem this
+    -- We need to show that for any two distinct z and w, the distances to x and y are different.
+    -- This is true because the distances are determined by the geometry of the situation.
+    <;> simp_all [sub_eq_add_neg, norm_eq_zero]
+    <;> intro z w hz hw
+    <;> simp_all [sub_eq_add_neg, norm_eq_zero]
+    <;> linarith
+  exact h₉
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 12 (Lemma 26)
+  Statement: theorem exercise_1_16a
+  (n : ℕ)
+  (d r : ℝ)
+  (x y z : EuclideanSpace ℝ (Fin n)...
+  Errors: 3
+    - Application type mismatch: The argument
+  this
+has type
+  ∀ (z : EuclideanSpace ℝ (Fin n)), ‖z - x‖ ...
+    - simp_all made no progress
+================================================================================
+================================================================================
+PROOF #13 (Lemma ID: 3)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet test
+Iteration: 0
+Verify Time: 0.024829387664794922s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_19a (z : ℂ) (hz : abs z = 1) (s : ℕ → ℂ)
+    (h : s = (λ n => ∑ i in (range n), i * z ^ i)) :
+    ¬ ∃ y, Tendsto s atTop (𝓝 y) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Complex Filter Function Metric Finset
+open scoped BigOperators Topology
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  intro h_tendsto
+  obtain ⟨y, hy⟩ := h_tendsto
+  have h₁ := hy
+  simp [h] at h₁
+  have h₂ := h₁
+  have h₃ := h₂
+  have h₄ : ∀ n, ∑ i in range n, (i : ℂ) * z ^ i = ∑ i in range n, (i : ℂ) * z ^ i := by simp
+  simp_all [Complex.abs, Complex.normSq, Complex.ext_iff, Complex.re, Complex.im,
+    Complex.ofReal_re, Complex.ofReal_im, Complex.ofReal_zero, Complex.ofReal_one]
+  <;>
+    norm_num
+  <;>
+    simp_all [Complex.abs, Complex.normSq, Complex.ext_iff, Complex.re, Complex.im,
+    Complex.ofReal_re, Complex.ofReal_im, Complex.ofReal_zero, Complex.ofReal_one]
+  <;>
+    norm_num
+  <;>
+    linarith
+
+--------------------------------------------------------------------------------
+ERRORS (1):
+--------------------------------------------------------------------------------
+
+Error 1:
+  unexpected token 'in'; expected ','
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_19a (z : ℂ) (hz : abs z = 1) (s : ℕ → ℂ)
+    (h : s = (λ n => ∑ i in (range n), i * z ^ i)) :
+    ¬ ∃ y, Tendsto s atTop (𝓝 y) :=
+ by
+  intro h_tendsto
+  obtain ⟨y, hy⟩ := h_tendsto
+  have h₁ := hy
+  simp [h] at h₁
+  have h₂ := h₁
+  have h₃ := h₂
+  have h₄ : ∀ n, ∑ i in range n, (i : ℂ) * z ^ i = ∑ i in range n, (i : ℂ) * z ^ i := by simp
+  simp_all [Complex.abs, Complex.normSq, Complex.ext_iff, Complex.re, Complex.im,
+    Complex.ofReal_re, Complex.ofReal_im, Complex.ofReal_zero, Complex.ofReal_one]
+  <;>
+    norm_num
+  <;>
+    simp_all [Complex.abs, Complex.normSq, Complex.ext_iff, Complex.re, Complex.im,
+    Complex.ofReal_re, Complex.ofReal_im, Complex.ofReal_zero, Complex.ofReal_one]
+  <;>
+    norm_num
+  <;>
+    linarith
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 13 (Lemma 3)
+  Statement: theorem exercise_1_19a (z : ℂ) (hz : abs z = 1) (s : ℕ → ℂ)
+    (h : s = (λ n =>...
+  Errors: 1
+    - unexpected token 'in'; expected ','
+================================================================================
+================================================================================
+PROOF #14 (Lemma ID: 30)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet valid
+Iteration: 0
+Verify Time: 0.624906063079834s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_19
+  (n : ℕ)
+  (a b c x : EuclideanSpace ℝ (Fin n))
+  (r : ℝ)
+  (h₁ : r > 0)
+  (h₂ : 3 • c = 4 • b - a)
+  (h₃ : 3 * r = 2 * ‖x - b‖)
+  : ‖x - a‖ = 2 * ‖x - b‖ ↔ ‖x - c‖ = r :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  have h₄ : ‖x - a‖ = 2 * ‖x - b‖ ↔ ‖x - c‖ = r := by
+    rw [← sub_eq_zero]
+    have h₅ : 3 • c = 4 • b - a := h₂
+    have h₆ : 3 * r = 2 * ‖x - b‖ := h₃
+    simp [norm_sub_rev, sub_eq_add_neg, add_assoc] at *
+    constructor <;> intro h <;> field_simp [h₅, h₆] at h ⊢ <;>
+    (try simp_all [norm_smul, Real.norm_eq_abs, abs_of_nonneg, abs_of_nonpos]) <;>
+    nlinarith
+  exact h₄
+
+--------------------------------------------------------------------------------
+ERRORS (2):
+--------------------------------------------------------------------------------
+
+Error 1:
+  field_simp made no progress on goal
+
+Error 2:
+  field_simp made no progress at h
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_19
+  (n : ℕ)
+  (a b c x : EuclideanSpace ℝ (Fin n))
+  (r : ℝ)
+  (h₁ : r > 0)
+  (h₂ : 3 • c = 4 • b - a)
+  (h₃ : 3 * r = 2 * ‖x - b‖)
+  : ‖x - a‖ = 2 * ‖x - b‖ ↔ ‖x - c‖ = r :=
+ by
+  have h₄ : ‖x - a‖ = 2 * ‖x - b‖ ↔ ‖x - c‖ = r := by
+    rw [← sub_eq_zero]
+    have h₅ : 3 • c = 4 • b - a := h₂
+    have h₆ : 3 * r = 2 * ‖x - b‖ := h₃
+    simp [norm_sub_rev, sub_eq_add_neg, add_assoc] at *
+    constructor <;> intro h <;> field_simp [h₅, h₆] at h ⊢ <;>
+    (try simp_all [norm_smul, Real.norm_eq_abs, abs_of_nonneg, abs_of_nonpos]) <;>
+    nlinarith
+  exact h₄
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 14 (Lemma 30)
+  Statement: theorem exercise_1_19
+  (n : ℕ)
+  (a b c x : EuclideanSpace ℝ (Fin n))
+  (r : ℝ)...
+  Errors: 2
+    - field_simp made no progress on goal
+    - field_simp made no progress at h
+================================================================================
+================================================================================
+PROOF #15 (Lemma ID: 8)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet valid
+Iteration: 0
+Verify Time: 4.1943700313568115s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_2_9
+  {f : ℂ → ℂ} (Ω : Set ℂ) (b : Bornology.IsBounded Ω) (h : IsOpen Ω)
+  (hf : DifferentiableOn ℂ f Ω) (z : Ω) (hz : f z = z) (h'z : deriv f z = 1) :
+  ∃ (f_lin : ℂ →L[ℂ] ℂ), ∀ x ∈ Ω, f x = f_lin x :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Complex Filter Function Metric Finset
+open scoped BigOperators Topology
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  use ContinuousLinearMap.id ℂ
+  intro x hx
+  have h₁ : f x = x := by
+    have h₂ : f = fun x => x := by
+      ext x
+      exact by_contradiction fun h₃ => by
+        have h₄ : x ∈ Ω := by aesop
+        have h₅ : deriv f x = 1 := by aesop
+        have h₆ : deriv (fun x : ℂ => x) x = 1 := by simp
+        aesop
+    simp [h₂]
+  simp [h₁]
+
+--------------------------------------------------------------------------------
+ERRORS (5):
+--------------------------------------------------------------------------------
+
+Error 1:
+  Type mismatch
+  ContinuousLinearMap.id ℂ
+has type
+  (M₁ : Type ?u.1426) →
+    [inst : TopologicalSpace M₁] → [inst_1 : AddCommMonoid M₁] → [inst_2 : Module ℂ M₁] → M₁ →L[ℂ] M₁
+of sort `Type (max (?u.1426 + 1) 0)` but is expected to have type
+  ℂ →L[ℂ] ℂ
+of sort `Type`
+
+Error 2:
+  unsolved goals
+f : ℂ → ℂ
+Ω : Set ℂ
+b : Bornology.IsBounded Ω
+h : IsOpen Ω
+hf : DifferentiableOn ℂ f Ω
+x_1 : ℂ
+hx : x_1 ∈ Ω
+x : ℂ
+h₃ : ¬f x = x
+val : ℂ
+property : val ∈ Ω
+hz : f val = val
+h'z : deriv f val = 1
+⊢ x ∈ Ω
+
+Error 3:
+  unsolved goals
+f : ℂ → ℂ
+Ω : Set ℂ
+b : Bornology.IsBounded Ω
+h : IsOpen Ω
+hf : DifferentiableOn ℂ f Ω
+x_1 : ℂ
+hx : x_1 ∈ Ω
+x : ℂ
+h₃ : ¬f x = x
+h₄ : x ∈ Ω
+val : ℂ
+property : val ∈ Ω
+hz : f val = val
+h'z : deriv f val = 1
+⊢ deriv f x = 1
+
+Error 4:
+  unsolved goals
+f : ℂ → ℂ
+Ω : Set ℂ
+b : Bornology.IsBounded Ω
+h : IsOpen Ω
+hf : DifferentiableOn ℂ f Ω
+x_1 : ℂ
+hx : x_1 ∈ Ω
+x : ℂ
+h₃ : ¬f x = x
+h₄ : x ∈ Ω
+h₅ : deriv f x = 1
+val : ℂ
+property : val ∈ Ω
+hz : f val = val
+h'z : deriv f val = 1
+⊢ False
+
+Error 5:
+  unsolved goals
+case h
+f : ℂ → ℂ
+Ω : Set ℂ
+b : Bornology.IsBounded Ω
+h : IsOpen Ω
+hf : DifferentiableOn ℂ f Ω
+z : ↑Ω
+hz : f ↑z = ↑z
+h'z : deriv f ↑z = 1
+x : ℂ
+hx : x ∈ Ω
+h₁ : f x = x
+⊢ x = (sorry ()) x
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_2_9
+  {f : ℂ → ℂ} (Ω : Set ℂ) (b : Bornology.IsBounded Ω) (h : IsOpen Ω)
+  (hf : DifferentiableOn ℂ f Ω) (z : Ω) (hz : f z = z) (h'z : deriv f z = 1) :
+  ∃ (f_lin : ℂ →L[ℂ] ℂ), ∀ x ∈ Ω, f x = f_lin x :=
+ by
+  use ContinuousLinearMap.id ℂ
+  intro x hx
+  have h₁ : f x = x := by
+    have h₂ : f = fun x => x := by
+      ext x
+      exact by_contradiction fun h₃ => by
+        have h₄ : x ∈ Ω := by aesop
+        have h₅ : deriv f x = 1 := by aesop
+        have h₆ : deriv (fun x : ℂ => x) x = 1 := by simp
+        aesop
+    simp [h₂]
+  simp [h₁]
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 15 (Lemma 8)
+  Statement: theorem exercise_2_9
+  {f : ℂ → ℂ} (Ω : Set ℂ) (b : Bornology.IsBounded Ω) (h : ...
+  Errors: 5
+    - Type mismatch
+  ContinuousLinearMap.id ℂ
+has type
+  (M₁ : Type ?u.1426) →
+    [inst : TopologicalSpa...
+    - unsolved goals
+f : ℂ → ℂ
+Ω : Set ℂ
+b : Bornology.IsBounded Ω
+h : IsOpen Ω
+hf : DifferentiableOn ℂ f ...
+================================================================================
+================================================================================
+PROOF #16 (Lemma ID: 0)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet valid
+Iteration: 0
+Verify Time: 0.18699097633361816s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_13a {f : ℂ → ℂ} (Ω : Set ℂ) (a b : Ω) (h : IsOpen Ω)
+  (hf : DifferentiableOn ℂ f Ω) (hc : ∃ (c : ℝ), ∀ z ∈ Ω, (f z).re = c) :
+  f a = f b :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Complex Filter Function Metric Finset
+open scoped BigOperators Topology
+
+open scoped BigOperators Topology
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  obtain ⟨c, hc⟩ := hc
+  have h₁ : ∀ z ∈ Ω, f z = c := by
+    intro z hz
+    have h₂ : (f z).re = c := hc z hz
+    have h₃ : f z = c := by
+      apply Complex.ext
+      simp_all [Complex.ext_iff]
+      <;> aesop
+    exact h₃
+  have h₄ : f a = c := h₁ a a.2
+  have h₅ : f b = c := h₁ b b.2
+  simp_all
+
+--------------------------------------------------------------------------------
+ERRORS (1):
+--------------------------------------------------------------------------------
+
+Error 1:
+  unsolved goals
+case a
+f : ℂ → ℂ
+Ω : Set ℂ
+a b : ↑Ω
+h : IsOpen Ω
+hf : DifferentiableOn ℂ f Ω
+c : ℝ
+hc : ∀ z ∈ Ω, (f z).re = c
+z : ℂ
+hz : z ∈ Ω
+h₂ : (f z).re = c
+⊢ (f z).im = (↑c).im
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_13a {f : ℂ → ℂ} (Ω : Set ℂ) (a b : Ω) (h : IsOpen Ω)
+  (hf : DifferentiableOn ℂ f Ω) (hc : ∃ (c : ℝ), ∀ z ∈ Ω, (f z).re = c) :
+  f a = f b :=
+ by
+  obtain ⟨c, hc⟩ := hc
+  have h₁ : ∀ z ∈ Ω, f z = c := by
+    intro z hz
+    have h₂ : (f z).re = c := hc z hz
+    have h₃ : f z = c := by
+      apply Complex.ext
+      simp_all [Complex.ext_iff]
+      <;> aesop
+    exact h₃
+  have h₄ : f a = c := h₁ a a.2
+  have h₅ : f b = c := h₁ b b.2
+  simp_all
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 16 (Lemma 0)
+  Statement: theorem exercise_1_13a {f : ℂ → ℂ} (Ω : Set ℂ) (a b : Ω) (h : IsOpen Ω)
+  (hf : ...
+  Errors: 1
+    - unsolved goals
+case a
+f : ℂ → ℂ
+Ω : Set ℂ
+a b : ↑Ω
+h : IsOpen Ω
+hf : DifferentiableOn ℂ f Ω
+c : ℝ
+hc...
+================================================================================
+================================================================================
+PROOF #17 (Lemma ID: 19)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Iteration: 0
+Verify Time: 0.024146318435668945s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_4
+(α : Type*) [PartialOrder α]
+(s : Set α)
+(x y : α)
+(h₀ : Set.Nonempty s)
+(h₁ : x ∈ lowerBounds s)
+(h₂ : y ∈ upperBounds s)
+: x ≤ y :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  obtain ⟨z, hz⟩ := h₀
+  have h₃ := h₁ hz
+  have h₄ := h₂ hz
+  exact le_trans h₃ h₄
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_4
+(α : Type*) [PartialOrder α]
+(s : Set α)
+(x y : α)
+(h₀ : Set.Nonempty s)
+(h₁ : x ∈ lowerBounds s)
+(h₂ : y ∈ upperBounds s)
+: x ≤ y :=
+ by
+  obtain ⟨z, hz⟩ := h₀
+  have h₃ := h₁ hz
+  have h₄ := h₂ hz
+  exact le_trans h₃ h₄
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 17 (Lemma 19)
+  Statement: theorem exercise_1_4
+(α : Type*) [PartialOrder α]
+(s : Set α)
+(x y : α)
+(h₀ : Se...
+================================================================================
+================================================================================
+PROOF #18 (Lemma ID: 12)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet valid
+Iteration: 0
+Verify Time: 0.66495680809021s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_3_9 : ∫ x in (0 : ℝ)..(1 : ℝ),
+    Real.log (Real.sin (Real.pi * x)) = - Real.log 2 :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Complex Filter Function Metric Finset
+open scoped BigOperators Topology
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  have h₁ : (∫ x in (0 : ℝ)..(1 : ℝ), Real.log (Real.sin (Real.pi * x))) = -Real.log 2 := by
+    have h₂ : ∫ x in (0 : ℝ)..(1 : ℝ), Real.log (Real.sin (Real.pi * x)) = ∫ x in (0 : ℝ)..(1 : ℝ), Real.log (Real.sin (Real.pi * x)) := rfl
+    rw [h₂]
+    have h₃ : ∫ x in (0 : ℝ)..(1 : ℝ), Real.log (Real.sin (Real.pi * x)) = -Real.log 2 := by
+      have h₄ : ∫ x in (0 : ℝ)..(1 : ℝ), Real.log (Real.sin (Real.pi * x)) = ∫ x in (0 : ℝ)..(1 : ℝ), Real.log (Real.sin (Real.pi * x)) := rfl
+      rw [h₄]
+      have h₅ : ∫ x in (0 : ℝ)..(1 : ℝ), Real.log (Real.sin (Real.pi * x)) = -Real.log 2 := by
+        -- Use the fact that sin(πx) is positive and symmetric about 0.5
+        have h₆ : ∫ x in (0 : ℝ)..(1 : ℝ), Real.log (Real.sin (Real.pi * x)) = -Real.log 2 := by
+          -- Use the symmetry and properties of the sine function
+          have h₇ : ∫ x in (0 : ℝ)..(1 : ℝ), Real.log (Real.sin (Real.pi * x)) = -Real.log 2 := by
+            -- Use the substitution u = πx
+            have h₈ : ∫ x in (0 : ℝ)..(1 : ℝ), Real.log (Real.sin (Real.pi * x)) = ∫ u in (0 : ℝ)..(Real.pi), Real.log (Real.sin u) * (1 / Real.pi) := by
+              rw [intervalIntegral.integral_comp_mul_left]
+              <;> simp [Real.pi_pos.le]
+              <;> field_simp
+              <;> ring
+            rw [h₈]
+            have h₉ : ∫ u in (0 : ℝ)..(Real.pi), Real.log (Real.sin u) * (1 / Real.pi) = (1 / Real.pi) * ∫ u in (0 : ℝ)..(Real.pi), Real.log (Real.sin u) := by
+              simp [intervalIntegral.integral_comp_mul_left, Real.pi_pos.le]
+              <;> field_simp
+              <;> ring
+            rw [h₉]
+            have h₁₀ : ∫ u in (0 : ℝ)..(Real.pi), Real.log (Real.sin u) = -Real.log 2 := by
+              -- Use the known integral of log(sin u) from 0 to π
+              have h₁₁ : ∫ u in (0 : ℝ)..(Real.pi), Real.log (Real.sin u) = -Real.log 2 := by
+                rw [← intervalIntegral.integral_of_le Real.pi_pos.le]
+                simp [Real.log_neg_eq_log]
+                <;> field_simp [Real.log_neg_eq_log]
+                <;> ring_nf
+                <;> norm_num
+                <;>
+                linarith [Real.log_pos one_lt_two, Real.log_one]
+              exact h₁₁
+            rw [h₁₀]
+
+
+--------------------------------------------------------------------------------
+ERRORS (8):
+--------------------------------------------------------------------------------
+
+Error 1:
+  Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∫ (x : ℝ) in ?m.239..?m.240, ?f (?m.241 * x)
+in the target expression
+  ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x)) = ∫ (u : ℝ) in 0..Real.pi, Real.log (Real.sin u) * (1 / Real.pi)
+
+h₂ h₄ : ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x)) = ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x))
+⊢ ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x)) = ∫ (u : ℝ) in 0..Real.pi, Real.log (Real.sin u) * (1 / Real.pi)
+
+Error 2:
+  Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∫ (x : ℝ) in Set.Ioc 0 Real.pi, ?m.325 x ∂?m.326
+in the target expression
+  ∫ (u : ℝ) in 0..Real.pi, Real.log (Real.sin u) = -Real.log 2
+
+h₂ h₄ : ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x)) = ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x))
+h₈ :
+  ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x)) = ∫ (u : ℝ) in 0..Real.pi, Real.log (Real.sin u) * (1 / Real.pi)
+h₉ :
+  ∫ (u : ℝ) in 0..Real.pi, Real.log (Real.sin u) * (1 / Real.pi) =
+    1 / Real.pi * ∫ (u : ℝ) in 0..Real.pi, Real.log (Real.sin u)
+⊢ ∫ (u : ℝ) in 0..Real.pi, Real.log (Real.sin u) = -Real.log 2
+
+Error 3:
+  unsolved goals
+h₂ h₄ : ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x)) = ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x))
+h₈ :
+  ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x)) = ∫ (u : ℝ) in 0..Real.pi, Real.log (Real.sin u) * (1 / Real.pi)
+h₉ :
+  ∫ (u : ℝ) in 0..Real.pi, Real.log (Real.sin u) * (1 / Real.pi) =
+    1 / Real.pi * ∫ (u : ℝ) in 0..Real.pi, Real.log (Real.sin u)
+h₁₀ : ∫ (u : ℝ) in 0..Real.pi, Real.log (Real.sin u) = -Real.log 2
+⊢ 1 / Real.pi * -Real.log 2 = -Real.log 2
+
+Error 4:
+  unsolved goals
+h₂ h₄ : ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x)) = ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x))
+h₇ : ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x)) = -Real.log 2
+⊢ ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x)) = -Real.log 2
+
+Error 5:
+  unsolved goals
+h₂ h₄ : ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x)) = ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x))
+h₆ : ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x)) = -Real.log 2
+⊢ ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x)) = -Real.log 2
+
+Error 6:
+  unsolved goals
+h₂ h₄ : ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x)) = ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x))
+h₅ : ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x)) = -Real.log 2
+⊢ ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x)) = -Real.log 2
+
+Error 7:
+  unsolved goals
+h₂ : ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x)) = ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x))
+h₃ : ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x)) = -Real.log 2
+⊢ ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x)) = -Real.log 2
+
+Error 8:
+  unsolved goals
+h₁ : ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x)) = -Real.log 2
+⊢ ∫ (x : ℝ) in 0..1, Real.log (Real.sin (Real.pi * x)) = -Real.log 2
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_3_9 : ∫ x in (0 : ℝ)..(1 : ℝ),
+    Real.log (Real.sin (Real.pi * x)) = - Real.log 2 :=
+ by
+  have h₁ : (∫ x in (0 : ℝ)..(1 : ℝ), Real.log (Real.sin (Real.pi * x))) = -Real.log 2 := by
+    have h₂ : ∫ x in (0 : ℝ)..(1 : ℝ), Real.log (Real.sin (Real.pi * x)) = ∫ x in (0 : ℝ)..(1 : ℝ), Real.log (Real.sin (Real.pi * x)) := rfl
+    rw [h₂]
+    have h₃ : ∫ x in (0 : ℝ)..(1 : ℝ), Real.log (Real.sin (Real.pi * x)) = -Real.log 2 := by
+      have h₄ : ∫ x in (0 : ℝ)..(1 : ℝ), Real.log (Real.sin (Real.pi * x)) = ∫ x in (0 : ℝ)..(1 : ℝ), Real.log (Real.sin (Real.pi * x)) := rfl
+      rw [h₄]
+      have h₅ : ∫ x in (0 : ℝ)..(1 : ℝ), Real.log (Real.sin (Real.pi * x)) = -Real.log 2 := by
+        -- Use the fact that sin(πx) is positive and symmetric about 0.5
+        have h₆ : ∫ x in (0 : ℝ)..(1 : ℝ), Real.log (Real.sin (Real.pi * x)) = -Real.log 2 := by
+          -- Use the symmetry and properties of the sine function
+          have h₇ : ∫ x in (0 : ℝ)..(1 : ℝ), Real.log (Real.sin (Real.pi * x)) = -Real.log 2 := by
+            -- Use the substitution u = πx
+            have h₈ : ∫ x in (0 : ℝ)..(1 : ℝ), Real.log (Real.sin (Real.pi * x)) = ∫ u in (0 : ℝ)..(Real.pi), Real.log (Real.sin u) * (1 / Real.pi) := by
+              rw [intervalIntegral.integral_comp_mul_left]
+              <;> simp [Real.pi_pos.le]
+              <;> field_simp
+              <;> ring
+            rw [h₈]
+            have h₉ : ∫ u in (0 : ℝ)..(Real.pi), Real.log (Real.sin u) * (1 / Real.pi) = (1 / Real.pi) * ∫ u in (0 : ℝ)..(Real.pi), Real.log (Real.sin u) := by
+              simp [intervalIntegral.integral_comp_mul_left, Real.pi_pos.le]
+              <;> field_simp
+              <;> ring
+            rw [h₉]
+            have h₁₀ : ∫ u in (0 : ℝ)..(Real.pi), Real.log (Real.sin u) = -Real.log 2 := by
+              -- Use the known integral of log(sin u) from 0 to π
+              have h₁₁ : ∫ u in (0 : ℝ)..(Real.pi), Real.log (Real.sin u) = -Real.log 2 := by
+                rw [← intervalIntegral.integral_of_le Real.pi_pos.le]
+                simp [Real.log_neg_eq_log]
+                <;> field_simp [Real.log_neg_eq_log]
+                <;> ring_nf
+                <;> norm_num
+                <;>
+                linarith [Real.log_pos one_lt_two, Real.log_one]
+              exact h₁₁
+            rw [h₁₀]
+
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 18 (Lemma 12)
+  Statement: theorem exercise_3_9 : ∫ x in (0 : ℝ)..(1 : ℝ),
+    Real.log (Real.sin (Real.pi ...
+  Errors: 8
+    - Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∫ (x : ℝ) in ?m.239..?m.240, ?f...
+    - Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∫ (x : ℝ) in Set.Ioc 0 Real.pi,...
+================================================================================
+================================================================================
+PROOF #19 (Lemma ID: 20)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet valid
+Iteration: 0
+Verify Time: 0.02156662940979004s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_5 (A minus_A : Set ℝ) (hA : A.Nonempty)
+  (hA_bdd_below : BddBelow A) (hminus_A : minus_A = {x | -x ∈ A}) :
+  Inf A = Sup minus_A :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  rw [hminus_A]
+  simp [hA, hA_bdd_below]
+  <;>
+  exact?
+
+--------------------------------------------------------------------------------
+ERRORS (2):
+--------------------------------------------------------------------------------
+
+Error 1:
+  Function expected at
+  Inf
+but this term has type
+  ?m.1
+
+Note: Expected a function because this term is being applied to the argument
+  A
+
+Error 2:
+  Function expected at
+  Sup
+but this term has type
+  ?m.2
+
+Note: Expected a function because this term is being applied to the argument
+  minus_A
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_5 (A minus_A : Set ℝ) (hA : A.Nonempty)
+  (hA_bdd_below : BddBelow A) (hminus_A : minus_A = {x | -x ∈ A}) :
+  Inf A = Sup minus_A :=
+ by
+  rw [hminus_A]
+  simp [hA, hA_bdd_below]
+  <;>
+  exact?
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 19 (Lemma 20)
+  Statement: theorem exercise_1_5 (A minus_A : Set ℝ) (hA : A.Nonempty)
+  (hA_bdd_below : Bdd...
+  Errors: 2
+    - Function expected at
+  Inf
+but this term has type
+  ?m.1
+
+Note: Expected a function because this ter...
+    - Function expected at
+  Sup
+but this term has type
+  ?m.2
+
+Note: Expected a function because this ter...
+================================================================================
+================================================================================
+PROOF #20 (Lemma ID: 13)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet test
+Iteration: 0
+Verify Time: 0.17997121810913086s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_3_14 {f : ℂ → ℂ} (hf : Differentiable ℂ f)
+    (hf_inj : Function.Injective f) :
+    ∃ (a b : ℂ), f = (λ z => a * z + b) ∧ a ≠ 0 :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Complex Filter Function Metric Finset
+open scoped BigOperators Topology
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  use f 1, f (-1) - f 1 + 1
+  have h₁ : f = (λ z => f 1 * z + (f (-1) - f 1 + 1)) := by
+    ext z
+    have h₂ : f 1 * z + (f (-1) - f 1 + 1) = f z := by
+      have h₃ := hf_inj (by simp [hf.differentiableAt] : f 1 * z + (f (-1) - f 1 + 1) = f 1 * z + (f (-1) - f 1 + 1))
+      have h₄ := hf_inj (by simp [hf.differentiableAt] : f z = f z)
+      simp_all [hf.differentiableAt]
+      <;> ring_nf
+      <;> simp_all [hf.differentiableAt]
+      <;> linarith
+    simp_all
+  simp_all
+  <;> aesop
+
+--------------------------------------------------------------------------------
+ERRORS (2):
+--------------------------------------------------------------------------------
+
+Error 1:
+  Application type mismatch: The argument
+  ?m.183
+has type
+  f 1 * z + (f (-1) - f 1 + 1) = f 1 * z + (f (-1) - f 1 + 1)
+but is expected to have type
+  f ?m.128 = f ?m.129
+in the application
+  hf_inj ?m.183
+
+Error 2:
+  Tactic `simp` failed with a nested error:
+maximum recursion depth has been reached
+use `set_option maxRecDepth <num>` to increase limit
+use `set_option diagnostics true` to get diagnostic information
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_3_14 {f : ℂ → ℂ} (hf : Differentiable ℂ f)
+    (hf_inj : Function.Injective f) :
+    ∃ (a b : ℂ), f = (λ z => a * z + b) ∧ a ≠ 0 :=
+ by
+  use f 1, f (-1) - f 1 + 1
+  have h₁ : f = (λ z => f 1 * z + (f (-1) - f 1 + 1)) := by
+    ext z
+    have h₂ : f 1 * z + (f (-1) - f 1 + 1) = f z := by
+      have h₃ := hf_inj (by simp [hf.differentiableAt] : f 1 * z + (f (-1) - f 1 + 1) = f 1 * z + (f (-1) - f 1 + 1))
+      have h₄ := hf_inj (by simp [hf.differentiableAt] : f z = f z)
+      simp_all [hf.differentiableAt]
+      <;> ring_nf
+      <;> simp_all [hf.differentiableAt]
+      <;> linarith
+    simp_all
+  simp_all
+  <;> aesop
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 20 (Lemma 13)
+  Statement: theorem exercise_3_14 {f : ℂ → ℂ} (hf : Differentiable ℂ f)
+    (hf_inj : Functi...
+  Errors: 2
+    - Application type mismatch: The argument
+  ?m.183
+has type
+  f 1 * z + (f (-1) - f 1 + 1) = f 1 * z +...
+    - Tactic `simp` failed with a nested error:
+maximum recursion depth has been reached
+use `set_option m...
+================================================================================
+================================================================================
+PROOF #21 (Lemma ID: 7)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet test
+Iteration: 0
+Verify Time: 0.054897308349609375s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_2_2 :
+  Tendsto (λ y => ∫ x in (0 : ℝ)..y, Real.sin x / x) atTop (𝓝 (Real.pi / 2)) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Complex Filter Function Metric Finset
+open scoped BigOperators Topology
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  have h₁ : Tendsto (λ y => ∫ x in (0 : ℝ)..y, Real.sin x / x) atTop (𝓝 (Real.pi / 2)) := by
+    -- Use the fact that the integral of sin(x)/x from 0 to y tends to pi/2 as y tends to infinity
+    have h₂ := integral_sin_div_id_tendsto_pi_div_two
+    convert h₂ using 1
+    <;> simp [div_eq_mul_inv]
+    <;> ring
+    <;> field_simp
+    <;> ring
+  exact h₁
+
+--------------------------------------------------------------------------------
+ERRORS (1):
+--------------------------------------------------------------------------------
+
+Error 1:
+  Unknown identifier `integral_sin_div_id_tendsto_pi_div_two`
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_2_2 :
+  Tendsto (λ y => ∫ x in (0 : ℝ)..y, Real.sin x / x) atTop (𝓝 (Real.pi / 2)) :=
+ by
+  have h₁ : Tendsto (λ y => ∫ x in (0 : ℝ)..y, Real.sin x / x) atTop (𝓝 (Real.pi / 2)) := by
+    -- Use the fact that the integral of sin(x)/x from 0 to y tends to pi/2 as y tends to infinity
+    have h₂ := integral_sin_div_id_tendsto_pi_div_two
+    convert h₂ using 1
+    <;> simp [div_eq_mul_inv]
+    <;> ring
+    <;> field_simp
+    <;> ring
+  exact h₁
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 21 (Lemma 7)
+  Statement: theorem exercise_2_2 :
+  Tendsto (λ y => ∫ x in (0 : ℝ)..y, Real.sin x / x) atTo...
+  Errors: 1
+    - Unknown identifier `integral_sin_div_id_tendsto_pi_div_two`
+================================================================================
+================================================================================
+PROOF #22 (Lemma ID: 5)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet test
+Iteration: 0
+Verify Time: 0.026460647583007812s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_19c (z : ℂ) (hz : abs z = 1) (hz2 : z ≠ 1) (s : ℕ → ℂ)
+    (h : s = (λ n => ∑ i in (range n), i * z / i)) :
+    ∃ z, Tendsto s atTop (𝓝 z) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Complex Filter Function Metric Finset
+open scoped BigOperators Topology
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  use 0
+  simp_all [tendsto_const_nhds]
+  <;> aesop
+
+--------------------------------------------------------------------------------
+ERRORS (1):
+--------------------------------------------------------------------------------
+
+Error 1:
+  unexpected token 'in'; expected ','
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_19c (z : ℂ) (hz : abs z = 1) (hz2 : z ≠ 1) (s : ℕ → ℂ)
+    (h : s = (λ n => ∑ i in (range n), i * z / i)) :
+    ∃ z, Tendsto s atTop (𝓝 z) :=
+ by
+  use 0
+  simp_all [tendsto_const_nhds]
+  <;> aesop
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 22 (Lemma 5)
+  Statement: theorem exercise_1_19c (z : ℂ) (hz : abs z = 1) (hz2 : z ≠ 1) (s : ℕ → ℂ)
+    (h...
+  Errors: 1
+    - unexpected token 'in'; expected ','
+================================================================================
+================================================================================
+PROOF #23 (Lemma ID: 17)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet test
+Iteration: 0
+Verify Time: 0.2614459991455078s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_1b
+(x : ℝ)
+(y : ℚ)
+(h : y ≠ 0)
+: ( Irrational x ) -> Irrational ( x * y ) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  intro hx
+  haveI := Classical.dec
+  simp_all [Irrational]
+  <;> intro hxy
+  <;> cases' hxy with q hq
+  <;> have hx' := hx
+  <;> simp_all [mul_comm]
+  <;> exact hx' ⟨q * y, by simp [hq]⟩
+
+--------------------------------------------------------------------------------
+ERRORS (4):
+--------------------------------------------------------------------------------
+
+Error 1:
+  Insufficient number of fields for `⟨...⟩` constructor: Constructor `Rat.mk'` has 4 explicit field, but only 2 were provided
+
+Error 2:
+  Type mismatch
+  ↑q * y
+has type
+  ℚ
+but is expected to have type
+  ℤ
+
+Error 3:
+  Invalid argument: Variable `hq` is not a proposition or let-declaration
+
+Error 4:
+  `simp` made no progress
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_1b
+(x : ℝ)
+(y : ℚ)
+(h : y ≠ 0)
+: ( Irrational x ) -> Irrational ( x * y ) :=
+ by
+  intro hx
+  haveI := Classical.dec
+  simp_all [Irrational]
+  <;> intro hxy
+  <;> cases' hxy with q hq
+  <;> have hx' := hx
+  <;> simp_all [mul_comm]
+  <;> exact hx' ⟨q * y, by simp [hq]⟩
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 23 (Lemma 17)
+  Statement: theorem exercise_1_1b
+(x : ℝ)
+(y : ℚ)
+(h : y ≠ 0)
+: ( Irrational x ) -> Irration...
+  Errors: 4
+    - Insufficient number of fields for `⟨...⟩` constructor: Constructor `Rat.mk'` has 4 explicit field, b...
+    - Type mismatch
+  ↑q * y
+has type
+  ℚ
+but is expected to have type
+  ℤ
+================================================================================
+================================================================================
+PROOF #24 (Lemma ID: 14)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet valid
+Iteration: 0
+Verify Time: 0.415377140045166s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_3_22 (D : Set ℂ) (hD : D = ball 0 1) (f : ℂ → ℂ)
+    (hf : DifferentiableOn ℂ f D) (hfc : ContinuousOn f (closure D)) :
+    ¬ ∀ z ∈ (sphere (0 : ℂ) 1), f z = 1 / z :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Complex Filter Function Metric Finset
+open scoped BigOperators Topology
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  intro h
+  have h1 := h 1 (by simp [hD])
+  have h2 := h (-1) (by simp [hD])
+  simp_all [hD, Complex.dist_eq, Complex.norm_eq_abs]
+  <;> norm_num
+  <;> linarith
+
+--------------------------------------------------------------------------------
+ERRORS (2):
+--------------------------------------------------------------------------------
+
+Error 1:
+  Unknown constant `Complex.norm_eq_abs`
+
+Error 2:
+  linarith failed to find a contradiction
+D : Set ℂ
+hD : D = ball 0 1
+f : ℂ → ℂ
+hf : DifferentiableOn ℂ f (ball 0 1)
+hfc : ContinuousOn f (closure (ball 0 1))
+h : ∀ (z : ℂ), ‖z‖ = 1 → f z = z⁻¹
+⊢ False
+failed
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_3_22 (D : Set ℂ) (hD : D = ball 0 1) (f : ℂ → ℂ)
+    (hf : DifferentiableOn ℂ f D) (hfc : ContinuousOn f (closure D)) :
+    ¬ ∀ z ∈ (sphere (0 : ℂ) 1), f z = 1 / z :=
+ by
+  intro h
+  have h1 := h 1 (by simp [hD])
+  have h2 := h (-1) (by simp [hD])
+  simp_all [hD, Complex.dist_eq, Complex.norm_eq_abs]
+  <;> norm_num
+  <;> linarith
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 24 (Lemma 14)
+  Statement: theorem exercise_3_22 (D : Set ℂ) (hD : D = ball 0 1) (f : ℂ → ℂ)
+    (hf : Diff...
+  Errors: 2
+    - Unknown constant `Complex.norm_eq_abs`
+    - linarith failed to find a contradiction
+D : Set ℂ
+hD : D = ball 0 1
+f : ℂ → ℂ
+hf : DifferentiableOn ...
+================================================================================
+================================================================================
+PROOF #25 (Lemma ID: 27)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Iteration: 0
+Verify Time: 0.23895788192749023s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_17
+  (n : ℕ)
+  (x y : EuclideanSpace ℝ (Fin n)) -- R^n
+  : ‖x + y‖^2 + ‖x - y‖^2 = 2*‖x‖^2 + 2*‖y‖^2 :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  simp [norm_add_sq_real, norm_sub_sq_real, mul_add, mul_sub, sub_mul, add_mul,
+    Finset.sum_add_distrib, Finset.sum_sub_distrib, mul_comm, mul_left_comm]
+  <;> ring
+  <;> simp [mul_comm, mul_assoc, mul_left_comm]
+  <;> ring
+  <;> simp [mul_comm, mul_assoc, mul_left_comm]
+  <;> ring
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_17
+  (n : ℕ)
+  (x y : EuclideanSpace ℝ (Fin n)) -- R^n
+  : ‖x + y‖^2 + ‖x - y‖^2 = 2*‖x‖^2 + 2*‖y‖^2 :=
+ by
+  simp [norm_add_sq_real, norm_sub_sq_real, mul_add, mul_sub, sub_mul, add_mul,
+    Finset.sum_add_distrib, Finset.sum_sub_distrib, mul_comm, mul_left_comm]
+  <;> ring
+  <;> simp [mul_comm, mul_assoc, mul_left_comm]
+  <;> ring
+  <;> simp [mul_comm, mul_assoc, mul_left_comm]
+  <;> ring
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 25 (Lemma 27)
+  Statement: theorem exercise_1_17
+  (n : ℕ)
+  (x y : EuclideanSpace ℝ (Fin n)) -- R^n
+  : ‖x...
+================================================================================
+================================================================================
+PROOF #26 (Lemma ID: 22)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet valid
+Iteration: 0
+Verify Time: 0.9291496276855469s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_11a (z : ℂ) :
+  ∃ (r : ℝ) (w : ℂ), abs w = 1 ∧ z = r * w :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  use Complex.abs z, z / Complex.abs z
+  constructor
+  · simp [Complex.abs.ne_zero]
+  · field_simp [Complex.abs.ne_zero]
+  <;> norm_cast
+  <;> simp_all [Complex.ext_iff]
+  <;> ring_nf
+  <;> norm_num
+  <;> field_simp [Complex.abs.ne_zero]
+  <;> ring_nf
+  <;> norm_num
+  <;> simp_all [Complex.ext_iff]
+  <;> ring_nf
+  <;> norm_num
+  <;> field_simp [Complex.abs.ne_zero]
+  <;> ring_nf
+  <;> norm_num
+  <;> simp_all [Complex.ext_iff]
+  <;> ring_nf
+  <;> norm_num
+  <;> field_simp [Complex.abs.ne_zero]
+  <;> ring_nf
+  <;> norm_num
+  <;> simp_all [Complex.ext_iff]
+  <;> ring_nf
+  <;> norm_num
+  <;> field_simp [Complex.abs.ne_zero]
+  <;> ring_nf
+  <;> norm_num
+  <;> simp_all [Complex.ext_iff]
+  <;> ring_nf
+  <;> norm_num
+
+--------------------------------------------------------------------------------
+ERRORS (8):
+--------------------------------------------------------------------------------
+
+Error 1:
+  failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+Error 2:
+  Unknown constant `Complex.abs`
+
+Error 3:
+  Unknown constant `Complex.abs`
+
+Error 4:
+  Unknown constant `Complex.abs.ne_zero`
+
+Error 5:
+  unsolved goals
+case h.left
+z : ℂ
+⊢ sorry () = 1
+
+Error 6:
+  Unknown constant `Complex.abs.ne_zero`
+
+Error 7:
+  Unknown constant `Complex.abs.ne_zero`
+
+Error 8:
+  simp_all made no progress
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_11a (z : ℂ) :
+  ∃ (r : ℝ) (w : ℂ), abs w = 1 ∧ z = r * w :=
+ by
+  use Complex.abs z, z / Complex.abs z
+  constructor
+  · simp [Complex.abs.ne_zero]
+  · field_simp [Complex.abs.ne_zero]
+  <;> norm_cast
+  <;> simp_all [Complex.ext_iff]
+  <;> ring_nf
+  <;> norm_num
+  <;> field_simp [Complex.abs.ne_zero]
+  <;> ring_nf
+  <;> norm_num
+  <;> simp_all [Complex.ext_iff]
+  <;> ring_nf
+  <;> norm_num
+  <;> field_simp [Complex.abs.ne_zero]
+  <;> ring_nf
+  <;> norm_num
+  <;> simp_all [Complex.ext_iff]
+  <;> ring_nf
+  <;> norm_num
+  <;> field_simp [Complex.abs.ne_zero]
+  <;> ring_nf
+  <;> norm_num
+  <;> simp_all [Complex.ext_iff]
+  <;> ring_nf
+  <;> norm_num
+  <;> field_simp [Complex.abs.ne_zero]
+  <;> ring_nf
+  <;> norm_num
+  <;> simp_all [Complex.ext_iff]
+  <;> ring_nf
+  <;> norm_num
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 26 (Lemma 22)
+  Statement: theorem exercise_1_11a (z : ℂ) :
+  ∃ (r : ℝ) (w : ℂ), abs w = 1 ∧ z = r * w :=
+  Errors: 8
+    - failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the...
+    - Unknown constant `Complex.abs`
+================================================================================
+================================================================================
+PROOF #27 (Lemma ID: 9)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet test
+Iteration: 0
+Verify Time: 0.024860620498657227s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_2_13 {f : ℂ → ℂ}
+    (hf : ∀ z₀ : ℂ, ∃ (s : Set ℂ) (c : ℕ → ℂ), IsOpen s ∧ z₀ ∈ s ∧
+      ∀ z ∈ s, Tendsto (λ n => ∑ i in range n, (c i) * (z - z₀)^i) atTop (𝓝 (f z₀))
+      ∧ ∃ i, c i = 0) :
+    ∃ (c : ℕ → ℂ) (n : ℕ), f = λ z => ∑ i in range n, (c i) * z ^ n :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Complex Filter Function Metric Finset
+open scoped BigOperators Topology
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  use fun i => 0, 1
+  have h := hf 0
+  obtain ⟨s, c, hs, hzs, hc⟩ := h
+  simp_all [Function.funext_iff, mul_zero, zero_mul, Finset.sum_const, nsmul_eq_mul, mul_one,
+    Finset.card_range]
+  <;> aesop
+
+--------------------------------------------------------------------------------
+ERRORS (1):
+--------------------------------------------------------------------------------
+
+Error 1:
+  unexpected token 'in'; expected ','
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_2_13 {f : ℂ → ℂ}
+    (hf : ∀ z₀ : ℂ, ∃ (s : Set ℂ) (c : ℕ → ℂ), IsOpen s ∧ z₀ ∈ s ∧
+      ∀ z ∈ s, Tendsto (λ n => ∑ i in range n, (c i) * (z - z₀)^i) atTop (𝓝 (f z₀))
+      ∧ ∃ i, c i = 0) :
+    ∃ (c : ℕ → ℂ) (n : ℕ), f = λ z => ∑ i in range n, (c i) * z ^ n :=
+ by
+  use fun i => 0, 1
+  have h := hf 0
+  obtain ⟨s, c, hs, hzs, hc⟩ := h
+  simp_all [Function.funext_iff, mul_zero, zero_mul, Finset.sum_const, nsmul_eq_mul, mul_one,
+    Finset.card_range]
+  <;> aesop
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 27 (Lemma 9)
+  Statement: theorem exercise_2_13 {f : ℂ → ℂ}
+    (hf : ∀ z₀ : ℂ, ∃ (s : Set ℂ) (c : ℕ → ℂ),...
+  Errors: 1
+    - unexpected token 'in'; expected ','
+================================================================================
+================================================================================
+PROOF #28 (Lemma ID: 28)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet valid
+Iteration: 0
+Verify Time: 0.265333890914917s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_18a
+  (n : ℕ)
+  (h : n > 1)
+  (x : EuclideanSpace ℝ (Fin n)) -- R^n
+  : ∃ (y : EuclideanSpace ℝ (Fin n)), y ≠ 0 ∧ (inner x y) = (0 : ℝ) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  use -x
+  constructor
+  intro h₁
+  have h₂ := congr_arg (fun x => x 0) h₁
+  simp [Pi.neg_apply, Pi.smul_apply, Finset.sum_neg_distrib, Finset.sum_smul] at h₂
+  <;> simp_all [Pi.zero_apply]
+  <;> linarith
+  simp [inner_neg_right, inner_self_eq_zero]
+  <;> linarith
+
+--------------------------------------------------------------------------------
+ERRORS (4):
+--------------------------------------------------------------------------------
+
+Error 1:
+  Application type mismatch: The argument
+  x
+has type
+  EuclideanSpace ℝ (Fin n)
+of sort `Type` but is expected to have type
+  Type ?u.1441
+of sort `Type (?u.1441 + 1)` in the application
+  @inner x
+
+Error 2:
+  failed to synthesize
+  OfNat (Fin n) 0
+numerals are polymorphic in Lean, but the numeral `0` cannot be used in a context where the expected type is
+  Fin n
+due to the absence of the instance above
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+Error 3:
+  linarith failed to find a contradiction
+case h.left
+n : ℕ
+x : EuclideanSpace ℝ (Fin n)
+h : 1 < n
+h₁ : x = 0
+⊢ False
+failed
+
+Error 4:
+  (kernel) declaration has metavariables 'exercise_1_18a'
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_18a
+  (n : ℕ)
+  (h : n > 1)
+  (x : EuclideanSpace ℝ (Fin n)) -- R^n
+  : ∃ (y : EuclideanSpace ℝ (Fin n)), y ≠ 0 ∧ (inner x y) = (0 : ℝ) :=
+ by
+  use -x
+  constructor
+  intro h₁
+  have h₂ := congr_arg (fun x => x 0) h₁
+  simp [Pi.neg_apply, Pi.smul_apply, Finset.sum_neg_distrib, Finset.sum_smul] at h₂
+  <;> simp_all [Pi.zero_apply]
+  <;> linarith
+  simp [inner_neg_right, inner_self_eq_zero]
+  <;> linarith
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 28 (Lemma 28)
+  Statement: theorem exercise_1_18a
+  (n : ℕ)
+  (h : n > 1)
+  (x : EuclideanSpace ℝ (Fin n)) ...
+  Errors: 4
+    - Application type mismatch: The argument
+  x
+has type
+  EuclideanSpace ℝ (Fin n)
+of sort `Type` but i...
+    - failed to synthesize
+  OfNat (Fin n) 0
+numerals are polymorphic in Lean, but the numeral `0` cannot ...
+================================================================================
+================================================================================
+PROOF #29 (Lemma ID: 24)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet valid
+Iteration: 0
+Verify Time: 0.11336731910705566s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_13 (x y : ℂ) :
+  |(abs x) - (abs y)| ≤ abs (x - y) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  have h₁ : |abs x - abs y| ≤ abs (x - y) := abs_norm_sub_norm_le x y
+  simpa using h₁
+
+--------------------------------------------------------------------------------
+ERRORS (6):
+--------------------------------------------------------------------------------
+
+Error 1:
+  failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+Error 2:
+  failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+Error 3:
+  failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+Error 4:
+  failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+Error 5:
+  failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+Error 6:
+  failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_13 (x y : ℂ) :
+  |(abs x) - (abs y)| ≤ abs (x - y) :=
+ by
+  have h₁ : |abs x - abs y| ≤ abs (x - y) := abs_norm_sub_norm_le x y
+  simpa using h₁
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 29 (Lemma 24)
+  Statement: theorem exercise_1_13 (x y : ℂ) :
+  |(abs x) - (abs y)| ≤ abs (x - y) :=
+  Errors: 6
+    - failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the...
+    - failed to synthesize
+  Lattice ℂ
+
+Hint: Additional diagnostic information may be available using the...
+================================================================================
+================================================================================
+PROOF #30 (Lemma ID: 1)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet test
+Iteration: 0
+Verify Time: 0.16696739196777344s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_13b {f : ℂ → ℂ} (Ω : Set ℂ) (a b : Ω) (h : IsOpen Ω)
+  (hf : DifferentiableOn ℂ f Ω) (hc : ∃ (c : ℝ), ∀ z ∈ Ω, (f z).im = c) :
+  f a = f b :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Complex Filter Function Metric Finset
+open scoped BigOperators Topology
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  obtain ⟨c, hc⟩ := hc
+  have h₁ : ∀ z ∈ Ω, f z = (f z).re + c * Complex.I := by
+    intro z hz
+    ext <;> simp_all [Complex.ext_iff]
+  have h₂ : f a = f b := by
+    have h₃ : f a = (f a).re + c * Complex.I := h₁ a a.2
+    have h₄ : f b = (f b).re + c * Complex.I := h₁ b b.2
+    simp_all [Complex.ext_iff]
+    <;> linarith
+  exact h₂
+
+--------------------------------------------------------------------------------
+ERRORS (2):
+--------------------------------------------------------------------------------
+
+Error 1:
+  No applicable extensionality theorem found for type
+  ℂ
+
+Note: Extensionality theorems can be registered by marking them with the `[ext]` attribute
+
+Error 2:
+  Tactic `simp` failed with a nested error:
+maximum recursion depth has been reached
+use `set_option maxRecDepth <num>` to increase limit
+use `set_option diagnostics true` to get diagnostic information
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_13b {f : ℂ → ℂ} (Ω : Set ℂ) (a b : Ω) (h : IsOpen Ω)
+  (hf : DifferentiableOn ℂ f Ω) (hc : ∃ (c : ℝ), ∀ z ∈ Ω, (f z).im = c) :
+  f a = f b :=
+ by
+  obtain ⟨c, hc⟩ := hc
+  have h₁ : ∀ z ∈ Ω, f z = (f z).re + c * Complex.I := by
+    intro z hz
+    ext <;> simp_all [Complex.ext_iff]
+  have h₂ : f a = f b := by
+    have h₃ : f a = (f a).re + c * Complex.I := h₁ a a.2
+    have h₄ : f b = (f b).re + c * Complex.I := h₁ b b.2
+    simp_all [Complex.ext_iff]
+    <;> linarith
+  exact h₂
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 30 (Lemma 1)
+  Statement: theorem exercise_1_13b {f : ℂ → ℂ} (Ω : Set ℂ) (a b : Ω) (h : IsOpen Ω)
+  (hf : ...
+  Errors: 2
+    - No applicable extensionality theorem found for type
+  ℂ
+
+Note: Extensionality theorems can be regist...
+    - Tactic `simp` failed with a nested error:
+maximum recursion depth has been reached
+use `set_option m...
+================================================================================
+================================================================================
+PROOF #31 (Lemma ID: 15)
+================================================================================
+
+Status: ✗ FAILED
+
+Labels: Proofnet test
+Iteration: 0
+Verify Time: 0.0800323486328125s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_5_1 (f : ℂ → ℂ) (hf : DifferentiableOn ℂ f (ball 0 1))
+  (hb : Bornology.IsBounded (Set.range f)) (h0 : f ≠ 0) (zeros : ℕ → ℂ) (hz : ∀ n, f (zeros n) = 0)
+  (hzz : Set.range zeros = {z | f z = 0 ∧ z ∈ (ball (0 : ℂ) 1)}) :
+  ∃ (z : ℂ), Tendsto (λ n => (∑ i in range n, (1 - zeros i))) atTop (𝓝 z) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Complex Filter Function Metric Finset
+open scoped BigOperators Topology
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  have h₁ := hb
+  have h₂ := h0
+  have h₃ := hz
+  have h₄ := hzz
+  exact ⟨∑' n : ℕ, (1 - zeros n), by
+    simpa using
+      tendsto_const_nhds.congr' (eventually_of_forall fun n => by
+        simp_all [Set.mem_range, Set.mem_setOf_eq])⟩
+
+--------------------------------------------------------------------------------
+ERRORS (1):
+--------------------------------------------------------------------------------
+
+Error 1:
+  unexpected token 'in'; expected ','
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_5_1 (f : ℂ → ℂ) (hf : DifferentiableOn ℂ f (ball 0 1))
+  (hb : Bornology.IsBounded (Set.range f)) (h0 : f ≠ 0) (zeros : ℕ → ℂ) (hz : ∀ n, f (zeros n) = 0)
+  (hzz : Set.range zeros = {z | f z = 0 ∧ z ∈ (ball (0 : ℂ) 1)}) :
+  ∃ (z : ℂ), Tendsto (λ n => (∑ i in range n, (1 - zeros i))) atTop (𝓝 z) :=
+ by
+  have h₁ := hb
+  have h₂ := h0
+  have h₃ := hz
+  have h₄ := hzz
+  exact ⟨∑' n : ℕ, (1 - zeros n), by
+    simpa using
+      tendsto_const_nhds.congr' (eventually_of_forall fun n => by
+        simp_all [Set.mem_range, Set.mem_setOf_eq])⟩
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✗ Proof 31 (Lemma 15)
+  Statement: theorem exercise_5_1 (f : ℂ → ℂ) (hf : DifferentiableOn ℂ f (ball 0 1))
+  (hb : ...
+  Errors: 1
+    - unexpected token 'in'; expected ','
+================================================================================
+================================================================================
+PROOF #32 (Lemma ID: 31)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Iteration: 0
+Verify Time: 13.58416748046875s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_2_19a {X : Type*} [MetricSpace X]
+  (A B : Set X) (hA : IsClosed A) (hB : IsClosed B) (hAB : Disjoint A B) :
+  SeparatedNhds A B :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+ by
+  rw [separatedNhds_iff_disjoint]
+  have h : Disjoint A B := hAB
+  exact?
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_2_19a {X : Type*} [MetricSpace X]
+  (A B : Set X) (hA : IsClosed A) (hB : IsClosed B) (hAB : Disjoint A B) :
+  SeparatedNhds A B :=
+ by
+  rw [separatedNhds_iff_disjoint]
+  have h : Disjoint A B := hAB
+  exact?
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 32 (Lemma 31)
+  Statement: theorem exercise_2_19a {X : Type*} [MetricSpace X]
+  (A B : Set X) (hA : IsClose...
+================================================================================
