@@ -1,0 +1,317 @@
+================================================================================
+PROOF RESULTS SUMMARY
+================================================================================
+Total Proofs: 4
+✓ Verified: 4 (100.0%)
+✗ Failed: 0 (0.0%)
+================================================================================
+================================================================================
+PROOF #1 (Lemma ID: 29)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.10656070709228516s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+  intro h
+  have h₁ := h 1
+  have h₂ := h 0
+  have h₃ := h (-1)
+  cases' h₁ with y hy
+  cases' h₂ with y₀ hy₀
+  cases' h₃ with y₁ hy₁
+  norm_num at *
+  <;> simp_all
+  <;> linarith
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+  intro h
+  have h₁ := h 1
+  have h₂ := h 0
+  have h₃ := h (-1)
+  obtain ⟨y, hy⟩ := h₁
+  obtain ⟨y₀, hy₀⟩ := h₂
+  obtain ⟨y₁, hy₁⟩ := h₃
+  simp_all [mul_comm]
+  <;> nlinarith
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+  intro h
+  have h₁ := h 1
+  have h₂ := h 0
+  have h₃ := h (-1)
+  obtain ⟨y, hy⟩ := h₁
+  obtain ⟨y₀, hy₀⟩ := h₂
+  obtain ⟨y₁, hy₁⟩ := h₃
+  simp_all [mul_comm]
+  <;> nlinarith
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 1 (Lemma 29)
+  Statement: theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 :=
+================================================================================
+================================================================================
+PROOF #2 (Lemma ID: 38)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet valid
+Verify Time: 0.044646263122558594s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_3_1a
+  (f : ℕ → ℝ)
+  (h : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => f n) atTop (𝓝 a))
+  : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => |f n|) atTop (𝓝 a) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_3_1a
+  (f : ℕ → ℝ)
+  (h : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => f n) atTop (𝓝 a))
+  : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => |f n|) atTop (𝓝 a) := by
+  obtain ⟨a, ha⟩ := h
+  exact ⟨|a|,
+    have h1 : Tendsto (λ n => |f n|) atTop (𝓝 |a|) :=
+      Tendsto.abs ha
+    h1⟩
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_3_1a
+  (f : ℕ → ℝ)
+  (h : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => f n) atTop (𝓝 a))
+  : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => |f n|) atTop (𝓝 a) := by
+  obtain ⟨a, ha⟩ := h
+  exact ⟨|a|,
+    have h1 : Tendsto (λ n => |f n|) atTop (𝓝 |a|) :=
+      Tendsto.abs ha
+    h1⟩
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_3_1a
+  (f : ℕ → ℝ)
+  (h : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => f n) atTop (𝓝 a))
+  : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => |f n|) atTop (𝓝 a) := by
+  obtain ⟨a, ha⟩ := h
+  exact ⟨|a|,
+    have h1 : Tendsto (λ n => |f n|) atTop (𝓝 |a|) :=
+      Tendsto.abs ha
+    h1⟩
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 2 (Lemma 38)
+  Statement: theorem exercise_3_1a
+  (f : ℕ → ℝ)
+  (h : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => f n)...
+================================================================================
+================================================================================
+PROOF #3 (Lemma ID: 16)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet valid
+Verify Time: 0.13265347480773926s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_1a
+  (x : ℝ) (y : ℚ) :
+  ( Irrational x ) -> Irrational ( x + y ) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_1_1a
+  (x : ℝ) (y : ℚ) :
+  ( Irrational x ) -> Irrational ( x + y ) := by
+  intro hx
+  have h : Irrational (x + y) := by sorry
+  sorry
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_1_1a
+  (x : ℝ) (y : ℚ) :
+  ( Irrational x ) -> Irrational ( x + y ) := by
+  intro hx
+  have h : Irrational (x + y) := by
+    intro h_contra
+    -- Assume x + y is rational. Then (x + y) - y = x is rational.
+    cases' h_contra with q hq
+    have h1 : x = q - y := by linarith
+    -- This contradicts the irrationality of x.
+    exact hx ⟨q - y, by simp [h1]⟩
+  exact h
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_1a
+  (x : ℝ) (y : ℚ) :
+  ( Irrational x ) -> Irrational ( x + y ) := by
+  intro hx
+  have h : Irrational (x + y) := by
+    intro h_contra
+    -- Assume x + y is rational. Then (x + y) - y = x is rational.
+    cases' h_contra with q hq
+    have h1 : x = q - y := by linarith
+    -- This contradicts the irrationality of x.
+    exact hx ⟨q - y, by simp [h1]⟩
+  exact h
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 3 (Lemma 16)
+  Statement: theorem exercise_1_1a
+  (x : ℝ) (y : ℚ) :
+  ( Irrational x ) -> Irrational ( x +...
+================================================================================
+================================================================================
+PROOF #4 (Lemma ID: 50)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet valid
+Verify Time: 0.07306194305419922s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_4_2a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+  (f : α → β)
+  (h₁ : Continuous f)
+  : ∀ (x : Set α), f '' (closure x) ⊆ closure (f '' x) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_4_2a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+  (f : α → β)
+  (h₁ : Continuous f)
+  : ∀ (x : Set α), f '' (closure x) ⊆ closure (f '' x) := by
+  -- The goal is to show that the image of the closure of a set under a continuous function is contained in the closure of the image of the set.
+  have h₂ : ∀ (x : Set α), f '' (closure x) ⊆ closure (f '' x) := by
+    intro x
+    -- To prove this, we use the fact that the image of a closure under a continuous function is contained in the closure of the image.
+    exact image_closure_subset_closure_image h₁
+  exact h₂
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_4_2a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+  (f : α → β)
+  (h₁ : Continuous f)
+  : ∀ (x : Set α), f '' (closure x) ⊆ closure (f '' x) := by
+  have h₂ : ∀ (x : Set α), f '' (closure x) ⊆ closure (f '' x) := by
+    intro x
+    exact image_closure_subset_closure_image h₁
+  exact h₂
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_4_2a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+  (f : α → β)
+  (h₁ : Continuous f)
+  : ∀ (x : Set α), f '' (closure x) ⊆ closure (f '' x) := by
+  have h₂ : ∀ (x : Set α), f '' (closure x) ⊆ closure (f '' x) := by
+    intro x
+    exact image_closure_subset_closure_image h₁
+  exact h₂
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 4 (Lemma 50)
+  Statement: theorem exercise_4_2a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+...
+================================================================================

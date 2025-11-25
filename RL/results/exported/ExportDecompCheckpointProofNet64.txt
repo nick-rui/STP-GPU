@@ -1,0 +1,610 @@
+================================================================================
+PROOF RESULTS SUMMARY
+================================================================================
+Total Proofs: 7
+✓ Verified: 7 (100.0%)
+✗ Failed: 0 (0.0%)
+================================================================================
+================================================================================
+PROOF #1 (Lemma ID: 29)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.4402477741241455s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+```lean4
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+```lean4
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+```lean4
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+```lean4
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+```lean4
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+```lean4
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+```lean4
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+```lean4
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+```lean4
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+  intro h
+  have h₀ := h 1
+  obtain ⟨y, hy₁, hy₂⟩ := h₀
+  have h₁ := mul_self_pos.mpr (sub_ne_zero.mpr hy₁)
+  nlinarith [sq_nonneg (y - 1), sq_nonneg (y + 1), sq_nonneg (y * y - 1)]
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+  intro h
+  have h₀ := h 1
+  obtain ⟨y, hy₁, hy₂⟩ := h₀
+  have h₁ := mul_self_pos.mpr (sub_ne_zero.mpr hy₁)
+  nlinarith [sq_nonneg (y - 1), sq_nonneg (y + 1), sq_nonneg (y * y - 1)]
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 1 (Lemma 29)
+  Statement: theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 :=
+================================================================================
+================================================================================
+PROOF #2 (Lemma ID: 31)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 11.933592319488525s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_2_19a {X : Type*} [MetricSpace X]
+  (A B : Set X) (hA : IsClosed A) (hB : IsClosed B) (hAB : Disjoint A B) :
+  SeparatedNhds A B :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_2_19a {X : Type*} [MetricSpace X]
+  (A B : Set X) (hA : IsClosed A) (hB : IsClosed B) (hAB : Disjoint A B) :
+  SeparatedNhds A B := by
+```lean4
+theorem exercise_2_19a {X : Type*} [MetricSpace X]
+  (A B : Set X) (hA : IsClosed A) (hB : IsClosed B) (hAB : Disjoint A B) :
+  SeparatedNhds A B := by
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_2_19a {X : Type*} [MetricSpace X]
+  (A B : Set X) (hA : IsClosed A) (hB : IsClosed B) (hAB : Disjoint A B) :
+  SeparatedNhds A B := by
+  apply separatedNhds_iff_disjoint.mpr
+  -- We need to show that the neighborhoods of A and B are disjoint.
+  -- This is equivalent to showing that the neighborhoods of A are disjoint from those of B.
+  exact?
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_2_19a {X : Type*} [MetricSpace X]
+  (A B : Set X) (hA : IsClosed A) (hB : IsClosed B) (hAB : Disjoint A B) :
+  SeparatedNhds A B := by
+  apply separatedNhds_iff_disjoint.mpr
+  -- We need to show that the neighborhoods of A and B are disjoint.
+  -- This is equivalent to showing that the neighborhoods of A are disjoint from those of B.
+  exact?
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 2 (Lemma 31)
+  Statement: theorem exercise_2_19a {X : Type*} [MetricSpace X]
+  (A B : Set X) (hA : IsClose...
+================================================================================
+================================================================================
+PROOF #3 (Lemma ID: 38)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet valid
+Verify Time: 0.04089164733886719s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_3_1a
+  (f : ℕ → ℝ)
+  (h : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => f n) atTop (𝓝 a))
+  : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => |f n|) atTop (𝓝 a) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_3_1a
+  (f : ℕ → ℝ)
+  (h : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => f n) atTop (𝓝 a))
+  : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => |f n|) atTop (𝓝 a) :=
+```lean4
+theorem exercise_3_1a
+  (f : ℕ → ℝ)
+  (h : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => f n) atTop (𝓝 a))
+  : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => |f n|) atTop (𝓝 a) := by
+```lean4
+theorem exercise_3_1a
+  (f : ℕ → ℝ)
+  (h : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => f n) atTop (𝓝 a))
+  : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => |f n|) atTop (𝓝 a) := by
+```lean4
+theorem exercise_3_1a
+  (f : ℕ → ℝ)
+  (h : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => f n) atTop (𝓝 a))
+  : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => |f n|) atTop (𝓝 a) := by
+```lean4
+theorem exercise_3_1a
+  (f : ℕ → ℝ)
+  (h : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => f n) atTop (𝓝 a))
+  : ∃ (a : ℝ), Tendsto (λ (n :
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_3_1a
+  (f : ℕ → ℝ)
+  (h : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => f n) atTop (𝓝 a))
+  : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => |f n|) atTop (𝓝 a) := by
+  obtain ⟨a, hfa⟩ := h
+  use |a|
+  apply Tendsto.abs hfa
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_3_1a
+  (f : ℕ → ℝ)
+  (h : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => f n) atTop (𝓝 a))
+  : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => |f n|) atTop (𝓝 a) := by
+  obtain ⟨a, hfa⟩ := h
+  use |a|
+  apply Tendsto.abs hfa
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 3 (Lemma 38)
+  Statement: theorem exercise_3_1a
+  (f : ℕ → ℝ)
+  (h : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => f n)...
+================================================================================
+================================================================================
+PROOF #4 (Lemma ID: 59)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.06472492218017578s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_4_11a
+  {X : Type*} [MetricSpace X]
+  {Y : Type*} [MetricSpace Y]
+  (f : X → Y) (hf : UniformContinuous f)
+  (x : ℕ → X) (hx : CauchySeq x) :
+  CauchySeq (λ n => f (x n)) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_4_11a
+  {X : Type*} [MetricSpace X]
+  {Y : Type*} [MetricSpace Y]
+  (f : X → Y) (hf : UniformContinuous f)
+  (x : ℕ → X) (hx : CauchySeq x) :
+  CauchySeq (λ n => f (x n)) :=
+```lean4
+theorem exercise_4_11a
+  {X : Type*} [MetricSpace X]
+  {Y : Type*} [MetricSpace Y]
+  (f : X → Y) (hf : UniformContinuous f)
+  (x : ℕ → X) (hx : CauchySeq x) :
+  CauchySeq (λ n => f (x n)) :=
+```lean4
+theorem exercise_4_11a
+  {X : Type*} [MetricSpace X]
+  {Y : Type*} [MetricSpace Y]
+  (f : X → Y) (hf : UniformContinuous f)
+  (x : ℕ → X) (hx : CauchySeq x) :
+  CauchySeq (λ n => f (x n)) :=
+by
+  apply hf.comp_cauchySeq hx
+  <;> assumption
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_4_11a
+  {X : Type*} [MetricSpace X]
+  {Y : Type*} [MetricSpace Y]
+  (f : X → Y) (hf : UniformContinuous f)
+  (x : ℕ → X) (hx : CauchySeq x) :
+  CauchySeq (λ n => f (x n)) :=
+by
+  apply hf.comp_cauchySeq hx
+  <;> assumption
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_4_11a
+  {X : Type*} [MetricSpace X]
+  {Y : Type*} [MetricSpace Y]
+  (f : X → Y) (hf : UniformContinuous f)
+  (x : ℕ → X) (hx : CauchySeq x) :
+  CauchySeq (λ n => f (x n)) :=
+by
+  apply hf.comp_cauchySeq hx
+  <;> assumption
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 4 (Lemma 59)
+  Statement: theorem exercise_4_11a
+  {X : Type*} [MetricSpace X]
+  {Y : Type*} [MetricSpace ...
+================================================================================
+================================================================================
+PROOF #5 (Lemma ID: 52)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet valid
+Verify Time: 0.08971786499023438s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_4_4a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+  (f : α → β)
+  (s : Set α)
+  (h₁ : Continuous f)
+  (h₂ : Dense s)
+  : f '' Set.univ ⊆ closure (f '' s) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_4_4a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+  (f : α → β)
+  (s : Set α)
+  (h₁ : Continuous f)
+  (h₂ : Dense s)
+  : f '' Set.univ ⊆ closure (f '' s) :=
+```lean4
+theorem exercise_4_4a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+  (f : α → β)
+  (s : Set α)
+  (h₁ : Continuous f)
+  (h₂ : Dense s)
+  : f '' Set.univ ⊆ closure (f '' s) :=
+by
+  have h₃ : f '' Set.univ ⊆ closure (f '' s) := by
+    -- For any point y in the image of f over the entire space
+    rintro y ⟨x, hx, rfl⟩
+    -- Since s is dense in α, for any x, there exists a sequence in s converging to x
+    have : x ∈ closure s := h₂ x
+    -- The image of a convergent sequence under a continuous function is a convergent sequence
+    refine' mem_closure_image h₁.continuousAt this
+  exact h₃
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_4_4a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+  (f : α → β)
+  (s : Set α)
+  (h₁ : Continuous f)
+  (h₂ : Dense s)
+  : f '' Set.univ ⊆ closure (f '' s) := by
+  have h₃ : f '' Set.univ ⊆ closure (f '' s) := by
+    -- For any point y in the image of f over the entire space
+    rintro y ⟨x, hx, rfl⟩
+    -- Since s is dense in α, for any x, there exists a sequence in s converging to x
+    have : x ∈ closure s := h₂ x
+    -- The image of a convergent sequence under a continuous function is a convergent sequence
+    refine' mem_closure_image h₁.continuousAt this
+  exact h₃
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_4_4a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+  (f : α → β)
+  (s : Set α)
+  (h₁ : Continuous f)
+  (h₂ : Dense s)
+  : f '' Set.univ ⊆ closure (f '' s) := by
+  have h₃ : f '' Set.univ ⊆ closure (f '' s) := by
+    -- For any point y in the image of f over the entire space
+    rintro y ⟨x, hx, rfl⟩
+    -- Since s is dense in α, for any x, there exists a sequence in s converging to x
+    have : x ∈ closure s := h₂ x
+    -- The image of a convergent sequence under a continuous function is a convergent sequence
+    refine' mem_closure_image h₁.continuousAt this
+  exact h₃
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 5 (Lemma 52)
+  Statement: theorem exercise_4_4a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+...
+================================================================================
+================================================================================
+PROOF #6 (Lemma ID: 27)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.32341742515563965s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_17
+  (n : ℕ)
+  (x y : EuclideanSpace ℝ (Fin n)) -- R^n
+  : ‖x + y‖^2 + ‖x - y‖^2 = 2*‖x‖^2 + 2*‖y‖^2 :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_1_17
+  (n : ℕ)
+  (x y : EuclideanSpace ℝ (Fin n)) -- R^n
+  : ‖x + y‖^2 + ‖x - y‖^2 = 2*‖x‖^2 + 2*‖y‖^2 := by sorry
+  have h1 : ‖x + y‖^2 + ‖x - y‖^2 = 2*‖x‖^2 + 2*‖y‖^2 := by sorry
+  -- Use the linearity of the norm squared function and the properties of Euclidean spaces.
+  <;> simp [norm_add_sq_real, norm_sub_sq_real, mul_add, add_mul, mul_comm, mul_left_comm]
+  <;> ring
+  <;> simp_all [Real.norm_eq_abs]
+  <;> linarith
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_1_17
+  (n : ℕ)
+  (x y : EuclideanSpace ℝ (Fin n)) -- R^n
+  : ‖x + y‖^2 + ‖x - y‖^2 = 2*‖x‖^2 + 2*‖y‖^2 := by
+  have h1 : ‖x + y‖^2 + ‖x - y‖^2 = 2*‖x‖^2 + 2*‖y‖^2 := by
+    simp [norm_add_sq_real, norm_sub_sq_real, mul_add, add_mul, mul_comm, mul_left_comm]
+    <;> ring
+    <;> simp_all [Real.norm_eq_abs]
+    <;> linarith
+  exact h1
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_17
+  (n : ℕ)
+  (x y : EuclideanSpace ℝ (Fin n)) -- R^n
+  : ‖x + y‖^2 + ‖x - y‖^2 = 2*‖x‖^2 + 2*‖y‖^2 := by
+  have h1 : ‖x + y‖^2 + ‖x - y‖^2 = 2*‖x‖^2 + 2*‖y‖^2 := by
+    simp [norm_add_sq_real, norm_sub_sq_real, mul_add, add_mul, mul_comm, mul_left_comm]
+    <;> ring
+    <;> simp_all [Real.norm_eq_abs]
+    <;> linarith
+  exact h1
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 6 (Lemma 27)
+  Statement: theorem exercise_1_17
+  (n : ℕ)
+  (x y : EuclideanSpace ℝ (Fin n)) -- R^n
+  : ‖x...
+================================================================================
+================================================================================
+PROOF #7 (Lemma ID: 50)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet valid
+Verify Time: 0.0668482780456543s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_4_2a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+  (f : α → β)
+  (h₁ : Continuous f)
+  : ∀ (x : Set α), f '' (closure x) ⊆ closure (f '' x) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_4_2a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+  (f : α → β)
+  (h₁ : Continuous f)
+  : ∀ (x : Set α), f '' (closure x) ⊆ closure (f '' x) :=
+```lean4
+theorem exercise_4_2a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+  (f : α → β)
+  (h₁ : Continuous f)
+  : ∀ (x : Set α), f '' (closure x) ⊆ closure (f '' x) :=
+by
+  intro x
+  have h₂ : Continuous fun a : α => f a := h₁
+  exact image_closure_subset_closure_image h₂
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_4_2a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+  (f : α → β)
+  (h₁ : Continuous f)
+  : ∀ (x : Set α), f '' (closure x) ⊆ closure (f '' x) :=
+by
+  intro x
+  have h₂ : Continuous fun a : α => f a := h₁
+  exact image_closure_subset_closure_image h₂
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_4_2a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+  (f : α → β)
+  (h₁ : Continuous f)
+  : ∀ (x : Set α), f '' (closure x) ⊆ closure (f '' x) :=
+by
+  intro x
+  have h₂ : Continuous fun a : α => f a := h₁
+  exact image_closure_subset_closure_image h₂
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 7 (Lemma 50)
+  Statement: theorem exercise_4_2a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+...
+================================================================================
