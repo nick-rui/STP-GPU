@@ -136,6 +136,8 @@ EOF
     lake update repl 2>&1 | grep -v "warning" || true
 fi
 
+# Add the following to mathlib4/lakefile.lean: require repl from git "https://github.com/leanprover-community/repl.git" @ "master"
+
 # Install Python dependencies
 print_status "Installing Python dependencies..."
 pip3 install --quiet --upgrade pip
