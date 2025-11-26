@@ -19,6 +19,7 @@ Example Usage:
     --max_examples_per_dataset 10 \
     --batch_size 1 \
     --num_epochs 1
+    --max_tokens 512
 """
 
 import argparse
@@ -563,15 +564,9 @@ class GRPOTrainer:
                 for pi in proof_infos
             ]
         
-        # Extract rewards with partial reward for "sorry"
+        # Compute rewards for each result
         for result in verified_results:
-            result["reward"] = 0.0
-            if result.get("complete", False):
-                # Proof verifies successfully
-                result["reward"] += 0.8
-            if "sorry" in result.get("sketch", ""):
-                # Partial reward if "sorry" is in the sketch
-                result["reward"] += 0.2
+            result["reward"] = self.compute_reward(result)
         
         return verified_results
     
@@ -644,6 +639,80 @@ class GRPOTrainer:
             "mean_advantage": sum(advantages) / len(advantages),
             "mean_ratio": sum(r.item() for r in ratios) / len(ratios),
         }
+    
+    def compute_reward_naive(self, result: Dict) -> float:
+        """
+        Original, simple reward function.
+        
+        Kept for ablations and debugging.
+        """
+        reward = 0.0
+        if result.get("complete", False):
+            reward += 0.8
+        if "sorry" in result.get("sketch", ""):
+            reward += 0.2
+        return reward
+    
+    def compute_reward(self, result: Dict) -> float:
+        """
+        Decomposer-focused reward.
+        
+        Combines:
+        - verification success (does the final proof typecheck?)
+        - sketch structure (does the sketch meaningfully decompose the proof?)
+        - mild length regularization (avoid extremely long, noisy sketches)
+        """
+        sketch = result.get("sketch", "") or ""
+        sketch_lower = sketch.lower()
+        complete = bool(result.get("complete", False))
+        
+        # 1) Verification component: encourage sketches that help the prover succeed
+        #    Slightly softer than the naive 0.8 to leave room for structure reward.
+        verify_reward = 0.5 if complete else 0.0
+        
+        # 2) Structure component: reward real decomposition in the sketch
+        #    - multiple sorries (subgoals)
+        #    - presence of common structuring constructs
+        num_sorries = sketch_lower.count("sorry")
+        # heuristic set of "decomposition-ish" keywords
+        structure_keywords = [
+            " have ", "calc", "by_cases", "cases ", "by_cases ",
+            "by_contra", "refine ", "obtain ", "intro", "intros",
+            "rw ", "simp", "rfl", "have h", "have :"
+        ]
+        keyword_hits = sum(sketch_lower.count(kw) for kw in structure_keywords)
+        
+        # Normalize counts with caps so they don't explode
+        max_sorries = 5
+        max_keywords = 10
+        sorries_score = min(num_sorries, max_sorries) / max_sorries
+        keywords_score = min(keyword_hits, max_keywords) / max_keywords
+        
+        # Base structural score in [0, 1]
+        if num_sorries == 0 and keyword_hits == 0:
+            structure_score = 0.0
+        else:
+            structure_score = 0.5 * sorries_score + 0.5 * keywords_score
+        
+        # Down-weight trivial sketches: very few sorries and no real structure
+        if num_sorries <= 1 and keyword_hits == 0:
+            structure_score *= 0.2
+        
+        structure_reward = 0.4 * structure_score  # up to 0.4 from structure
+        
+        # 3) Length regularization: discourage extremely long, noisy sketches
+        token_len = len(sketch.split())
+        length_penalty = 0.0
+        max_len_without_penalty = 512
+        if token_len > max_len_without_penalty:
+            # Up to 0.2 penalty for very long sketches
+            length_penalty = min(0.2, 0.0005 * (token_len - max_len_without_penalty))
+        
+        reward = verify_reward + structure_reward - length_penalty
+        
+        # Clamp to [0, 1] to keep rewards well-behaved
+        reward = max(0.0, min(1.0, reward))
+        return reward
     
     def training_step(self, batch_lemmas: List[Dict]) -> Dict:
         """
