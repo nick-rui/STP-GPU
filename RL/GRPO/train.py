@@ -585,29 +585,8 @@ class GRPOTrainer:
         - w^(i) = π_θ(s|x) / π_θ_old(s|x)  [importance sampling ratio]
         - Â^(i) = (r^(i) - mean(r_group)) / std(r_group)  [group-relative advantage]
         """
-        # Reshape rewards into groups [batch_size, num_samples_per_prompt]
-        group_size = self.config.num_samples_per_prompt
-        batch_size = len(rewards) // group_size
-
-        if len(rewards) % group_size != 0:
-            raise ValueError(
-                f"Rewards length {len(rewards)} not divisible by group_size {group_size}"
-            )
-
         # Compute group-relative advantages
-        advantages = []
-        for i in range(batch_size):
-            # Get rewards for this group
-            group_rewards = rewards[i * group_size:(i + 1) * group_size]
-
-            # Compute group statistics
-            group_mean = sum(group_rewards) / len(group_rewards)
-            group_var = sum((r - group_mean) ** 2 for r in group_rewards) / len(group_rewards)
-            group_std = (group_var ** 0.5) if group_var > 1e-8 else 1.0
-
-            # Normalize advantages within group
-            for r in group_rewards:
-                advantages.append((r - group_mean) / group_std)
+        advantages, baseline = self._compute_group_advantages(rewards)
         
         # Compute importance sampling ratios in log space
         # log(w) = log(π_θ) - log(π_θ_old)
@@ -629,9 +608,6 @@ class GRPOTrainer:
         # GRPO objective (we want to maximize, so negate for minimization)
         loss = -(pg_loss - self.config.kl_coef * kl_div)
 
-        # Compute baseline as mean of all rewards (for logging)
-        baseline = sum(rewards) / len(rewards) if rewards else 0.0
-
         return loss, {
             "pg_loss": pg_loss.item() if torch.is_tensor(pg_loss) else pg_loss,
             "kl_div": kl_div,
@@ -639,6 +615,38 @@ class GRPOTrainer:
             "mean_advantage": sum(advantages) / len(advantages),
             "mean_ratio": sum(r.item() for r in ratios) / len(ratios),
         }
+    
+    def _compute_group_advantages(self, rewards: List[float]):
+        """
+        Compute group-relative advantages for GRPO.
+
+        Rewards are arranged in groups of size num_samples_per_prompt,
+        one group per lemma in the batch.
+        """
+        group_size = self.config.num_samples_per_prompt
+        if group_size <= 0:
+            raise ValueError("num_samples_per_prompt must be positive")
+
+        if len(rewards) % group_size != 0:
+            raise ValueError(
+                f"Rewards length {len(rewards)} not divisible by group_size {group_size}"
+            )
+
+        batch_size = len(rewards) // group_size
+        advantages: List[float] = []
+
+        for i in range(batch_size):
+            group_rewards = rewards[i * group_size:(i + 1) * group_size]
+
+            group_mean = sum(group_rewards) / len(group_rewards)
+            group_var = sum((r - group_mean) ** 2 for r in group_rewards) / len(group_rewards)
+            group_std = (group_var ** 0.5) if group_var > 1e-8 else 1.0
+
+            for r in group_rewards:
+                advantages.append((r - group_mean) / group_std)
+
+        baseline = sum(rewards) / len(rewards) if rewards else 0.0
+        return advantages, baseline
     
     def compute_reward_naive(self, result: Dict) -> float:
         """
@@ -729,16 +737,33 @@ class GRPOTrainer:
         verified_results = self.generate_proofs_and_verify(batch_data)
         rewards = [r["reward"] for r in verified_results]
         
-        # Step 3: Compute current logprobs (for importance sampling)
-        # This requires gradient computation
+        # Step 3: Compute group-relative advantages (no gradients needed)
+        advantages, baseline = self._compute_group_advantages(rewards)
+        ref_logprobs = [data["ref_logprobs"] for data in batch_data]
+        num_samples = len(batch_data)
+
+        # Step 4: One-sample-at-a-time GRPO update to reduce peak memory.
+        # We build and backpropagate each sample's loss separately so only
+        # one long-sequence graph is kept in memory at a time.
+        if self.accumulation_counter == 0:
+            self.optimizer.zero_grad()
+
         self.model.eval()  # use eval mode for stable logprobs
-        current_logprobs = []
-        
-        for data in batch_data:
+
+        pg_sum = 0.0
+        kl_sum = 0.0
+        ratio_sum = 0.0
+
+        for data, adv, ref_lp in tqdm(
+            zip(batch_data, advantages, ref_logprobs),
+            total=num_samples,
+            desc="GRPO update",
+            leave=False,
+        ):
             prompt = data["prompt"]
             sketch = data["sketch"]
-            
-            # Tokenize
+
+            # Tokenize prompt + sketch
             full_text = prompt + sketch
             inputs = self.tokenizer(
                 full_text,
@@ -746,55 +771,57 @@ class GRPOTrainer:
                 truncation=True,
                 max_length=4096,
             ).to(self.model.device)
-            
+
             prompt_inputs = self.tokenizer(
                 prompt,
                 return_tensors="pt",
                 truncation=True,
                 max_length=4096,
             ).to(self.model.device)
-            
+
             prompt_length = prompt_inputs.input_ids.shape[1]
-            
-            # Forward pass (with gradients this time)
+
+            # Forward pass (with gradients)
             outputs = self.model(**inputs)
             logits = outputs.logits
-            
-            # Compute log probs for generated tokens
+
+            # Compute log prob of generated tokens
             generated_tokens = inputs.input_ids[0, prompt_length:]
             logprobs_tokens = []
-            
+
             for t in range(len(generated_tokens)):
                 token_id = generated_tokens[t].item()
                 logits_at_t = logits[0, prompt_length + t - 1, :]
                 log_probs = F.log_softmax(logits_at_t, dim=-1)
                 logprobs_tokens.append(log_probs[token_id])
-            
-            # Sum log probs (sequence-level)
-            seq_logprob = sum(logprobs_tokens)
-            current_logprobs.append(seq_logprob)
-        
-        # Step 4: Compute GRPO loss
-        loss, loss_info = self.compute_grpo_loss(batch_data, rewards, current_logprobs)
 
-        # Step 5: Backprop and update with gradient accumulation
-        # Scale loss by accumulation steps
-        loss = loss / self.config.gradient_accumulation_steps
+            seq_logprob = torch.stack(logprobs_tokens).sum()
+            ref_lp_tensor = torch.tensor(ref_lp, device=seq_logprob.device, dtype=seq_logprob.dtype)
 
-        # Zero gradients only at the start of accumulation
-        if self.accumulation_counter == 0:
-            self.optimizer.zero_grad()
+            # Importance sampling ratio in log space
+            log_ratio = seq_logprob - ref_lp_tensor
+            ratio = torch.exp(log_ratio)
 
-        loss.backward()
+            # Track metrics in Python space
+            pg_sum += ratio.detach().item() * adv
+            kl_sum += log_ratio.detach().item()
+            ratio_sum += ratio.detach().item()
+
+            # Per-sample GRPO loss:
+            # L_i = -(w_i * A_i - β * log_ratio_i)
+            per_sample_loss = -(ratio * adv - self.config.kl_coef * log_ratio)
+
+            # Average across samples and apply gradient accumulation scaling
+            per_sample_loss = per_sample_loss / (num_samples * self.config.gradient_accumulation_steps)
+            per_sample_loss.backward()
 
         self.accumulation_counter += 1
 
         # Only step optimizer every gradient_accumulation_steps
         if self.accumulation_counter >= self.config.gradient_accumulation_steps:
-            # Gradient clipping
             torch.nn.utils.clip_grad_norm_(
                 self.model.parameters(),
-                self.config.max_grad_norm
+                self.config.max_grad_norm,
             )
 
             self.optimizer.step()
@@ -804,19 +831,28 @@ class GRPOTrainer:
             self.accumulation_counter = 0
             self.global_step += 1
 
-            # Periodic CUDA cache clearing to prevent OOM
-            if self.global_step % 10 == 0:
+            if torch.cuda.is_available() and self.global_step % 10 == 0:
                 torch.cuda.empty_cache()
+
+        # Aggregate loss/GRPO stats for logging
+        pg_loss = pg_sum / num_samples if num_samples > 0 else 0.0
+        kl_div = kl_sum / num_samples if num_samples > 0 else 0.0
+        mean_ratio = ratio_sum / num_samples if num_samples > 0 else 0.0
+        loss_value = -(pg_loss - self.config.kl_coef * kl_div)
         
         # Metrics
         metrics = {
-            "loss": loss.item() * self.config.gradient_accumulation_steps,  # Unscale for logging
+            "loss": float(loss_value),
             "mean_reward": sum(rewards) / len(rewards),
             "success_rate": sum(r > 0 for r in rewards) / len(rewards),
-            "partial_reward_rate": sum(1 for r in rewards if r == 0.5) / len(rewards),
-            "full_reward_rate": sum(1 for r in rewards if r == 1.0) / len(rewards),
+            "partial_reward_rate": sum(1 for r in rewards if 0 < r < 1.0) / len(rewards),
+            "full_reward_rate": sum(1 for r in rewards if r >= 1.0) / len(rewards),
             "lr": self.scheduler.get_last_lr()[0] if self.scheduler else self.config.learning_rate,
-            **loss_info,
+            "pg_loss": float(pg_loss),
+            "kl_div": float(kl_div),
+            "baseline": baseline,
+            "mean_advantage": sum(advantages) / len(advantages) if advantages else 0.0,
+            "mean_ratio": mean_ratio,
         }
         
         return metrics
@@ -992,8 +1028,8 @@ def train(config: TrainingConfig):
                     f"{memory_info}"
                 )
             
-            # Periodic evaluation
-            if trainer.global_step % config.eval_every == 0 and val_lemmas:
+            # Periodic evaluation (skip step 0 before any optimizer update)
+            if trainer.global_step > 0 and trainer.global_step % config.eval_every == 0 and val_lemmas:
                 logging.info("Running validation...")
                 val_metrics = trainer.evaluate(val_dataloader)
                 logging.info(
