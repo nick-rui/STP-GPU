@@ -9,13 +9,16 @@ Memory-efficient implementation using:
 - Gradient checkpointing
 - Mixed precision training
 
-Usage:
-    python train_decomposer_grpo.py \\
-        --model deepseek-ai/DeepSeek-Prover-V2-7B \\
-        --dataset_config configs/train_dataset.json \\
-        --output_dir experiments/grpo_decomposer \\
-        --batch_size 4 \\
-        --num_epochs 3
+Example Usage:
+    cd STP-GPU/RL
+    python GRPO/train.py \
+    --model deepseek-ai/DeepSeek-Prover-V2-7B \
+    --dataset_config dataset_configs/leanworkbook.json \
+    --output_dir experiments/test_run \
+    --max_tokens 1024 \
+    --max_examples_per_dataset 10 \
+    --batch_size 1 \
+    --num_epochs 1
 """
 
 import argparse
@@ -562,15 +565,13 @@ class GRPOTrainer:
         
         # Extract rewards with partial reward for "sorry"
         for result in verified_results:
+            result["reward"] = 0.0
             if result.get("complete", False):
                 # Proof verifies successfully
-                result["reward"] = 1.0
-            elif "sorry" in result.get("code", "").lower():
-                # Partial reward if "sorry" is in the code
-                result["reward"] = 0.5
-            else:
-                # No reward otherwise
-                result["reward"] = 0.0
+                result["reward"] += 0.8
+            if "sorry" in result.get("sketch", ""):
+                # Partial reward if "sorry" is in the sketch
+                result["reward"] += 0.2
         
         return verified_results
     
@@ -989,19 +990,19 @@ def parse_args():
     parser.add_argument("--lora_alpha", type=int, default=32)
     parser.add_argument("--lora_dropout", type=float, default=0.05)
     
-    # GRPO
-    parser.add_argument("--kl_coef", type=float, default=0.05)
+    # GRPO (L4-optimized defaults)
+    parser.add_argument("--kl_coef", type=float, default=0.1)
     parser.add_argument("--temperature", type=float, default=1.0)
     
-    # Training
-    parser.add_argument("--batch_size", type=int, default=4)
+    # Training (L4-optimized defaults)
+    parser.add_argument("--batch_size", type=int, default=1)
     parser.add_argument("--num_epochs", type=int, default=3)
     parser.add_argument("--learning_rate", type=float, default=5e-5)
     parser.add_argument("--warmup_steps", type=int, default=100)
     parser.add_argument("--max_grad_norm", type=float, default=1.0)
     
     # Generation
-    parser.add_argument("--max_tokens", type=int, default=2048)
+    parser.add_argument("--max_tokens", type=int, default=1024)
     parser.add_argument("--decomposer_temperature", type=float, default=1.0)
     parser.add_argument("--prover_temperature", type=float, default=0.7)
     
