@@ -38,15 +38,12 @@ from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
     get_linear_schedule_with_warmup,
-    BitsAndBytesConfig,
 )
 from peft import (
     LoraConfig,
     get_peft_model,
     TaskType,
-    prepare_model_for_kbit_training,
 )
-from bitsandbytes.optim import PagedAdamW32bit
 
 # Import your existing utilities
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -86,21 +83,21 @@ class TrainingConfig:
         default_factory=lambda: ["q_proj", "k_proj", "v_proj", "o_proj"]
     )
     
-    # GRPO hyperparameters (optimized for L4 GPU 24GB VRAM)
-    kl_coef: float = 0.1  # β in Algorithm 1
-    num_samples_per_prompt: int = 4  # samples per statement
+    # GRPO hyperparameters
+    kl_coef: float = 0.05  # β in Algorithm 1
+    num_samples_per_prompt: int = 1  # samples per statement
     temperature: float = 1.0
-
+    
     # Training
-    batch_size: int = 1  # number of statements per update
+    batch_size: int = 4  # number of statements per update
     num_epochs: int = 3
     learning_rate: float = 5e-5
     warmup_steps: int = 100
     max_grad_norm: float = 1.0
-    gradient_accumulation_steps: int = 8
-
+    gradient_accumulation_steps: int = 1
+    
     # Generation
-    max_tokens: int = 1024
+    max_tokens: int = 2048
     decomposer_temperature: float = 1.0
     prover_temperature: float = 0.7
     
@@ -278,41 +275,21 @@ def setup_model_and_tokenizer(config: TrainingConfig):
     )
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
-
-    # Configure 4-bit quantization for memory efficiency
-    bnb_config = BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_compute_dtype=torch.float16,
-        bnb_4bit_quant_type="nf4",
-        bnb_4bit_use_double_quant=True,
+    
+    # Load base model
+    model = AutoModelForCausalLM.from_pretrained(
+        config.model_name,
+        torch_dtype=torch.float16 if config.fp16 else torch.float32,
+        device_map="auto",
+        trust_remote_code=True,
     )
-
-    # Load base model with 4-bit quantization
-    # Try to use Flash Attention 2 for memory efficiency (falls back if unavailable)
-    try:
-        model = AutoModelForCausalLM.from_pretrained(
-            config.model_name,
-            quantization_config=bnb_config,
-            device_map="auto",
-            trust_remote_code=True,
-            attn_implementation="flash_attention_2",
-        )
-        logging.info("Using Flash Attention 2 for improved memory efficiency")
-    except Exception as e:
-        logging.warning(f"Flash Attention 2 not available ({e}), using default attention")
-        model = AutoModelForCausalLM.from_pretrained(
-            config.model_name,
-            quantization_config=bnb_config,
-            device_map="auto",
-            trust_remote_code=True,
-        )
-
-    # Prepare model for k-bit training (required for quantized models with LoRA)
-    model = prepare_model_for_kbit_training(model)
-
+    
     # Enable gradient checkpointing
     if config.gradient_checkpointing:
         model.gradient_checkpointing_enable()
+    
+    # Note: prepare_model_for_kbit_training is only needed for quantized models (4-bit/8-bit)
+    # Since we're using float16, we skip this step to avoid OOM
     
     # Configure LoRA
     lora_config = LoraConfig(
@@ -350,8 +327,8 @@ class GRPOTrainer:
         self.verifier = verifier
         self.config = config
         
-        # Optimizer (paged for memory efficiency)
-        self.optimizer = PagedAdamW32bit(
+        # Optimizer
+        self.optimizer = torch.optim.AdamW(
             model.parameters(),
             lr=config.learning_rate,
             betas=(0.9, 0.999),
@@ -364,7 +341,6 @@ class GRPOTrainer:
         # Logging
         self.global_step = 0
         self.epoch = 0
-        self.accumulation_counter = 0
         
     def setup_scheduler(self, total_steps: int):
         """Setup learning rate scheduler."""
@@ -377,19 +353,10 @@ class GRPOTrainer:
     def generate_sketches_with_logprobs(self, batch_lemmas: List[Dict]) -> List[Dict]:
         """
         Generate sketch proofs and compute their log probabilities.
-
-        Generates num_samples_per_prompt sketches for each lemma.
-
-        Returns list of dicts with keys: 'sketch', 'ref_logprobs', 'prompt', 'lemma'
+        
+        Returns list of dicts with keys: 'sketch', 'ref_logprobs', 'prompt'
         """
-        # Repeat each prompt num_samples_per_prompt times for group sampling
-        prompts = []
-        repeated_lemmas = []
-        for lemma in batch_lemmas:
-            prompt = build_decomposer_prompt(lemma)
-            for _ in range(self.config.num_samples_per_prompt):
-                prompts.append(prompt)
-                repeated_lemmas.append(lemma)
+        prompts = [build_decomposer_prompt(lemma) for lemma in batch_lemmas]
         
         # Tokenize
         inputs = self.tokenizer(
@@ -417,7 +384,7 @@ class GRPOTrainer:
         # Compute log probabilities for generated tokens
         # outputs.scores is tuple of (batch_size, vocab_size) tensors, one per generated token
         ref_logprobs_list = []
-        for i in range(len(repeated_lemmas)):
+        for i in range(len(batch_lemmas)):
             token_logprobs = []
             for t, score_tensor in enumerate(outputs.scores):
                 if t < generated_ids.shape[1]:
@@ -426,14 +393,14 @@ class GRPOTrainer:
                     token_logprob = logprobs[token_id].item()
                     token_logprobs.append(token_logprob)
             ref_logprobs_list.append(sum(token_logprobs))  # sum log probs for sequence
-
+        
         # Decode sketches
         sketches = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)
         sketches = [strip_code_fences(s) for s in sketches]
-
+        
         results = []
         for lemma, sketch, ref_logprob, prompt in zip(
-            repeated_lemmas, sketches, ref_logprobs_list, prompts
+            batch_lemmas, sketches, ref_logprobs_list, prompts
         ):
             results.append({
                 "lemma": lemma,
@@ -560,17 +527,10 @@ class GRPOTrainer:
                 for pi in proof_infos
             ]
         
-        # Extract rewards with partial reward for "sorry"
+        # Extract rewards
         for result in verified_results:
-            if result.get("complete", False):
-                # Proof verifies successfully
-                result["reward"] = 1.0
-            elif "sorry" in result.get("code", "").lower():
-                # Partial reward if "sorry" is in the code
-                result["reward"] = 0.5
-            else:
-                # No reward otherwise
-                result["reward"] = 0.0
+            # Binary reward: 1 if proof verifies, 0 otherwise
+            result["reward"] = 1.0 if result.get("complete", False) else 0.0
         
         return verified_results
     
@@ -582,36 +542,18 @@ class GRPOTrainer:
     ) -> torch.Tensor:
         """
         Compute GRPO objective (Algorithm 1, line 12).
-
+        
         L(θ) = (1/B) Σ w^(i) * Â^(i) - β * KL(π_θ || π_θ_old)
-
+        
         where:
         - w^(i) = π_θ(s|x) / π_θ_old(s|x)  [importance sampling ratio]
-        - Â^(i) = (r^(i) - mean(r_group)) / std(r_group)  [group-relative advantage]
+        - Â^(i) = r^(i) - b(x)  [advantage, b is baseline]
         """
-        # Reshape rewards into groups [batch_size, num_samples_per_prompt]
-        group_size = self.config.num_samples_per_prompt
-        batch_size = len(rewards) // group_size
-
-        if len(rewards) % group_size != 0:
-            raise ValueError(
-                f"Rewards length {len(rewards)} not divisible by group_size {group_size}"
-            )
-
-        # Compute group-relative advantages
-        advantages = []
-        for i in range(batch_size):
-            # Get rewards for this group
-            group_rewards = rewards[i * group_size:(i + 1) * group_size]
-
-            # Compute group statistics
-            group_mean = sum(group_rewards) / len(group_rewards)
-            group_var = sum((r - group_mean) ** 2 for r in group_rewards) / len(group_rewards)
-            group_std = (group_var ** 0.5) if group_var > 1e-8 else 1.0
-
-            # Normalize advantages within group
-            for r in group_rewards:
-                advantages.append((r - group_mean) / group_std)
+        # Compute baseline (group mean)
+        baseline = sum(rewards) / len(rewards) if rewards else 0.0
+        
+        # Compute advantages
+        advantages = [r - baseline for r in rewards]
         
         # Compute importance sampling ratios in log space
         # log(w) = log(π_θ) - log(π_θ_old)
@@ -632,10 +574,7 @@ class GRPOTrainer:
         
         # GRPO objective (we want to maximize, so negate for minimization)
         loss = -(pg_loss - self.config.kl_coef * kl_div)
-
-        # Compute baseline as mean of all rewards (for logging)
-        baseline = sum(rewards) / len(rewards) if rewards else 0.0
-
+        
         return loss, {
             "pg_loss": pg_loss.item() if torch.is_tensor(pg_loss) else pg_loss,
             "kl_div": kl_div,
@@ -706,45 +645,28 @@ class GRPOTrainer:
         
         # Step 4: Compute GRPO loss
         loss, loss_info = self.compute_grpo_loss(batch_data, rewards, current_logprobs)
-
-        # Step 5: Backprop and update with gradient accumulation
-        # Scale loss by accumulation steps
-        loss = loss / self.config.gradient_accumulation_steps
-
-        # Zero gradients only at the start of accumulation
-        if self.accumulation_counter == 0:
-            self.optimizer.zero_grad()
-
+        
+        # Step 5: Backprop and update
+        self.optimizer.zero_grad()
         loss.backward()
-
-        self.accumulation_counter += 1
-
-        # Only step optimizer every gradient_accumulation_steps
-        if self.accumulation_counter >= self.config.gradient_accumulation_steps:
-            # Gradient clipping
-            torch.nn.utils.clip_grad_norm_(
-                self.model.parameters(),
-                self.config.max_grad_norm
-            )
-
-            self.optimizer.step()
-            if self.scheduler:
-                self.scheduler.step()
-
-            self.accumulation_counter = 0
-            self.global_step += 1
-
-            # Periodic CUDA cache clearing to prevent OOM
-            if self.global_step % 10 == 0:
-                torch.cuda.empty_cache()
+        
+        # Gradient clipping
+        torch.nn.utils.clip_grad_norm_(
+            self.model.parameters(),
+            self.config.max_grad_norm
+        )
+        
+        self.optimizer.step()
+        if self.scheduler:
+            self.scheduler.step()
+        
+        self.global_step += 1
         
         # Metrics
         metrics = {
-            "loss": loss.item() * self.config.gradient_accumulation_steps,  # Unscale for logging
+            "loss": loss.item(),
             "mean_reward": sum(rewards) / len(rewards),
             "success_rate": sum(r > 0 for r in rewards) / len(rewards),
-            "partial_reward_rate": sum(1 for r in rewards if r == 0.5) / len(rewards),
-            "full_reward_rate": sum(1 for r in rewards if r == 1.0) / len(rewards),
             "lr": self.scheduler.get_last_lr()[0] if self.scheduler else self.config.learning_rate,
             **loss_info,
         }
@@ -906,20 +828,11 @@ def train(config: TrainingConfig):
                     k: sum(m[k] for m in epoch_metrics[-config.log_interval:]) / min(len(epoch_metrics), config.log_interval)
                     for k in epoch_metrics[0].keys()
                 }
-
-                # GPU memory monitoring
-                memory_info = ""
-                if torch.cuda.is_available():
-                    allocated = torch.cuda.memory_allocated() / 1024**3
-                    reserved = torch.cuda.memory_reserved() / 1024**3
-                    memory_info = f", GPU: {allocated:.2f}GB/{reserved:.2f}GB"
-
                 logging.info(
                     f"Step {trainer.global_step}: "
                     f"loss={avg_metrics['loss']:.4f}, "
                     f"reward={avg_metrics['mean_reward']:.3f}, "
                     f"success={avg_metrics['success_rate']:.2%}"
-                    f"{memory_info}"
                 )
             
             # Periodic evaluation
