@@ -57,7 +57,9 @@ theorem amc12a_2019_p21 (z : ℂ) (h₀ : z = (1 + Complex.I) / Real.sqrt 2) :
 ```
 
 Now, given a new goal, output a similar Lean 4 proof sketch with `sorry` placeholders.
-Return only Lean 4 code with `sorry` for unresolved subproofs."""
+Return only Lean 4 code with `sorry` for unresolved subproofs.
+Do not include any natural language explanations, comments, markdown headings,
+bullet points, or code fences. The output must be valid Lean 4 code only."""
 
 PROVER_PROMPT = """You are a Lean 4 proof assistant in PROVER mode.
 Given a Lean proof sketch containing `sorry` placeholders, replace each placeholder
@@ -74,7 +76,7 @@ def build_decomposer_prompt(test_info: Dict) -> str:
         f"{DECOMPOSER_PROMPT}\n\n"
         f"```lean4\n{prefix}"
         f"-- Goal:\n{test_info['statement']}\n```\n\n"
-        "Write a proof sketch in Lean 4with `sorry` placeholders:"
+        "Write a proof sketch in Lean 4 with `sorry` placeholders:"
     )
 
 

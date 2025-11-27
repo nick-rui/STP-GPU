@@ -133,7 +133,9 @@ theorem amc12a_2019_p21 (z : ℂ) (h₀ : z = (1 + Complex.I) / Real.sqrt 2) :
 ```
 
 Now, given a new goal, output a similar Lean 4 proof sketch with `sorry` placeholders.
-Return only Lean 4 code with `sorry` for unresolved subproofs."""
+Return only Lean 4 code with `sorry` for unresolved subproofs.
+Do not include any natural language explanations, comments, markdown headings,
+bullet points, or code fences. The output must be valid Lean 4 code only."""
 
 
 PROVER_PROMPT = """You are a Lean 4 proof assistant in PROVER mode.
@@ -521,6 +523,18 @@ class ReinforceTrainer:
             length_penalty = min(0.2, 0.0005 * (token_len - max_len_without_penalty))
 
         reward = verify_reward + structure_reward - length_penalty
+
+        # 4) Markdown / prose penalty: discourage non-code sketches
+        markdown_indicators = [
+            "###",
+            "**",
+            "initial conceptual sketch",
+            "this decomposes the problem",
+        ]
+        if any(ind in sketch_lower for ind in markdown_indicators):
+            # Heavily down-weight reward if markdown/natural language is present
+            reward *= 0.3
+
         reward = max(0.0, min(1.0, reward))
         return reward
 
