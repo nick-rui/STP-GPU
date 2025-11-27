@@ -1,0 +1,2016 @@
+================================================================================
+PROOF RESULTS SUMMARY
+================================================================================
+Total Proofs: 23
+✓ Verified: 23 (100.0%)
+✗ Failed: 0 (0.0%)
+
+23/256
+================================================================================
+================================================================================
+PROOF #1 (Lemma ID: 31)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 12.251519441604614s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_2_19a {X : Type*} [MetricSpace X]
+  (A B : Set X) (hA : IsClosed A) (hB : IsClosed B) (hAB : Disjoint A B) :
+  SeparatedNhds A B :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_2_19a {X : Type*} [MetricSpace X]
+  (A B : Set X) (hA : IsClosed A) (hB : IsClosed B) (hAB : Disjoint A B) :
+  SeparatedNhds A B := by
+```lean4
+theorem exercise_2_19a {X : Type*} [MetricSpace X]
+  (A B : Set X) (hA : IsClosed A) (hB : IsClosed B) (hAB : Disjoint A B) :
+  SeparatedNhds A B := by
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_2_19a {X : Type*} [MetricSpace X]
+  (A B : Set X) (hA : IsClosed A) (hB : IsClosed B) (hAB : Disjoint A B) :
+  SeparatedNhds A B := by
+  apply separatedNhds_iff_disjoint.mpr
+  -- We need to show that the neighborhoods of A and B are disjoint.
+  -- This is equivalent to showing that the neighborhoods of A are disjoint from those of B.
+  exact?
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_2_19a {X : Type*} [MetricSpace X]
+  (A B : Set X) (hA : IsClosed A) (hB : IsClosed B) (hAB : Disjoint A B) :
+  SeparatedNhds A B := by
+  apply separatedNhds_iff_disjoint.mpr
+  -- We need to show that the neighborhoods of A and B are disjoint.
+  -- This is equivalent to showing that the neighborhoods of A are disjoint from those of B.
+  exact?
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 1 (Lemma 31)
+  Statement: theorem exercise_2_19a {X : Type*} [MetricSpace X]
+  (A B : Set X) (hA : IsClose...
+================================================================================
+================================================================================
+PROOF #2 (Lemma ID: 77)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet valid
+Verify Time: 0.0536189079284668s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_2_1_27 {G : Type*} [Group G]
+  [Fintype G] : ∃ (m : ℕ), ∀ (a : G), a ^ m = 1 :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Fintype Set Real Ideal Polynomial
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_2_1_27 {G : Type*} [Group G]
+  [Fintype G] : ∃ (m : ℕ), ∀ (a : G), a ^ m = 1 :=
+```lean4
+theorem exercise_2_1_27 {G : Type*} [Group G]
+  [Fintype G] : ∃ (m : ℕ), ∀ (a : G), a ^ m = 1 :=
+```lean4
+theorem exercise_2_1_27 {G : Type*} [Group G]
+  [Fintype G] : ∃ (m : ℕ), ∀ (a : G), a ^ m = 1 := by
+```lean4
+theorem exercise_2_1_27 {G : Type*} [Group G]
+  [Fintype G] : ∃ (m : ℕ), ∀ (a : G), a ^ m = 1 := by
+```lean4
+theorem exercise_2_1_27 {G : Type*} [Group G]
+  [Fintype G] : ∃ (m : ℕ), ∀ (a : G), a ^ m = 1 := by
+```lean4
+theorem exercise_2_1_27 {G : Type*} [Group G]
+  [Fintype G] : ∃ (m : ℕ), ∀ (a : G), a ^ m = 1 := by
+```lean4
+theorem exercise_2_1_27 {G : Type*} [Group G]
+  [Fintype G] : ∃ (m : ℕ), ∀ (a : G), a ^ m = 1 := by
+```lean4
+theorem exercise_2_1_27 {G : Type*} [Group G]
+  [Fintype G] : ∃ (m : ℕ), ∀ (a : G), a ^ m = 1 := by
+```lean4
+theorem exercise_2_1_27 {G : Type*} [Group G]
+  [Fintype G] : ∃ (m : ℕ), ∀ (a : G), a ^ m = 1 := by
+```lean4
+theorem exercise_2_1_27 {G : Type*} [Group G
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_2_1_27 {G : Type*} [Group G]
+  [Fintype G] : ∃ (m : ℕ), ∀ (a : G), a ^ m = 1 := by
+  use Fintype.card G
+  intro a
+  rw [← pow_card_eq_one]
+  <;> rfl
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_2_1_27 {G : Type*} [Group G]
+  [Fintype G] : ∃ (m : ℕ), ∀ (a : G), a ^ m = 1 := by
+  use Fintype.card G
+  intro a
+  rw [← pow_card_eq_one]
+  <;> rfl
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 2 (Lemma 77)
+  Statement: theorem exercise_2_1_27 {G : Type*} [Group G]
+  [Fintype G] : ∃ (m : ℕ), ∀ (a : ...
+================================================================================
+================================================================================
+PROOF #3 (Lemma ID: 76)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.04815959930419922s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_2_1_26 {G : Type*} [Group G]
+  [Fintype G] (a : G) : ∃ (n : ℕ), a ^ n = 1 :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Fintype Set Real Ideal Polynomial
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_2_1_26 {G : Type*} [Group G]
+  [Fintype G] (a : G) : ∃ (n : ℕ), a ^ n = 1 :=
+```lean4
+theorem exercise_2_1_26 {G : Type*} [Group G]
+  [Fintype G] (a : G) : ∃ (n : ℕ), a ^ n = 1 :=
+```lean4
+theorem exercise_2_1_26 {G : Type*} [Group G]
+  [Fintype G] (a : G) : ∃ (n : ℕ), a ^ n = 1 := by
+```lean4
+theorem exercise_2_1_26 {G : Type*} [Group G]
+  [Fintype G] (a : G) : ∃ (n : ℕ), a ^ n = 1 := by
+```lean4
+theorem exercise_2_1_26 {G : Type*} [Group G]
+  [Fintype G] (a : G) : ∃ (n : ℕ), a ^ n = 1 := by
+```lean4
+theorem exercise_2_1_26 {G : Type*} [Group G]
+  [Fintype G] (a : G) : ∃ (n : ℕ), a ^ n = 1 := by
+```lean4
+theorem exercise_2_1_26 {G : Type*} [Group G]
+  [Fintype G] (a : G) : ∃ (n : ℕ), a ^ n = 1 := by
+```lean4
+theorem exercise_2_1_26 {G : Type*} [Group G]
+  [Fintype G] (a : G) : ∃ (n : ℕ), a ^ n = 1 := by
+```lean4
+theorem exercise_2_1_26 {G : Type*} [Group G]
+  [Fintype G] (a : G) : ∃ (n : ℕ), a ^ n = 1 := by
+```lean4
+theorem exercise_2_1_26 {G : Type*} [Group G]
+  [Fintype G] (a : G) : ∃ (n : ℕ), a ^ n =
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_2_1_26 {G : Type*} [Group G]
+  [Fintype G] (a : G) : ∃ (n : ℕ), a ^ n = 1 := by
+  use Fintype.card G
+  rw [← pow_card_eq_one]
+  <;> rfl
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_2_1_26 {G : Type*} [Group G]
+  [Fintype G] (a : G) : ∃ (n : ℕ), a ^ n = 1 := by
+  use Fintype.card G
+  rw [← pow_card_eq_one]
+  <;> rfl
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 3 (Lemma 76)
+  Statement: theorem exercise_2_1_26 {G : Type*} [Group G]
+  [Fintype G] (a : G) : ∃ (n : ℕ),...
+================================================================================
+================================================================================
+PROOF #4 (Lemma ID: 216)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet valid
+Verify Time: 0.20508861541748047s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_3_1_3a {A : Type*} [CommGroup A] (B : Subgroup A) :
+  ∀ a b : A ⧸ B, a*b = b*a :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Fintype Subgroup Set Polynomial Ideal
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_3_1_3a {A : Type*} [CommGroup A] (B : Subgroup A) :
+  ∀ a b : A ⧸ B, a*b = b*a :=
+```lean4
+theorem exercise_3_1_3a {A : Type*} [CommGroup A] (B : Subgroup A) :
+  ∀ a b : A ⧸ B, a*b = b*a :=
+by
+  intro a b
+  -- Use the fact that the quotient group is commutative to show that multiplication is commutative.
+  rw [mul_comm]
+  <;> rfl
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_3_1_3a {A : Type*} [CommGroup A] (B : Subgroup A) :
+  ∀ a b : A ⧸ B, a*b = b*a :=
+by
+  intro a b
+  rw [mul_comm]
+  <;> rfl
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_3_1_3a {A : Type*} [CommGroup A] (B : Subgroup A) :
+  ∀ a b : A ⧸ B, a*b = b*a :=
+by
+  intro a b
+  rw [mul_comm]
+  <;> rfl
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 4 (Lemma 216)
+  Statement: theorem exercise_3_1_3a {A : Type*} [CommGroup A] (B : Subgroup A) :
+  ∀ a b : A...
+================================================================================
+================================================================================
+PROOF #5 (Lemma ID: 253)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.08898067474365234s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_7_1_2 {R : Type*} [Ring R] {u : R}
+  (hu : IsUnit u) : IsUnit (-u) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Fintype Subgroup Set Polynomial Ideal
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_7_1_2 {R : Type*} [Ring R] {u : R}
+  (hu : IsUnit u) : IsUnit (-u) := by
+```lean4
+theorem exercise_7_1_2 {R : Type*} [Ring R] {u : R}
+  (hu : IsUnit u) : IsUnit (-u) := by
+```lean4
+theorem exercise_7_1_2 {R : Type*} [Ring R] {u : R}
+  (hu : IsUnit u) : IsUnit (-u) := by
+```lean4
+theorem exercise_7_1_2 {R : Type*} [Ring R] {u : R}
+  (hu : IsUnit u) : IsUnit (-u) := by
+```lean4
+theorem exercise_7_1_2 {R : Type*} [Ring R] {u : R}
+  (hu : IsUnit u) : IsUnit (-u) := by
+```lean4
+theorem exercise_7_1_2 {R : Type*} [Ring R] {u : R}
+  (hu : IsUnit u) : IsUnit (-u) := by
+```lean4
+theorem exercise_7_1_2 {R : Type*} [Ring R] {u : R}
+  (hu : IsUnit u) : IsUnit (-u) := by
+```lean4
+theorem exercise_7_1_2 {R : Type*} [Ring R] {u : R}
+  (hu : IsUnit u) : IsUnit (-u) := by
+```lean4
+theorem exercise_7_1_2 {R : Type*} [Ring R] {u : R}
+  (hu : IsUnit u) : IsUnit (-u) := by
+```lean4
+theorem exercise_7_1_2 {R : Type*} [Ring R] {u : R}
+  (hu : IsUnit u) : IsUnit (-u) := by
+```lean4
+theorem exercise_7_1_2 {R : Type*} [Ring R] {u : R}
+  (hu : IsUnit u) : IsUnit (-u) := by
+```lean4
+theorem exercise_7_1_2 {R : Type*} [Ring R] {u : R}
+  (hu : IsUnit u) : IsUnit (-u) := by
+```lean4
+theorem exercise_7_1_2 {R : Type*} [Ring R] {u : R}
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_7_1_2 {R : Type*} [Ring R] {u : R}
+  (hu : IsUnit u) : IsUnit (-u) := by
+  cases' hu with r hr
+  use -r
+  simp_all [neg_neg, mul_neg, mul_comm]
+  -- Explanation:
+  -- Given that `u` is a unit, we can write `u = r * 1` for some `r`.
+  -- We need to show that `-u` is also a unit.
+  -- Consider `-u = - (r * 1) = -r * 1`.
+  -- This means we can take `-r` as the multiplicative inverse of `-u`.
+  -- Simplifying `-(-r) = r` and `-r * r = - (r * r) = -1`, we confirm that `-r` is indeed the inverse of `-u`.
+  <;> simp_all [mul_neg, mul_comm]
+  <;> simp_all [neg_neg, mul_neg, mul_comm]
+  <;> simp_all [mul_neg, mul_comm]
+  <;> simp_all [neg_neg, mul_neg, mul_comm]
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_7_1_2 {R : Type*} [Ring R] {u : R}
+  (hu : IsUnit u) : IsUnit (-u) := by
+  cases' hu with r hr
+  use -r
+  simp_all [neg_neg, mul_neg, mul_comm]
+  -- Explanation:
+  -- Given that `u` is a unit, we can write `u = r * 1` for some `r`.
+  -- We need to show that `-u` is also a unit.
+  -- Consider `-u = - (r * 1) = -r * 1`.
+  -- This means we can take `-r` as the multiplicative inverse of `-u`.
+  -- Simplifying `-(-r) = r` and `-r * r = - (r * r) = -1`, we confirm that `-r` is indeed the inverse of `-u`.
+  <;> simp_all [mul_neg, mul_comm]
+  <;> simp_all [neg_neg, mul_neg, mul_comm]
+  <;> simp_all [mul_neg, mul_comm]
+  <;> simp_all [neg_neg, mul_neg, mul_comm]
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 5 (Lemma 253)
+  Statement: theorem exercise_7_1_2 {R : Type*} [Ring R] {u : R}
+  (hu : IsUnit u) : IsUnit (...
+================================================================================
+================================================================================
+PROOF #6 (Lemma ID: 227)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.06718635559082031s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_3_4_5b {G : Type*} [Group G] [IsSolvable G]
+  (H : Subgroup G) [Normal H] :
+  IsSolvable (G ⧸ H) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Fintype Subgroup Set Polynomial Ideal
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_3_4_5b {G : Type*} [Group G] [IsSolvable G]
+  (H : Subgroup G) [Normal H] :
+  IsSolvable (G ⧸ H) := by
+```lean4
+theorem exercise_3_4_5b {G : Type*} [Group G] [IsSolvable G]
+  (H : Subgroup G) [Normal H] :
+  IsSolvable (G ⧸ H) := by
+```lean4
+theorem exercise_3_4_5b {G : Type*} [Group G] [IsSolvable G]
+  (H : Subgroup G) [Normal H] :
+  IsSolvable (G ⧸ H) := by
+```lean4
+theorem exercise_3_4_5b {G : Type*} [Group G] [IsSolvable G]
+  (H : Subgroup G) [Normal H] :
+  IsSolvable (G ⧸ H) := by
+```lean4
+theorem exercise_3_4_5b {G : Type*} [Group G] [IsSolvable G]
+  (H : Subgroup G) [Normal H] :
+  IsSolvable (G ⧸ H) := by
+```lean4
+theorem exercise_3_4_5b {G : Type*} [Group G] [IsSolvable G]
+  (H : Subgroup G) [Normal H] :
+  IsSolvable (G ⧸ H) := by
+```lean4
+theorem exercise_3_4_5b {G : Type*} [Group G] [IsSolvable G]
+  (H : Subgroup G) [Normal H] :
+  IsSolvable (G ⧸ H) := by
+```lean4
+theorem exercise_3_4_5b {G : Type*} [Group G] [IsSolvable G]
+  (H : Subgroup G) [Normal H] :
+  IsSolvable (G ⧸ H) := by
+```lean4
+theorem exercise_3_4_5b {G : Type*} [Group G] [IsSolvable G]
+  (H : Subgroup G) [Normal H] :
+  IsSolvable (G ⧸ H) := by
+```lean4
+theorem exercise_3_4_5b {G : Type*}
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_3_4_5b {G : Type*} [Group G] [IsSolvable G]
+  (H : Subgroup G) [Normal H] :
+  IsSolvable (G ⧸ H) := by
+  apply inferInstance
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_3_4_5b {G : Type*} [Group G] [IsSolvable G]
+  (H : Subgroup G) [Normal H] :
+  IsSolvable (G ⧸ H) := by
+  apply inferInstance
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 6 (Lemma 227)
+  Statement: theorem exercise_3_4_5b {G : Type*} [Group G] [IsSolvable G]
+  (H : Subgroup G) ...
+================================================================================
+================================================================================
+PROOF #7 (Lemma ID: 200)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet valid
+Verify Time: 0.32384395599365234s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_22a {G : Type*} [Group G] (x g : G) :
+  orderOf x = orderOf (g⁻¹ * x * g) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Fintype Subgroup Set Polynomial Ideal
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_22a {G : Type*} [Group G] (x g : G) :
+  orderOf x = orderOf (g⁻¹ * x * g) := by
+```lean4
+theorem exercise_1_1_22a {G : Type*} [Group G] (x g : G) :
+  orderOf x = orderOf (g⁻¹ * x * g) := by
+```lean4
+theorem exercise_1_1_22a {G : Type*} [Group G] (x g : G) :
+  orderOf x = orderOf (g⁻¹ * x * g) := by
+```lean4
+theorem exercise_1_1_22a {G : Type*} [Group G] (x g : G) :
+  orderOf x = orderOf (g⁻¹ * x * g) := by
+```lean4
+theorem exercise_1_1_22a {G : Type*} [Group G] (x g : G) :
+  orderOf x = orderOf (g⁻¹ * x * g) := by
+```lean4
+theorem exercise_1_1_22a {G : Type*} [Group G] (x g : G) :
+  orderOf x = orderOf (g⁻¹ * x * g) := by
+```lean4
+theorem exercise_1_1_22a {G : Type*} [Group G] (x g : G) :
+  orderOf x = orderOf (g⁻¹ * x * g) := by
+```lean4
+theorem exercise_1_1_22a {G : Type*} [Group G] (x g : G) :
+  orderOf x = orderOf (g⁻¹ * x * g) := by
+```lean4
+theorem exercise_1_1_22a {G : Type*} [Group G] (x g : G) :
+  orderOf x = orderOf (g⁻¹ * x * g) := by
+```lean4
+theorem exercise_1_1_22a {G : Type*} [Group G] (x g : G) :
+  orderOf x = orderOf (g⁻¹ * x * g) := by
+```lean4
+theorem exercise_1_1_22a {G : Type*} [Group G] (x g : G) :
+  orderOf x = order
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_22a {G : Type*} [Group G] (x g : G) :
+  orderOf x = orderOf (g⁻¹ * x * g) := by
+  rw [← orderOf_injective (MulAut.conj g).toMonoidHom (MulAut.conj g).injective (g⁻¹ * x * g)]
+  <;> simp [MulAut.conj_apply, ← mul_assoc]
+  <;> rfl
+  <;> simp [orderOf_eq_zero_iff]
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_22a {G : Type*} [Group G] (x g : G) :
+  orderOf x = orderOf (g⁻¹ * x * g) := by
+  rw [← orderOf_injective (MulAut.conj g).toMonoidHom (MulAut.conj g).injective (g⁻¹ * x * g)]
+  <;> simp [MulAut.conj_apply, ← mul_assoc]
+  <;> rfl
+  <;> simp [orderOf_eq_zero_iff]
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 7 (Lemma 200)
+  Statement: theorem exercise_1_1_22a {G : Type*} [Group G] (x g : G) :
+  orderOf x = orderOf...
+================================================================================
+================================================================================
+PROOF #8 (Lemma ID: 50)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet valid
+Verify Time: 0.06685090065002441s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_4_2a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+  (f : α → β)
+  (h₁ : Continuous f)
+  : ∀ (x : Set α), f '' (closure x) ⊆ closure (f '' x) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_4_2a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+  (f : α → β)
+  (h₁ : Continuous f)
+  : ∀ (x : Set α), f '' (closure x) ⊆ closure (f '' x) :=
+```lean4
+theorem exercise_4_2a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+  (f : α → β)
+  (h₁ : Continuous f)
+  : ∀ (x : Set α), f '' (closure x) ⊆ closure (f '' x) :=
+by
+  intro x
+  have h₂ : Continuous fun a : α => f a := h₁
+  exact image_closure_subset_closure_image h₂
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_4_2a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+  (f : α → β)
+  (h₁ : Continuous f)
+  : ∀ (x : Set α), f '' (closure x) ⊆ closure (f '' x) :=
+by
+  intro x
+  have h₂ : Continuous fun a : α => f a := h₁
+  exact image_closure_subset_closure_image h₂
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_4_2a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+  (f : α → β)
+  (h₁ : Continuous f)
+  : ∀ (x : Set α), f '' (closure x) ⊆ closure (f '' x) :=
+by
+  intro x
+  have h₂ : Continuous fun a : α => f a := h₁
+  exact image_closure_subset_closure_image h₂
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 8 (Lemma 50)
+  Statement: theorem exercise_4_2a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+...
+================================================================================
+================================================================================
+PROOF #9 (Lemma ID: 254)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet valid
+Verify Time: 0.1804060935974121s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_7_1_11 {R : Type*} [Ring R] [IsDomain R]
+  {x : R} (hx : x^2 = 1) : x = 1 ∨ x = -1 :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Fintype Subgroup Set Polynomial Ideal
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_7_1_11 {R : Type*} [Ring R] [IsDomain R]
+  {x : R} (hx : x^2 = 1) : x = 1 ∨ x = -1 := by
+```lean4
+theorem exercise_7_1_11 {R : Type*} [Ring R] [IsDomain R]
+  {x : R} (hx : x^2 = 1) : x = 1 ∨ x = -1 := by
+```lean4
+theorem exercise_7_1_11 {R : Type*} [Ring R] [IsDomain R]
+  {x : R} (hx : x^2 = 1) : x = 1 ∨ x = -1 := by
+```lean4
+theorem exercise_7_1_11 {R : Type*} [Ring R] [IsDomain R]
+  {x : R} (hx : x^2 = 1) : x = 1 ∨ x = -1 := by
+```lean4
+theorem exercise_7_1_11 {R : Type*} [Ring R] [IsDomain R]
+  {x : R} (hx : x^2 = 1) : x = 1 ∨ x = -1 := by
+```lean4
+theorem exercise_7_1_11 {R : Type*} [Ring R] [IsDomain R]
+  {x : R} (hx : x^2 = 1) : x = 1 ∨ x = -1 := by
+```lean4
+theorem exercise_7_1_11 {R : Type*} [Ring R] [IsDomain R]
+  {x : R} (hx : x^2 = 1) : x = 1 ∨ x = -1 := by
+```lean4
+theorem exercise_7_1_11 {R : Type*} [Ring R] [IsDomain R]
+  {x : R} (hx : x^2 = 1) : x = 1 ∨ x = -1 := by
+```lean4
+theorem exercise_7_1_11 {R : Type*} [Ring R] [IsDomain R]
+  {x : R} (hx : x^2 = 1) : x = 1 ∨ x = -1 := by
+```lean4
+theorem exercise_7
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_7_1_11 {R : Type*} [Ring R] [IsDomain R]
+  {x : R} (hx : x^2 = 1) : x = 1 ∨ x = -1 := by
+  apply or_iff_not_imp_right.mpr
+  intro h
+  apply eq_of_sub_eq_zero
+  apply mul_left_cancel₀ (sub_ne_zero.mpr h)
+  simp_all [sub_mul, mul_sub, mul_one, mul_neg, sub_neg_eq_add, add_comm]
+  <;> ring_nf at * <;> simp_all
+  <;> omega
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_7_1_11 {R : Type*} [Ring R] [IsDomain R]
+  {x : R} (hx : x^2 = 1) : x = 1 ∨ x = -1 := by
+  apply or_iff_not_imp_right.mpr
+  intro h
+  apply eq_of_sub_eq_zero
+  apply mul_left_cancel₀ (sub_ne_zero.mpr h)
+  simp_all [sub_mul, mul_sub, mul_one, mul_neg, sub_neg_eq_add, add_comm]
+  <;> ring_nf at * <;> simp_all
+  <;> omega
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 9 (Lemma 254)
+  Statement: theorem exercise_7_1_11 {R : Type*} [Ring R] [IsDomain R]
+  {x : R} (hx : x^2 = ...
+================================================================================
+================================================================================
+PROOF #10 (Lemma ID: 52)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet valid
+Verify Time: 0.08744359016418457s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_4_4a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+  (f : α → β)
+  (s : Set α)
+  (h₁ : Continuous f)
+  (h₂ : Dense s)
+  : f '' Set.univ ⊆ closure (f '' s) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_4_4a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+  (f : α → β)
+  (s : Set α)
+  (h₁ : Continuous f)
+  (h₂ : Dense s)
+  : f '' Set.univ ⊆ closure (f '' s) :=
+```lean4
+theorem exercise_4_4a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+  (f : α → β)
+  (s : Set α)
+  (h₁ : Continuous f)
+  (h₂ : Dense s)
+  : f '' Set.univ ⊆ closure (f '' s) :=
+by
+  have h₃ : f '' Set.univ ⊆ closure (f '' s) := by
+    -- For any point y in the image of f over the entire space
+    rintro y ⟨x, hx, rfl⟩
+    -- Since s is dense in α, for any x, there exists a sequence in s converging to x
+    have : x ∈ closure s := h₂ x
+    -- The image of a convergent sequence under a continuous function is a convergent sequence
+    refine' mem_closure_image h₁.continuousAt this
+  exact h₃
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_4_4a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+  (f : α → β)
+  (s : Set α)
+  (h₁ : Continuous f)
+  (h₂ : Dense s)
+  : f '' Set.univ ⊆ closure (f '' s) := by
+  have h₃ : f '' Set.univ ⊆ closure (f '' s) := by
+    -- For any point y in the image of f over the entire space
+    rintro y ⟨x, hx, rfl⟩
+    -- Since s is dense in α, for any x, there exists a sequence in s converging to x
+    have : x ∈ closure s := h₂ x
+    -- The image of a convergent sequence under a continuous function is a convergent sequence
+    refine' mem_closure_image h₁.continuousAt this
+  exact h₃
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_4_4a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+  (f : α → β)
+  (s : Set α)
+  (h₁ : Continuous f)
+  (h₂ : Dense s)
+  : f '' Set.univ ⊆ closure (f '' s) := by
+  have h₃ : f '' Set.univ ⊆ closure (f '' s) := by
+    -- For any point y in the image of f over the entire space
+    rintro y ⟨x, hx, rfl⟩
+    -- Since s is dense in α, for any x, there exists a sequence in s converging to x
+    have : x ∈ closure s := h₂ x
+    -- The image of a convergent sequence under a continuous function is a convergent sequence
+    refine' mem_closure_image h₁.continuousAt this
+  exact h₃
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 10 (Lemma 52)
+  Statement: theorem exercise_4_4a
+  {α : Type} [MetricSpace α]
+  {β : Type} [MetricSpace β]
+...
+================================================================================
+================================================================================
+PROOF #11 (Lemma ID: 164)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet valid
+Verify Time: 0.0685415267944336s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_3 {F V : Type*} [AddCommGroup V] [Field F]
+  [Module F V] {v : V} : -(-v) = v :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Fintype Complex Polynomial LinearMap FiniteDimensional Module Module.End
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_1_3 {F V : Type*} [AddCommGroup V] [Field F]
+  [Module F V] {v : V} : -(-v) = v := by sorry
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_1_3 {F V : Type*} [AddCommGroup V] [Field F]
+  [Module F V] {v : V} : -(-v) = v := by
+  rw [← sub_eq_zero] -- Rewrite the goal using the fact that -(-v) - v = 0
+  simp [sub_eq_add_neg] -- Simplify the expression using the definition of subtraction and negation
+  <;> aesop
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_3 {F V : Type*} [AddCommGroup V] [Field F]
+  [Module F V] {v : V} : -(-v) = v := by
+  rw [← sub_eq_zero] -- Rewrite the goal using the fact that -(-v) - v = 0
+  simp [sub_eq_add_neg] -- Simplify the expression using the definition of subtraction and negation
+  <;> aesop
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 11 (Lemma 164)
+  Statement: theorem exercise_1_3 {F V : Type*} [AddCommGroup V] [Field F]
+  [Module F V] {v ...
+================================================================================
+================================================================================
+PROOF #12 (Lemma ID: 243)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.22784423828125s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_4_5_17 {G : Type*} [Fintype G] [Group G]
+  (hG : card G = 105) :
+  Nonempty (Sylow 5 G) ∧ Nonempty (Sylow 7 G) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Fintype Subgroup Set Polynomial Ideal
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_4_5_17 {G : Type*} [Fintype G] [Group G]
+  (hG : card G = 105) :
+  Nonempty (Sylow 5 G) ∧ Nonempty (Sylow 7 G) := by
+```lean4
+theorem exercise_4_5_17 {G : Type*} [Fintype G] [Group G]
+  (hG : card G = 105) :
+  Nonempty (Sylow 5 G) ∧ Nonempty (Sylow 7 G) := by
+```lean4
+theorem exercise_4_5_17 {G : Type*} [Fintype G] [Group G]
+  (hG : card G = 105) :
+  Nonempty (Sylow 5 G) ∧ Nonempty (Sylow 7 G) := by
+```lean4
+theorem exercise_4_5_17 {G : Type*} [Fintype G] [Group G]
+  (hG : card G = 105) :
+  Nonempty (Sylow 5 G) ∧ Nonempty (Sylow 7 G) := by
+```lean4
+theorem exercise_4_5_17 {G : Type*} [Fintype G] [Group G]
+  (hG : card G = 105) :
+  Nonempty (Sylow 5 G) ∧ Nonempty (Sylow 7 G) := by
+```lean4
+theorem exercise_4_5_17 {G : Type*} [Fintype G] [Group G]
+  (hG : card G = 105) :
+  Nonempty (Sylow 5 G) ∧ Nonempty (Sylow 7 G) := by
+```lean4
+theorem exercise_4_5_17 {G : Type*} [Fintype G] [Group G]
+  (hG : card G = 105) :
+  Nonempty (Sylow 5 G) ∧ Nonempty (Sylow 7 G) := by
+```lean4
+theorem exercise_4_5_17 {G : Type*} [Fintype G] [Group G]
+  (hG : card G = 105) :
+  Non
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_4_5_17 {G : Type*} [Fintype G] [Group G]
+  (hG : card G = 105) :
+  Nonempty (Sylow 5 G) ∧ Nonempty (Sylow 7 G) := by
+  have h₁ : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+  have h₂ : Fact (Nat.Prime 7) := ⟨by norm_num⟩
+  have h₃ : card G = 105 := hG
+  have h₄ : 5 ∣ card G := by simp [h₃]
+  have h₅ : 7 ∣ card G := by simp [h₃]
+  -- Use the fact that 5 and 7 are primes and divide the order of G to apply the Sylow theorems
+  apply And.intro
+  -- Prove that there exists a Sylow 5-subgroup
+  {
+    apply Sylow.nonempty
+    <;> simp_all [Nat.dvd_iff_mod_eq_zero]
+    <;> omega
+  }
+  -- Prove that there exists a Sylow 7-subgroup
+  {
+    apply Sylow.nonempty
+    <;> simp_all [Nat.dvd_iff_mod_eq_zero]
+    <;> omega
+  }
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_4_5_17 {G : Type*} [Fintype G] [Group G]
+  (hG : card G = 105) :
+  Nonempty (Sylow 5 G) ∧ Nonempty (Sylow 7 G) := by
+  have h₁ : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+  have h₂ : Fact (Nat.Prime 7) := ⟨by norm_num⟩
+  have h₃ : card G = 105 := hG
+  have h₄ : 5 ∣ card G := by simp [h₃]
+  have h₅ : 7 ∣ card G := by simp [h₃]
+  -- Use the fact that 5 and 7 are primes and divide the order of G to apply the Sylow theorems
+  apply And.intro
+  -- Prove that there exists a Sylow 5-subgroup
+  {
+    apply Sylow.nonempty
+    <;> simp_all [Nat.dvd_iff_mod_eq_zero]
+    <;> omega
+  }
+  -- Prove that there exists a Sylow 7-subgroup
+  {
+    apply Sylow.nonempty
+    <;> simp_all [Nat.dvd_iff_mod_eq_zero]
+    <;> omega
+  }
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 12 (Lemma 243)
+  Statement: theorem exercise_4_5_17 {G : Type*} [Fintype G] [Group G]
+  (hG : card G = 105) ...
+================================================================================
+================================================================================
+PROOF #13 (Lemma ID: 59)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.0659029483795166s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_4_11a
+  {X : Type*} [MetricSpace X]
+  {Y : Type*} [MetricSpace Y]
+  (f : X → Y) (hf : UniformContinuous f)
+  (x : ℕ → X) (hx : CauchySeq x) :
+  CauchySeq (λ n => f (x n)) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_4_11a
+  {X : Type*} [MetricSpace X]
+  {Y : Type*} [MetricSpace Y]
+  (f : X → Y) (hf : UniformContinuous f)
+  (x : ℕ → X) (hx : CauchySeq x) :
+  CauchySeq (λ n => f (x n)) :=
+```lean4
+theorem exercise_4_11a
+  {X : Type*} [MetricSpace X]
+  {Y : Type*} [MetricSpace Y]
+  (f : X → Y) (hf : UniformContinuous f)
+  (x : ℕ → X) (hx : CauchySeq x) :
+  CauchySeq (λ n => f (x n)) :=
+```lean4
+theorem exercise_4_11a
+  {X : Type*} [MetricSpace X]
+  {Y : Type*} [MetricSpace Y]
+  (f : X → Y) (hf : UniformContinuous f)
+  (x : ℕ → X) (hx : CauchySeq x) :
+  CauchySeq (λ n => f (x n)) :=
+by
+  apply hf.comp_cauchySeq hx
+  <;> assumption
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_4_11a
+  {X : Type*} [MetricSpace X]
+  {Y : Type*} [MetricSpace Y]
+  (f : X → Y) (hf : UniformContinuous f)
+  (x : ℕ → X) (hx : CauchySeq x) :
+  CauchySeq (λ n => f (x n)) :=
+by
+  apply hf.comp_cauchySeq hx
+  <;> assumption
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_4_11a
+  {X : Type*} [MetricSpace X]
+  {Y : Type*} [MetricSpace Y]
+  (f : X → Y) (hf : UniformContinuous f)
+  (x : ℕ → X) (hx : CauchySeq x) :
+  CauchySeq (λ n => f (x n)) :=
+by
+  apply hf.comp_cauchySeq hx
+  <;> assumption
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 13 (Lemma 59)
+  Statement: theorem exercise_4_11a
+  {X : Type*} [MetricSpace X]
+  {Y : Type*} [MetricSpace ...
+================================================================================
+================================================================================
+PROOF #14 (Lemma ID: 29)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.4129481315612793s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+```lean4
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+```lean4
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+```lean4
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+```lean4
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+```lean4
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+```lean4
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+```lean4
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+```lean4
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+```lean4
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+  intro h
+  have h₀ := h 1
+  obtain ⟨y, hy₁, hy₂⟩ := h₀
+  have h₁ := mul_self_pos.mpr (sub_ne_zero.mpr hy₁)
+  nlinarith [sq_nonneg (y - 1), sq_nonneg (y + 1), sq_nonneg (y * y - 1)]
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 := by
+  intro h
+  have h₀ := h 1
+  obtain ⟨y, hy₁, hy₂⟩ := h₀
+  have h₁ := mul_self_pos.mpr (sub_ne_zero.mpr hy₁)
+  nlinarith [sq_nonneg (y - 1), sq_nonneg (y + 1), sq_nonneg (y * y - 1)]
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 14 (Lemma 29)
+  Statement: theorem exercise_1_18b
+  : ¬ ∀ (x : ℝ), ∃ (y : ℝ), y ≠ 0 ∧ x * y = 0 :=
+================================================================================
+================================================================================
+PROOF #15 (Lemma ID: 129)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet valid
+Verify Time: 0.05448174476623535s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_2_126 {E : Set ℝ}
+  (hE : ¬ Set.Countable E) : ∃ (p : ℝ), ClusterPt p (𝓟 E) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Filter Real Function
+open scoped Topology
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_2_126 {E : Set ℝ}
+  (hE : ¬ Set.Countable E) : ∃ (p : ℝ), ClusterPt p (𝓟 E) := by
+```lean4
+theorem exercise_2_126 {E : Set ℝ}
+  (hE : ¬ Set.Countable E) : ∃ (p : ℝ), ClusterPt p (𝓟 E) := by
+```lean4
+theorem exercise_2_126 {E : Set ℝ}
+  (hE : ¬ Set.Countable E) : ∃ (p : ℝ), ClusterPt p (𝓟 E) := by
+```lean4
+theorem exercise_2_126 {E : Set ℝ}
+  (hE : ¬ Set.Countable E) : ∃ (p : ℝ), ClusterPt p (𝓟 E) := by
+```lean4
+theorem exercise_2_126 {E : Set ℝ}
+  (hE : ¬ Set.Countable E) : ∃ (p : ℝ), ClusterPt p (𝓟 E) := by
+```lean4
+theorem exercise_2_126 {E : Set ℝ}
+  (hE : ¬ Set.Countable E) : ∃ (p : ℝ), ClusterPt p (𝓟 E) := by
+```lean4
+theorem exercise_2_126 {E : Set ℝ}
+  (hE : ¬ Set.Countable E) : ∃ (p : ℝ), ClusterPt p (𝓟 E) := by
+```lean4
+theorem exercise_2_126 {E : Set ℝ}
+  (hE : ¬ Set.Countable E) : ∃ (p : ℝ), ClusterPt p (𝓟 E) := by
+```lean4
+theorem exercise_2_126 {E : Set ℝ}
+  (hE : ¬ Set.Countable E) : ∃ (p : ℝ), ClusterPt p (𝓟 E) := by
+```lean4
+theorem exercise_2_126 {E : Set ℝ}
+  (hE : ¬ Set.Countable E) : ∃ (p : ℝ),
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_2_126 {E : Set ℝ}
+  (hE : ¬ Set.Countable E) : ∃ (p : ℝ), ClusterPt p (𝓟 E) := by
+  -- Use the fact that E is not countable to find a limit point p in E
+  have h : ∃ (p : ℝ), p ∈ closure E := by
+    by_contra! h'
+    have h'' : E = ∅ := by
+      apply Set.eq_empty_of_forall_not_mem
+      intro x hx
+      exact h' x (subset_closure hx)
+    rw [h''] at hE
+    exact hE (Set.countable_empty)
+  -- Obtain the limit point p from the existence proof
+  rcases h with ⟨p, hp⟩
+  -- Show that p is a cluster point of E
+  refine' ⟨p, _⟩
+  -- Use the fact that p is in the closure of E to show it is a cluster point
+  exact mem_closure_iff_clusterPt.mp hp
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_2_126 {E : Set ℝ}
+  (hE : ¬ Set.Countable E) : ∃ (p : ℝ), ClusterPt p (𝓟 E) := by
+  -- Use the fact that E is not countable to find a limit point p in E
+  have h : ∃ (p : ℝ), p ∈ closure E := by
+    by_contra! h'
+    have h'' : E = ∅ := by
+      apply Set.eq_empty_of_forall_not_mem
+      intro x hx
+      exact h' x (subset_closure hx)
+    rw [h''] at hE
+    exact hE (Set.countable_empty)
+  -- Obtain the limit point p from the existence proof
+  rcases h with ⟨p, hp⟩
+  -- Show that p is a cluster point of E
+  refine' ⟨p, _⟩
+  -- Use the fact that p is in the closure of E to show it is a cluster point
+  exact mem_closure_iff_clusterPt.mp hp
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 15 (Lemma 129)
+  Statement: theorem exercise_2_126 {E : Set ℝ}
+  (hE : ¬ Set.Countable E) : ∃ (p : ℝ), Clust...
+================================================================================
+================================================================================
+PROOF #16 (Lemma ID: 196)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet valid
+Verify Time: 0.1401526927947998s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_16 {G : Type*} [Group G]
+  (x : G) (hx : x ^ 2 = 1) :
+  orderOf x = 1 ∨ orderOf x = 2 :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Fintype Subgroup Set Polynomial Ideal
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_16 {G : Type*} [Group G]
+  (x : G) (hx : x ^ 2 = 1) :
+  orderOf x = 1 ∨ orderOf x = 2 := by
+```lean4
+theorem exercise_1_1_16 {G : Type*} [Group G]
+  (x : G) (hx : x ^ 2 = 1) :
+  orderOf x = 1 ∨ orderOf x = 2 := by
+```lean4
+theorem exercise_1_1_16 {G : Type*} [Group G]
+  (x : G) (hx : x ^ 2 = 1) :
+  orderOf x = 1 ∨ orderOf x = 2 := by
+```lean4
+theorem exercise_1_1_16 {G : Type*} [Group G]
+  (x : G) (hx : x ^ 2 = 1) :
+  orderOf x = 1 ∨ orderOf x = 2 := by
+```lean4
+theorem exercise_1_1_16 {G : Type*} [Group G]
+  (x : G) (hx : x ^ 2 = 1) :
+  orderOf x = 1 ∨ orderOf x = 2 := by
+```lean4
+theorem exercise_1_1_16 {G : Type*} [Group G]
+  (x : G) (hx : x ^ 2 = 1) :
+  orderOf x = 1 ∨ orderOf x = 2 := by
+```lean4
+theorem exercise_1_1_16 {G : Type*} [Group G]
+  (x : G) (hx : x ^ 2 = 1) :
+  orderOf x = 1 ∨ orderOf x = 2 := by
+```lean4
+theorem exercise_1_1_16 {G : Type*} [Group G]
+  (x : G) (hx : x ^ 2 = 1) :
+  orderOf x = 1 ∨ orderOf x = 2 := by
+```lean4
+theorem exercise_1_1_16 {G : Type*} [Group G]
+  (x : G) (hx : x ^ 2 = 1) :
+  orderOf x = 1
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_16 {G : Type*} [Group G]
+  (x : G) (hx : x ^ 2 = 1) :
+  orderOf x = 1 ∨ orderOf x = 2 := by
+  have hx' : orderOf x ∣ 2 := orderOf_dvd_of_pow_eq_one hx
+  rw [Nat.dvd_prime Nat.prime_two] at hx'
+  cases' hx' with h h <;> simp_all [orderOf_eq_one_iff]
+  <;> aesop
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_16 {G : Type*} [Group G]
+  (x : G) (hx : x ^ 2 = 1) :
+  orderOf x = 1 ∨ orderOf x = 2 := by
+  have hx' : orderOf x ∣ 2 := orderOf_dvd_of_pow_eq_one hx
+  rw [Nat.dvd_prime Nat.prime_two] at hx'
+  cases' hx' with h h <;> simp_all [orderOf_eq_one_iff]
+  <;> aesop
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 16 (Lemma 196)
+  Statement: theorem exercise_1_1_16 {G : Type*} [Group G]
+  (x : G) (hx : x ^ 2 = 1) :
+  ord...
+================================================================================
+================================================================================
+PROOF #17 (Lemma ID: 218)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet valid
+Verify Time: 0.09298396110534668s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_3_1_22b {G : Type*} [Group G] (I : Type*)
+  (H : I → Subgroup G) (hH : ∀ i : I, Normal (H i)) :
+  Normal (⨅ (i : I), H i) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Fintype Subgroup Set Polynomial Ideal
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_3_1_22b {G : Type*} [Group G] (I : Type*)
+  (H : I → Subgroup G) (hH : ∀ i : I, Normal (H i)) :
+  Normal (⨅ (i : I), H i) := by
+```lean4
+theorem exercise_3_1_22b {G : Type*} [Group G] (I : Type*)
+  (H : I → Subgroup G) (hH : ∀ i : I, Normal (H i)) :
+  Normal (⨅ (i : I), H i) := by
+```lean4
+theorem exercise_3_1_22b {G : Type*} [Group G] (I : Type*)
+  (H : I → Subgroup G) (hH : ∀ i : I, Normal (H i)) :
+  Normal (⨅ (i : I), H i) := by
+```lean4
+theorem exercise_3_1_22b {G : Type*} [Group G] (I : Type*)
+  (H : I → Subgroup G) (hH : ∀ i : I, Normal (H i)) :
+  Normal (⨅ (i : I), H i) := by
+```lean4
+theorem exercise_3_1_22b {G : Type*} [Group G] (I : Type*)
+  (H : I → Subgroup G) (hH : ∀ i : I, Normal (H i)) :
+  Normal (⨅ (i : I), H i) := by
+```lean4
+theorem exercise_3_1_22b {G : Type*} [Group G] (I : Type*)
+  (H : I → Subgroup G) (hH : ∀ i : I, Normal (H i)) :
+  Normal (⨅ (i : I), H i) := by
+```lean4
+theorem exercise_3_1_22b {G : Type*} [Group G] (I : Type*)
+  (H : I → Subgroup G) (hH : ∀ i : I, Normal (H i)) :
+  Normal (⨅ (i : I), H i) :=
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_3_1_22b {G : Type*} [Group G] (I : Type*)
+  (H : I → Subgroup G) (hH : ∀ i : I, Normal (H i)) :
+  Normal (⨅ (i : I), H i) := by
+  refine' { conj_mem := fun a ha g => _ }
+  simp only [Subgroup.mem_iInf] at ha ⊢
+  intro i
+  have h := ha i
+  exact Normal.conj_mem (hH i) a h g
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_3_1_22b {G : Type*} [Group G] (I : Type*)
+  (H : I → Subgroup G) (hH : ∀ i : I, Normal (H i)) :
+  Normal (⨅ (i : I), H i) := by
+  refine' { conj_mem := fun a ha g => _ }
+  simp only [Subgroup.mem_iInf] at ha ⊢
+  intro i
+  have h := ha i
+  exact Normal.conj_mem (hH i) a h g
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 17 (Lemma 218)
+  Statement: theorem exercise_3_1_22b {G : Type*} [Group G] (I : Type*)
+  (H : I → Subgroup G...
+================================================================================
+================================================================================
+PROOF #18 (Lemma ID: 38)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet valid
+Verify Time: 0.042391061782836914s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_3_1a
+  (f : ℕ → ℝ)
+  (h : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => f n) atTop (𝓝 a))
+  : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => |f n|) atTop (𝓝 a) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_3_1a
+  (f : ℕ → ℝ)
+  (h : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => f n) atTop (𝓝 a))
+  : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => |f n|) atTop (𝓝 a) :=
+```lean4
+theorem exercise_3_1a
+  (f : ℕ → ℝ)
+  (h : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => f n) atTop (𝓝 a))
+  : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => |f n|) atTop (𝓝 a) := by
+```lean4
+theorem exercise_3_1a
+  (f : ℕ → ℝ)
+  (h : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => f n) atTop (𝓝 a))
+  : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => |f n|) atTop (𝓝 a) := by
+```lean4
+theorem exercise_3_1a
+  (f : ℕ → ℝ)
+  (h : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => f n) atTop (𝓝 a))
+  : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => |f n|) atTop (𝓝 a) := by
+```lean4
+theorem exercise_3_1a
+  (f : ℕ → ℝ)
+  (h : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => f n) atTop (𝓝 a))
+  : ∃ (a : ℝ), Tendsto (λ (n :
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_3_1a
+  (f : ℕ → ℝ)
+  (h : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => f n) atTop (𝓝 a))
+  : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => |f n|) atTop (𝓝 a) := by
+  obtain ⟨a, hfa⟩ := h
+  use |a|
+  apply Tendsto.abs hfa
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_3_1a
+  (f : ℕ → ℝ)
+  (h : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => f n) atTop (𝓝 a))
+  : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => |f n|) atTop (𝓝 a) := by
+  obtain ⟨a, hfa⟩ := h
+  use |a|
+  apply Tendsto.abs hfa
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 18 (Lemma 38)
+  Statement: theorem exercise_3_1a
+  (f : ℕ → ℝ)
+  (h : ∃ (a : ℝ), Tendsto (λ (n : ℕ) => f n)...
+================================================================================
+================================================================================
+PROOF #19 (Lemma ID: 27)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.3356928825378418s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_17
+  (n : ℕ)
+  (x y : EuclideanSpace ℝ (Fin n)) -- R^n
+  : ‖x + y‖^2 + ‖x - y‖^2 = 2*‖x‖^2 + 2*‖y‖^2 :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_1_17
+  (n : ℕ)
+  (x y : EuclideanSpace ℝ (Fin n)) -- R^n
+  : ‖x + y‖^2 + ‖x - y‖^2 = 2*‖x‖^2 + 2*‖y‖^2 := by sorry
+  have h1 : ‖x + y‖^2 + ‖x - y‖^2 = 2*‖x‖^2 + 2*‖y‖^2 := by sorry
+  -- Use the linearity of the norm squared function and the properties of Euclidean spaces.
+  <;> simp [norm_add_sq_real, norm_sub_sq_real, mul_add, add_mul, mul_comm, mul_left_comm]
+  <;> ring
+  <;> simp_all [Real.norm_eq_abs]
+  <;> linarith
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_1_17
+  (n : ℕ)
+  (x y : EuclideanSpace ℝ (Fin n)) -- R^n
+  : ‖x + y‖^2 + ‖x - y‖^2 = 2*‖x‖^2 + 2*‖y‖^2 := by
+  have h1 : ‖x + y‖^2 + ‖x - y‖^2 = 2*‖x‖^2 + 2*‖y‖^2 := by
+    simp [norm_add_sq_real, norm_sub_sq_real, mul_add, add_mul, mul_comm, mul_left_comm]
+    <;> ring
+    <;> simp_all [Real.norm_eq_abs]
+    <;> linarith
+  exact h1
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_17
+  (n : ℕ)
+  (x y : EuclideanSpace ℝ (Fin n)) -- R^n
+  : ‖x + y‖^2 + ‖x - y‖^2 = 2*‖x‖^2 + 2*‖y‖^2 := by
+  have h1 : ‖x + y‖^2 + ‖x - y‖^2 = 2*‖x‖^2 + 2*‖y‖^2 := by
+    simp [norm_add_sq_real, norm_sub_sq_real, mul_add, add_mul, mul_comm, mul_left_comm]
+    <;> ring
+    <;> simp_all [Real.norm_eq_abs]
+    <;> linarith
+  exact h1
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 19 (Lemma 27)
+  Statement: theorem exercise_1_17
+  (n : ℕ)
+  (x y : EuclideanSpace ℝ (Fin n)) -- R^n
+  : ‖x...
+================================================================================
+================================================================================
+PROOF #20 (Lemma ID: 192)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet valid
+Verify Time: 0.035891056060791016s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_3 (n : ℤ) :
+  ∀ (a b c : ℤ), (a+b)+c ≡ a+(b+c) [ZMOD n] :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Fintype Subgroup Set Polynomial Ideal
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_3 (n : ℤ) :
+  ∀ (a b c : ℤ), (a+b)+c ≡ a+(b+c) [ZMOD n] :=
+```lean4
+theorem exercise_1_1_3 (n : ℤ) :
+  ∀ (a b c : ℤ), (a+b)+c ≡ a+(b+c) [ZMOD n] :=
+```lean4
+theorem exercise_1_1_3 (n : ℤ) :
+  ∀ (a b c : ℤ), (a+b)+c ≡ a+(b+c) [ZMOD n] :=
+by
+  intro a b c
+  simp [Int.modEq_iff_dvd, add_assoc, add_comm, add_left_comm]
+  <;> ring_nf
+  <;> exact Int.emod_emod (a + b + c) n
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_3 (n : ℤ) :
+  ∀ (a b c : ℤ), (a+b)+c ≡ a+(b+c) [ZMOD n] :=
+by
+  intro a b c
+  simp [Int.modEq_iff_dvd, add_assoc, add_comm, add_left_comm]
+  <;> ring_nf
+  <;> exact Int.emod_emod (a + b + c) n
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_3 (n : ℤ) :
+  ∀ (a b c : ℤ), (a+b)+c ≡ a+(b+c) [ZMOD n] :=
+by
+  intro a b c
+  simp [Int.modEq_iff_dvd, add_assoc, add_comm, add_left_comm]
+  <;> ring_nf
+  <;> exact Int.emod_emod (a + b + c) n
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 20 (Lemma 192)
+  Statement: theorem exercise_1_1_3 (n : ℤ) :
+  ∀ (a b c : ℤ), (a+b)+c ≡ a+(b+c) [ZMOD n] :=
+================================================================================
+================================================================================
+PROOF #21 (Lemma ID: 123)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet valid
+Verify Time: 0.10126924514770508s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_2_29 (M : Type*) [MetricSpace M]
+  (O C : Set (Set M))
+  (hO : O = {s | IsOpen s})
+  (hC : C = {s | IsClosed s}) :
+  ∃ f : O → C, Bijective f :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Filter Real Function
+open scoped Topology
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_2_29 (M : Type*) [MetricSpace M]
+  (O C : Set (Set M))
+  (hO : O = {s | IsOpen s})
+  (hC : C = {s | IsClosed s}) :
+  ∃ f : O → C, Bijective f := by
+```lean4
+theorem exercise_2_29 (M : Type*) [MetricSpace M]
+  (O C : Set (Set M))
+  (hO : O = {s | IsOpen s})
+  (hC : C = {s | IsClosed s}) :
+  ∃ f : O → C, Bijective f := by
+```lean4
+theorem exercise_2_29 (M : Type*) [MetricSpace M]
+  (O C : Set (Set M))
+  (hO : O = {s | IsOpen s})
+  (hC : C = {s | IsClosed s}) :
+  ∃ f : O → C, Bijective f := by
+```lean4
+theorem exercise_2_29 (M : Type*) [MetricSpace M]
+  (O C : Set (Set M))
+  (hO : O = {s | IsOpen s})
+  (hC : C = {s | IsClosed s}) :
+  ∃ f : O → C, Bijective f := by
+```lean4
+theorem exercise_2_29 (M : Type*) [MetricSpace M]
+  (O C : Set (Set M))
+  (hO : O = {s | IsOpen s})
+  (hC : C = {s | IsClosed s}) :
+  ∃ f : O → C, Bijective f := by
+```lean4
+theorem exercise_2_29 (M : Type*) [MetricSpace M]
+  (O C : Set (Set M))
+  (hO : O = {s | IsOpen s})
+  (hC : C = {s | IsClosed s}) :
+  ∃ f : O → C, Bijective f := by
+```lean4
+theorem exercise_2_29 (M : Type*) [MetricSpace M]
+  (O C : Set (Set M))
+  (hO : O = {s | Is
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_2_29 (M : Type*) [MetricSpace M]
+  (O C : Set (Set M))
+  (hO : O = {s | IsOpen s})
+  (hC : C = {s | IsClosed s}) :
+  ∃ f : O → C, Bijective f := by
+  rw [hO, hC]
+  exact ⟨fun s => ⟨sᶜ, isClosed_compl_iff.mpr s.2⟩,
+    Function.bijective_iff_has_inverse.mpr ⟨fun s => ⟨sᶜ, isOpen_compl_iff.mpr s.2⟩,
+      fun s => by simp, fun s => by simp⟩⟩
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_2_29 (M : Type*) [MetricSpace M]
+  (O C : Set (Set M))
+  (hO : O = {s | IsOpen s})
+  (hC : C = {s | IsClosed s}) :
+  ∃ f : O → C, Bijective f := by
+  rw [hO, hC]
+  exact ⟨fun s => ⟨sᶜ, isClosed_compl_iff.mpr s.2⟩,
+    Function.bijective_iff_has_inverse.mpr ⟨fun s => ⟨sᶜ, isOpen_compl_iff.mpr s.2⟩,
+      fun s => by simp, fun s => by simp⟩⟩
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 21 (Lemma 123)
+  Statement: theorem exercise_2_29 (M : Type*) [MetricSpace M]
+  (O C : Set (Set M))
+  (hO : ...
+================================================================================
+================================================================================
+PROOF #22 (Lemma ID: 201)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.37125492095947266s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_22b {G: Type*} [Group G] (a b : G) :
+  orderOf (a * b) = orderOf (b * a) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Fintype Subgroup Set Polynomial Ideal
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_22b {G: Type*} [Group G] (a b : G) :
+  orderOf (a * b) = orderOf (b * a) := by
+```lean4
+theorem exercise_1_1_22b {G: Type*} [Group G] (a b : G) :
+  orderOf (a * b) = orderOf (b * a) := by
+```lean4
+theorem exercise_1_1_22b {G: Type*} [Group G] (a b : G) :
+  orderOf (a * b) = orderOf (b * a) := by
+```lean4
+theorem exercise_1_1_22b {G: Type*} [Group G] (a b : G) :
+  orderOf (a * b) = orderOf (b * a) := by
+```lean4
+theorem exercise_1_1_22b {G: Type*} [Group G] (a b : G) :
+  orderOf (a * b) = orderOf (b * a) := by
+```lean4
+theorem exercise_1_1_22b {G: Type*} [Group G] (a b : G) :
+  orderOf (a * b) = orderOf (b * a) := by
+```lean4
+theorem exercise_1_1_22b {G: Type*} [Group G] (a b : G) :
+  orderOf (a * b) = orderOf (b * a) := by
+```lean4
+theorem exercise_1_1_22b {G: Type*} [Group G] (a b : G) :
+  orderOf (a * b) = orderOf (b * a) := by
+```lean4
+theorem exercise_1_1_22b {G: Type*} [Group G] (a b : G) :
+  orderOf (a * b) = orderOf (b * a) := by
+```lean4
+theorem exercise_1_1_22b {G: Type*} [Group G] (a b : G) :
+  orderOf (a * b) = orderOf (b * a) := by
+```lean4
+theorem exercise_1_1_22b {G: Type*} [Group G] (a b : G) :
+  orderOf (a * b) = orderOf (b * a) :=
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_22b {G: Type*} [Group G] (a b : G) :
+  orderOf (a * b) = orderOf (b * a) := by
+  have h1 : orderOf (a * b) = orderOf (b * a) := by
+    -- Use the fact that the order of an element is the same as the order of its inverse
+    rw [← orderOf_injective (MulAut.conj a).toMonoidHom (MulAut.conj a).injective (b * a)]
+    -- Simplify the expression using properties of group actions and conjugation
+    simp [MulAut.conj_apply, mul_assoc, mul_left_inj, mul_right_inj]
+  exact h1
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_22b {G: Type*} [Group G] (a b : G) :
+  orderOf (a * b) = orderOf (b * a) := by
+  have h1 : orderOf (a * b) = orderOf (b * a) := by
+    -- Use the fact that the order of an element is the same as the order of its inverse
+    rw [← orderOf_injective (MulAut.conj a).toMonoidHom (MulAut.conj a).injective (b * a)]
+    -- Simplify the expression using properties of group actions and conjugation
+    simp [MulAut.conj_apply, mul_assoc, mul_left_inj, mul_right_inj]
+  exact h1
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 22 (Lemma 201)
+  Statement: theorem exercise_1_1_22b {G: Type*} [Group G] (a b : G) :
+  orderOf (a * b) = or...
+================================================================================
+================================================================================
+PROOF #23 (Lemma ID: 125)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet valid
+Verify Time: 0.028034210205078125s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_2_41 (m : ℕ) {X : Type*} [NormedSpace ℝ ((Fin m) → ℝ)] :
+  IsCompact (Metric.closedBall 0 1) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Filter Real Function
+open scoped Topology
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_2_41 (m : ℕ) {X : Type*} [NormedSpace ℝ ((Fin m) → ℝ)] :
+  IsCompact (Metric.closedBall 0 1) := by sorry
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_2_41 (m : ℕ) {X : Type*} [NormedSpace ℝ ((Fin m) → ℝ)] :
+  IsCompact (Metric.closedBall 0 1) := by
+  apply isCompact_closedBall
+  <;> norm_num
+  <;> simp
+  <;> exact isCompact_closedBall 0 1
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_2_41 (m : ℕ) {X : Type*} [NormedSpace ℝ ((Fin m) → ℝ)] :
+  IsCompact (Metric.closedBall 0 1) := by
+  apply isCompact_closedBall
+  <;> norm_num
+  <;> simp
+  <;> exact isCompact_closedBall 0 1
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 23 (Lemma 125)
+  Statement: theorem exercise_2_41 (m : ℕ) {X : Type*} [NormedSpace ℝ ((Fin m) → ℝ)] :
+  IsCo...
+================================================================================

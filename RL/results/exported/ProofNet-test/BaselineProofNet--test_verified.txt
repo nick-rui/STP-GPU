@@ -1,0 +1,1450 @@
+================================================================================
+PROOF RESULTS SUMMARY
+================================================================================
+Total Proofs: 20
+✓ Verified: 20 (100.0%)
+✗ Failed: 0 (0.0%)
+
+20 / 186  pass@1
+================================================================================
+================================================================================
+PROOF #1 (Lemma ID: 68)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.1957077980041504s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_2_3_2 {G : Type*} [Group G] (a b : G) :
+    ∃ g : G, b* a = g * a * b * g⁻¹ :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Function Fintype Subgroup Ideal Polynomial Submodule Zsqrtd
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_2_3_2 {G : Type*} [Group G] (a b : G) :
+    ∃ g : G, b* a = g * a * b * g⁻¹ := by
+  refine ⟨b,?_⟩
+  simp [mul_assoc, mul_left_inj, mul_right_inj]
+  <;> rw [← mul_assoc]
+  <;> simp [mul_assoc, mul_left_inj, mul_right_inj]
+  <;> rw [← mul_assoc]
+  <;> simp [mul_assoc, mul_left_inj, mul_right_inj]
+  <;> rw [← mul_assoc]
+  <;> simp [mul_assoc, mul_left_inj, mul_right_inj]
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_2_3_2 {G : Type*} [Group G] (a b : G) :
+    ∃ g : G, b* a = g * a * b * g⁻¹ := by
+  use b
+  simp_all [mul_assoc, mul_left_inj, mul_right_inj]
+  <;> rw [← mul_assoc]
+  <;> simp_all [mul_assoc, mul_left_inj, mul_right_inj]
+  <;> rw [← mul_assoc]
+  <;> simp_all [mul_assoc, mul_left_inj, mul_right_inj]
+  <;> rw [← mul_assoc]
+  <;> simp_all [mul_assoc, mul_left_inj, mul_right_inj]
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_2_3_2 {G : Type*} [Group G] (a b : G) :
+    ∃ g : G, b* a = g * a * b * g⁻¹ := by
+  use b
+  simp_all [mul_assoc, mul_left_inj, mul_right_inj]
+  <;> rw [← mul_assoc]
+  <;> simp_all [mul_assoc, mul_left_inj, mul_right_inj]
+  <;> rw [← mul_assoc]
+  <;> simp_all [mul_assoc, mul_left_inj, mul_right_inj]
+  <;> rw [← mul_assoc]
+  <;> simp_all [mul_assoc, mul_left_inj, mul_right_inj]
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 1 (Lemma 68)
+  Statement: theorem exercise_2_3_2 {G : Type*} [Group G] (a b : G) :
+    ∃ g : G, b* a = g *...
+================================================================================
+================================================================================
+PROOF #2 (Lemma ID: 13)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.2520270347595215s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_17
+  (n : ℕ)
+  (x y : EuclideanSpace ℝ (Fin n)) -- R^n
+  : ‖x + y‖^2 + ‖x - y‖^2 = 2*‖x‖^2 + 2*‖y‖^2 :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_1_17
+  (n : ℕ)
+  (x y : EuclideanSpace ℝ (Fin n)) -- R^n
+  : ‖x + y‖^2 + ‖x - y‖^2 = 2*‖x‖^2 + 2*‖y‖^2 :=
+by
+  simp [norm_add_sq_real, norm_sub_sq_real, mul_add, add_mul, mul_comm, mul_left_comm]
+  <;> ring
+  <;> simp [norm_eq_sqrt_real_inner, inner_add_left, inner_add_right, inner_sub_left, inner_sub_right]
+  <;> ring
+  <;> field_simp [sqrt_eq_iff_sq_eq, add_comm]
+  <;> ring
+  <;> simp [mul_comm]
+  <;> ring
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_1_17
+  (n : ℕ)
+  (x y : EuclideanSpace ℝ (Fin n)) -- R^n
+  : ‖x + y‖^2 + ‖x - y‖^2 = 2*‖x‖^2 + 2*‖y‖^2 := by
+  simp [norm_add_sq_real, norm_sub_sq_real, mul_add, add_mul, mul_comm, mul_left_comm]
+  <;> ring
+  <;> simp [norm_eq_sqrt_real_inner, inner_add_left, inner_add_right, inner_sub_left, inner_sub_right]
+  <;> ring
+  <;> field_simp [sqrt_eq_iff_sq_eq, add_comm]
+  <;> ring
+  <;> simp [mul_comm]
+  <;> ring
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_17
+  (n : ℕ)
+  (x y : EuclideanSpace ℝ (Fin n)) -- R^n
+  : ‖x + y‖^2 + ‖x - y‖^2 = 2*‖x‖^2 + 2*‖y‖^2 := by
+  simp [norm_add_sq_real, norm_sub_sq_real, mul_add, add_mul, mul_comm, mul_left_comm]
+  <;> ring
+  <;> simp [norm_eq_sqrt_real_inner, inner_add_left, inner_add_right, inner_sub_left, inner_sub_right]
+  <;> ring
+  <;> field_simp [sqrt_eq_iff_sq_eq, add_comm]
+  <;> ring
+  <;> simp [mul_comm]
+  <;> ring
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 2 (Lemma 13)
+  Statement: theorem exercise_1_17
+  (n : ℕ)
+  (x y : EuclideanSpace ℝ (Fin n)) -- R^n
+  : ‖x...
+================================================================================
+================================================================================
+PROOF #3 (Lemma ID: 122)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.030294179916381836s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_4_5_17 {G : Type*} [Fintype G] [Group G]
+  (hG : card G = 105) :
+  Nonempty (Sylow 5 G) ∧ Nonempty (Sylow 7 G) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Fintype Subgroup Set Polynomial Ideal
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_4_5_17 {G : Type*} [Fintype G] [Group G]
+  (hG : card G = 105) :
+  Nonempty (Sylow 5 G) ∧ Nonempty (Sylow 7 G) := by
+  have h₁ : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+  have h₂ : Fact (Nat.Prime 7) := ⟨by norm_num⟩
+  constructor
+  apply Sylow.nonempty
+  apply Sylow.nonempty
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_4_5_17 {G : Type*} [Fintype G] [Group G]
+  (hG : card G = 105) :
+  Nonempty (Sylow 5 G) ∧ Nonempty (Sylow 7 G) := by
+  have h₁ : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+  have h₂ : Fact (Nat.Prime 7) := ⟨by norm_num⟩
+  constructor
+  · apply Sylow.nonempty
+  · apply Sylow.nonempty
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_4_5_17 {G : Type*} [Fintype G] [Group G]
+  (hG : card G = 105) :
+  Nonempty (Sylow 5 G) ∧ Nonempty (Sylow 7 G) := by
+  have h₁ : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+  have h₂ : Fact (Nat.Prime 7) := ⟨by norm_num⟩
+  constructor
+  · apply Sylow.nonempty
+  · apply Sylow.nonempty
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 3 (Lemma 122)
+  Statement: theorem exercise_4_5_17 {G : Type*} [Fintype G] [Group G]
+  (hG : card G = 105) ...
+================================================================================
+================================================================================
+PROOF #4 (Lemma ID: 114)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.06557106971740723s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_3_4_5b {G : Type*} [Group G] [IsSolvable G]
+  (H : Subgroup G) [Normal H] :
+  IsSolvable (G ⧸ H) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Fintype Subgroup Set Polynomial Ideal
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_3_4_5b {G : Type*} [Group G] [IsSolvable G]
+  (H : Subgroup G) [Normal H] :
+  IsSolvable (G ⧸ H) := by
+  have h1 : ∀ (G : Type*) [Group G], IsSolvable G := by sorry
+  have h2 : IsSolvable (G ⧸ H) := by sorry
+  exact h2
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_3_4_5b {G : Type*} [Group G] [IsSolvable G]
+  (H : Subgroup G) [Normal H] :
+  IsSolvable (G ⧸ H) := by
+  exact inferInstance
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_3_4_5b {G : Type*} [Group G] [IsSolvable G]
+  (H : Subgroup G) [Normal H] :
+  IsSolvable (G ⧸ H) := by
+  exact inferInstance
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 4 (Lemma 114)
+  Statement: theorem exercise_3_4_5b {G : Type*} [Group G] [IsSolvable G]
+  (H : Subgroup G) ...
+================================================================================
+================================================================================
+PROOF #5 (Lemma ID: 29)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.06369304656982422s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_4_11a
+  {X : Type*} [MetricSpace X]
+  {Y : Type*} [MetricSpace Y]
+  (f : X → Y) (hf : UniformContinuous f)
+  (x : ℕ → X) (hx : CauchySeq x) :
+  CauchySeq (λ n => f (x n)) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_4_11a
+  {X : Type*} [MetricSpace X]
+  {Y : Type*} [MetricSpace Y]
+  (f : X → Y) (hf : UniformContinuous f)
+  (x : ℕ → X) (hx : CauchySeq x) :
+  CauchySeq (λ n => f (x n)) := by
+  apply hf.comp_cauchySeq hx
+  <;> exact hf
+  <;> exact hx
+  <;> simp_all
+  <;> aesop
+```
+
+### Explanation of Lean 4 Proof Sketch
+
+1. **Apply `hf.comp_cauchySeq hx`**:
+   - This line applies the property that the uniform continuity of `f` (given by `hf`) preserves the Cauchyness of the sequence `x` (given by `hx`), yielding the Cauchyness of the composed sequence `λ n => f (x n)`.
+
+2. **Clarify Implications**:
+   - The proof is straightforward because `hf`, the uniform continuity of `f`, and `hx`, the Cauchyness of `x`, are directly given. Lean's typeclass system knows that `hf` is a morphism between the uniform spaces of `X` and `Y`, and `hx` is a Cauchy sequence in `X`.
+
+3. **Simplify with `simp_all` and `aesop`**:
+   - The `simp_all` tactic simplifies all goals, and `aesop` is used to automatically solve any remaining goals, though in this case, it is not necessary since the proof is very direct.
+
+The final Lean 4 sketch provides a clear, direct proof that leverages the properties of uniform continuity and Cauchy sequences.
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_4_11a
+  {X : Type*} [MetricSpace X]
+  {Y : Type*} [MetricSpace Y]
+  (f : X → Y) (hf : UniformContinuous f)
+  (x : ℕ → X) (hx : CauchySeq x) :
+  CauchySeq (λ n => f (x n)) := by
+  apply hf.comp_cauchySeq hx
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_4_11a
+  {X : Type*} [MetricSpace X]
+  {Y : Type*} [MetricSpace Y]
+  (f : X → Y) (hf : UniformContinuous f)
+  (x : ℕ → X) (hx : CauchySeq x) :
+  CauchySeq (λ n => f (x n)) := by
+  apply hf.comp_cauchySeq hx
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 5 (Lemma 29)
+  Statement: theorem exercise_4_11a
+  {X : Type*} [MetricSpace X]
+  {Y : Type*} [MetricSpace ...
+================================================================================
+================================================================================
+PROOF #6 (Lemma ID: 33)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.14198875427246094s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_5_3 {g : ℝ → ℝ} (hg : Continuous g)
+  (hg' : ∃ M : ℝ, ∀ x : ℝ, |deriv g x| ≤ M) :
+  ∃ N, ∀ ε > 0, ε < N → Function.Injective (λ x : ℝ => x + ε * g x) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_5_3 {g : ℝ → ℝ} (hg : Continuous g)
+  (hg' : ∃ M : ℝ, ∀ x : ℝ, |deriv g x| ≤ M) :
+  ∃ N, ∀ ε > 0, ε < N → Function.Injective (λ x : ℝ => x + ε * g x) := by
+  sorry
+```
+
+Here is a sketch of the proof in Lean 4:
+```lean4
+theorem exercise_5_3 {g : ℝ → ℝ} (hg : Continuous g)
+  (hg' : ∃ M : ℝ, ∀ x : ℝ, |deriv g x| ≤ M) :
+  ∃ N, ∀ ε > 0, ε < N → Function.Injective (λ x : ℝ => x + ε * g x) := by
+  use 0
+  intro ε hε1 hε2
+  have h1 : False := by
+    linarith
+  simp_all
+  <;> aesop
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_5_3 {g : ℝ → ℝ} (hg : Continuous g)
+  (hg' : ∃ M : ℝ, ∀ x : ℝ, |deriv g x| ≤ M) :
+  ∃ N, ∀ ε > 0, ε < N → Function.Injective (λ x : ℝ => x + ε * g x) := by
+  use 0
+  intro ε hε1 hε2
+  have h1 : False := by
+    linarith
+  simp_all
+  <;> aesop
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_5_3 {g : ℝ → ℝ} (hg : Continuous g)
+  (hg' : ∃ M : ℝ, ∀ x : ℝ, |deriv g x| ≤ M) :
+  ∃ N, ∀ ε > 0, ε < N → Function.Injective (λ x : ℝ => x + ε * g x) := by
+  use 0
+  intro ε hε1 hε2
+  have h1 : False := by
+    linarith
+  simp_all
+  <;> aesop
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 6 (Lemma 33)
+  Statement: theorem exercise_5_3 {g : ℝ → ℝ} (hg : Continuous g)
+  (hg' : ∃ M : ℝ, ∀ x : ℝ, ...
+================================================================================
+================================================================================
+PROOF #7 (Lemma ID: 74)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 10.873464584350586s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_10_1_13 {R : Type*} [Ring R] {x : R}
+  (hx : IsNilpotent x) : IsUnit (1 + x) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Function Fintype Subgroup Ideal Polynomial Submodule Zsqrtd
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_10_1_13 {R : Type*} [Ring R] {x : R}
+  (hx : IsNilpotent x) : IsUnit (1 + x) := by
+  have step1 : IsUnit (1 + x) := by
+    -- Since x is nilpotent, there exists a positive integer n such that x^n = 0.
+    exact?
+  exact step1
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_10_1_13 {R : Type*} [Ring R] {x : R}
+  (hx : IsNilpotent x) : IsUnit (1 + x) := by
+  have step1 : IsUnit (1 + x) := by
+    -- Since x is nilpotent, there exists a positive integer n such that x^n = 0.
+    exact?
+  exact step1
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_10_1_13 {R : Type*} [Ring R] {x : R}
+  (hx : IsNilpotent x) : IsUnit (1 + x) := by
+  have step1 : IsUnit (1 + x) := by
+    -- Since x is nilpotent, there exists a positive integer n such that x^n = 0.
+    exact?
+  exact step1
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 7 (Lemma 74)
+  Statement: theorem exercise_10_1_13 {R : Type*} [Ring R] {x : R}
+  (hx : IsNilpotent x) : I...
+================================================================================
+================================================================================
+PROOF #8 (Lemma ID: 98)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.1896815299987793s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_15 {G : Type*} [Group G] (as : List G) :
+  as.prod⁻¹ = (as.reverse.map (λ x => x⁻¹)).prod :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Fintype Subgroup Set Polynomial Ideal
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_15 {G : Type*} [Group G] (as : List G) :
+  as.prod⁻¹ = (as.reverse.map (λ x => x⁻¹)).prod := by
+  sorry
+  <;> simp_all [List.prod_reverse, List.map_reverse, mul_inv_rev]
+  <;> congr
+  <;> ext
+  <;> simp [mul_assoc]
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_15 {G : Type*} [Group G] (as : List G) :
+  as.prod⁻¹ = (as.reverse.map (λ x => x⁻¹)).prod := by
+  induction as with
+  | nil =>
+    simp
+  | cons a as ih =>
+    simp_all [List.prod_append, List.map_reverse, List.prod_cons, mul_inv_rev, List.map_cons,
+      List.reverse_cons, List.map]
+    <;> simp_all [mul_assoc, mul_inv_cancel_left]
+    <;> aesop
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_15 {G : Type*} [Group G] (as : List G) :
+  as.prod⁻¹ = (as.reverse.map (λ x => x⁻¹)).prod := by
+  induction as with
+  | nil =>
+    simp
+  | cons a as ih =>
+    simp_all [List.prod_append, List.map_reverse, List.prod_cons, mul_inv_rev, List.map_cons,
+      List.reverse_cons, List.map]
+    <;> simp_all [mul_assoc, mul_inv_cancel_left]
+    <;> aesop
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 8 (Lemma 98)
+  Statement: theorem exercise_1_1_15 {G : Type*} [Group G] (as : List G) :
+  as.prod⁻¹ = (as....
+================================================================================
+================================================================================
+PROOF #9 (Lemma ID: 147)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.06283164024353027s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_18_8a {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+  [LinearOrder Y] [OrderTopology Y] {f g : X → Y}
+  (hf : Continuous f) (hg : Continuous g) :
+  IsClosed {x | f x ≤ g x} :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Filter Set TopologicalSpace
+open scoped Topology
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_18_8a {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+  [LinearOrder Y] [OrderTopology Y] {f g : X → Y}
+  (hf : Continuous f) (hg : Continuous g) :
+  IsClosed {x | f x ≤ g x} := by
+  have h1 : IsClosed {x | f x ≤ g x} := by sorry
+  exact h1
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_18_8a {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+  [LinearOrder Y] [OrderTopology Y] {f g : X → Y}
+  (hf : Continuous f) (hg : Continuous g) :
+  IsClosed {x | f x ≤ g x} := by
+  have h1 : IsClosed {x | f x ≤ g x} := by
+    -- Use the fact that the preimage of a closed set under a continuous function is closed.
+    apply isClosed_le
+    exact hf
+    exact hg
+  exact h1
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_18_8a {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+  [LinearOrder Y] [OrderTopology Y] {f g : X → Y}
+  (hf : Continuous f) (hg : Continuous g) :
+  IsClosed {x | f x ≤ g x} := by
+  have h1 : IsClosed {x | f x ≤ g x} := by
+    -- Use the fact that the preimage of a closed set under a continuous function is closed.
+    apply isClosed_le
+    exact hf
+    exact hg
+  exact h1
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 9 (Lemma 147)
+  Statement: theorem exercise_18_8a {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+ ...
+================================================================================
+================================================================================
+PROOF #10 (Lemma ID: 109)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.13821029663085938s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_3_1_22a (G : Type*) [Group G] (H K : Subgroup G)
+  [Normal H] [Normal K] :
+  Normal (H ⊓ K) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Fintype Subgroup Set Polynomial Ideal
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_3_1_22a (G : Type*) [Group G] (H K : Subgroup G)
+  [Normal H] [Normal K] :
+  Normal (H ⊓ K) := by
+  exact?
+```
+
+Here is the Lean 4 code with `sorry` placeholders:
+
+```lean4
+theorem exercise_3_1_22a (G : Type*) [Group G] (H K : Subgroup G)
+  [Normal H] [Normal K] :
+  Normal (H ⊓ K) := by
+  exact
+    inferInstance
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_3_1_22a (G : Type*) [Group G] (H K : Subgroup G)
+  [Normal H] [Normal K] :
+  Normal (H ⊓ K) := by
+  apply inferInstance
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_3_1_22a (G : Type*) [Group G] (H K : Subgroup G)
+  [Normal H] [Normal K] :
+  Normal (H ⊓ K) := by
+  apply inferInstance
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 10 (Lemma 109)
+  Statement: theorem exercise_3_1_22a (G : Type*) [Group G] (H K : Subgroup G)
+  [Normal H] [...
+================================================================================
+================================================================================
+PROOF #11 (Lemma ID: 70)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.04327845573425293s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_3_2_7 {F : Type*} [Field F] {G : Type*} [Field G]
+    (φ : F →+* G) : Injective φ :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Function Fintype Subgroup Ideal Polynomial Submodule Zsqrtd
+open scoped BigOperators
+
+open RingHom
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_3_2_7 {F : Type*} [Field F] {G : Type*} [Field G]
+    (φ : F →+* G) : Injective φ := by
+  have h : Injective φ :=
+    sorry
+  exact h
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_3_2_7 {F : Type*} [Field F] {G : Type*} [Field G]
+    (φ : F →+* G) : Injective φ := by
+  have h : Injective φ :=
+    -- Use the fact that ring homomorphisms between fields are injective.
+    φ.injective
+  exact h
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_3_2_7 {F : Type*} [Field F] {G : Type*} [Field G]
+    (φ : F →+* G) : Injective φ := by
+  have h : Injective φ :=
+    -- Use the fact that ring homomorphisms between fields are injective.
+    φ.injective
+  exact h
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 11 (Lemma 70)
+  Statement: theorem exercise_3_2_7 {F : Type*} [Field F] {G : Type*} [Field G]
+    (φ : F →+...
+================================================================================
+================================================================================
+PROOF #12 (Lemma ID: 97)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.10221076011657715s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_4 (n : ℕ) :
+  ∀ (a b c : ℕ), (a * b) * c ≡ a * (b * c) [ZMOD n] :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Fintype Subgroup Set Polynomial Ideal
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_4 (n : ℕ) :
+  ∀ (a b c : ℕ), (a * b) * c ≡ a * (b * c) [ZMOD n] :=
+  fun a b c ↦ by
+    simp [Int.ModEq]
+    <;> simp [mul_assoc, mul_comm, mul_left_comm]
+    <;> norm_cast
+    <;> rfl
+```
+
+This`sorry`-free Lean 4 proof replaces any earlier placeholders.
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_4 (n : ℕ) :
+  ∀ (a b c : ℕ), (a * b) * c ≡ a * (b * c) [ZMOD n] := by
+  intro a b c
+  simp [Int.ModEq]
+  <;> simp [mul_assoc, mul_comm, mul_left_comm]
+  <;> norm_cast
+  <;> rfl
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_4 (n : ℕ) :
+  ∀ (a b c : ℕ), (a * b) * c ≡ a * (b * c) [ZMOD n] := by
+  intro a b c
+  simp [Int.ModEq]
+  <;> simp [mul_assoc, mul_comm, mul_left_comm]
+  <;> norm_cast
+  <;> rfl
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 12 (Lemma 97)
+  Statement: theorem exercise_1_1_4 (n : ℕ) :
+  ∀ (a b c : ℕ), (a * b) * c ≡ a * (b * c) [ZMO...
+================================================================================
+================================================================================
+PROOF #13 (Lemma ID: 173)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.26652050018310547s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_3_4 : ¬ ∃ x y : ℤ, 3*x^2 + 2 = y^2 :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Real
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+### Lean 4 Proof Sketch
+```lean4
+theorem exercise_3_4 : ¬ ∃ x y : ℤ, 3*x^2 + 2 = y^2 := by
+  intro h
+  rcases h with ⟨x, y, hx⟩
+  have h1 := hx
+  rw [eq_comm] at h1
+  have h2 := congr_arg (· % 3) h1
+  simp at h2
+  have h3 : y % 3 = 0 ∨ y % 3 = 1 ∨ y % 3 = 2 := by omega
+  rcases h3 with (h4 | h4 | h4) <;> simp [h4, pow_two, Int.mul_emod, Int.add_emod, Int.emod_emod] at h2  <;> omega
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_3_4 : ¬ ∃ x y : ℤ, 3*x^2 + 2 = y^2 := by
+  intro h
+  rcases h with ⟨x, y, hx⟩
+  have h1 := hx
+  rw [eq_comm] at h1
+  have h2 := congr_arg (· % 3) h1
+  simp at h2
+  have h3 : y % 3 = 0 ∨ y % 3 = 1 ∨ y % 3 = 2 := by omega
+  rcases h3 with (h4 | h4 | h4) <;> simp [h4, pow_two, Int.mul_emod, Int.add_emod, Int.emod_emod] at h2  <;> omega
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_3_4 : ¬ ∃ x y : ℤ, 3*x^2 + 2 = y^2 := by
+  intro h
+  rcases h with ⟨x, y, hx⟩
+  have h1 := hx
+  rw [eq_comm] at h1
+  have h2 := congr_arg (· % 3) h1
+  simp at h2
+  have h3 : y % 3 = 0 ∨ y % 3 = 1 ∨ y % 3 = 2 := by omega
+  rcases h3 with (h4 | h4 | h4) <;> simp [h4, pow_two, Int.mul_emod, Int.add_emod, Int.emod_emod] at h2  <;> omega
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 13 (Lemma 173)
+  Statement: theorem exercise_3_4 : ¬ ∃ x y : ℤ, 3*x^2 + 2 = y^2 :=
+================================================================================
+================================================================================
+PROOF #14 (Lemma ID: 77)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 11.10309648513794s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_11_2_13 (a b : ℤ) :
+  (ofInt a : GaussianInt) ∣ ofInt b → a ∣ b :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Function Fintype Subgroup Ideal Polynomial Submodule Zsqrtd
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_11_2_13 (a b : ℤ) :
+  (ofInt a : GaussianInt) ∣ ofInt b → a ∣ b :=
+```
+
+Here is the `have`-based decomposition for the proof:
+
+```lean4
+theorem exercise_11_2_13 (a b : ℤ) :
+  (ofInt a : GaussianInt) ∣ ofInt b → a ∣ b := by
+  intro h
+  have h1 : a ∣ b := by
+    sorry
+  sorry
+```
+
+This sets up the skeleton of the proof where the main step is `have h1 : a ∣ b := by sorry`. The actual proof of `h1` would involve showing that if `ofInt a` divides `ofInt b` in the Gaussian integers, then `a` divides `b` in the integers. This can be done using the fact that Gaussian integers are a UFD and the properties of divisibility in that structure.
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_11_2_13 (a b : ℤ) :
+  (ofInt a : GaussianInt) ∣ ofInt b → a ∣ b := by
+  intro h
+  have h1 : a ∣ b := by
+    -- Use the fact that if `a` is a Gaussian integer that divides `b`, then `a` as a regular integer divides `b`
+    have h2 : (ofInt a : GaussianInt) ∣ ofInt b := h
+    -- Convert the divisibility in Gaussian integers to the divisibility of regular integers
+    exact?
+  exact h1
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_11_2_13 (a b : ℤ) :
+  (ofInt a : GaussianInt) ∣ ofInt b → a ∣ b := by
+  intro h
+  have h1 : a ∣ b := by
+    -- Use the fact that if `a` is a Gaussian integer that divides `b`, then `a` as a regular integer divides `b`
+    have h2 : (ofInt a : GaussianInt) ∣ ofInt b := h
+    -- Convert the divisibility in Gaussian integers to the divisibility of regular integers
+    exact?
+  exact h1
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 14 (Lemma 77)
+  Statement: theorem exercise_11_2_13 (a b : ℤ) :
+  (ofInt a : GaussianInt) ∣ ofInt b → a ∣ b...
+================================================================================
+================================================================================
+PROOF #15 (Lemma ID: 37)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.7362205982208252s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_2_1_18 {G : Type*} [Group G]
+  [Fintype G] (hG2 : Even (card G)) :
+  ∃ (a : G), a ≠ 1 ∧ a = a⁻¹ :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Fintype Set Real Ideal Polynomial
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_2_1_18 {G : Type*} [Group G]
+  [Fintype G] (hG2 : Even (card G)) :
+  ∃ (a : G), a ≠ 1 ∧ a = a⁻¹ := by
+  have h1 : 2 ∣ Fintype.card G := by sorry
+  have h2 : ∃ a : G, a ≠ 1 ∧ a = a⁻¹ := by sorry
+  sorry
+```
+
+(Note: The actual proof involves more detailed reasoning, but the sketch above captures the structure.)
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_2_1_18 {G : Type*} [Group G]
+  [Fintype G] (hG2 : Even (card G)) :
+  ∃ (a : G), a ≠ 1 ∧ a = a⁻¹ := by
+  have h1 : 2 ∣ Fintype.card G := by
+    simpa [even_iff_two_dvd] using hG2
+  
+  have h2 : ∃ a : G, a ≠ 1 ∧ a = a⁻¹ := by
+    classical
+    obtain ⟨a, ha⟩ := exists_prime_orderOf_dvd_card 2 h1
+    use a
+    have h3 : a ≠ 1 := by
+      rintro h
+      rw [h] at ha
+      norm_num at ha
+      <;> simp_all
+    constructor
+    · exact h3
+    · have h4 : a ^ 2 = 1 := by
+        rw [← pow_orderOf_eq_one a]
+        rw [ha]
+      simp_all [pow_two, mul_eq_one_iff_inv_eq]
+      <;> aesop
+  
+  exact h2
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_2_1_18 {G : Type*} [Group G]
+  [Fintype G] (hG2 : Even (card G)) :
+  ∃ (a : G), a ≠ 1 ∧ a = a⁻¹ := by
+  have h1 : 2 ∣ Fintype.card G := by
+    simpa [even_iff_two_dvd] using hG2
+  
+  have h2 : ∃ a : G, a ≠ 1 ∧ a = a⁻¹ := by
+    classical
+    obtain ⟨a, ha⟩ := exists_prime_orderOf_dvd_card 2 h1
+    use a
+    have h3 : a ≠ 1 := by
+      rintro h
+      rw [h] at ha
+      norm_num at ha
+      <;> simp_all
+    constructor
+    · exact h3
+    · have h4 : a ^ 2 = 1 := by
+        rw [← pow_orderOf_eq_one a]
+        rw [ha]
+      simp_all [pow_two, mul_eq_one_iff_inv_eq]
+      <;> aesop
+  
+  exact h2
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 15 (Lemma 37)
+  Statement: theorem exercise_2_1_18 {G : Type*} [Group G]
+  [Fintype G] (hG2 : Even (card G)...
+================================================================================
+================================================================================
+PROOF #16 (Lemma ID: 15)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 11.611293315887451s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_2_19a {X : Type*} [MetricSpace X]
+  (A B : Set X) (hA : IsClosed A) (hB : IsClosed B) (hAB : Disjoint A B) :
+  SeparatedNhds A B :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Topology Filter Real Complex TopologicalSpace Finset
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_2_19a {X : Type*} [MetricSpace X]
+  (A B : Set X) (hA : IsClosed A) (hB : IsClosed B) (hAB : Disjoint A B) :
+  SeparatedNhds A B := by
+  exact?
+  <;> aesop
+  <;> aesop
+  <;> aesop
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_2_19a {X : Type*} [MetricSpace X]
+  (A B : Set X) (hA : IsClosed A) (hB : IsClosed B) (hAB : Disjoint A B) :
+  SeparatedNhds A B := by
+  exact?
+  <;> aesop
+  <;> aesop
+  <;> aesop
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_2_19a {X : Type*} [MetricSpace X]
+  (A B : Set X) (hA : IsClosed A) (hB : IsClosed B) (hAB : Disjoint A B) :
+  SeparatedNhds A B := by
+  exact?
+  <;> aesop
+  <;> aesop
+  <;> aesop
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 16 (Lemma 15)
+  Statement: theorem exercise_2_19a {X : Type*} [MetricSpace X]
+  (A B : Set X) (hA : IsClose...
+================================================================================
+================================================================================
+PROOF #17 (Lemma ID: 128)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 10.89248013496399s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_7_1_12 {F : Type*} [Field F] {K : Subring F}
+  (hK : (1 : F) ∈ K) : IsDomain K :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Fintype Subgroup Set Polynomial Ideal
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_7_1_12 {F : Type*} [Field F] {K : Subring F}
+  (hK : (1 : F) ∈ K) : IsDomain K := by
+  infer_instance
+  <;> exact?
+  <;> simp_all
+  <;> aesop
+  <;> aesop
+  <;> aesop
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_7_1_12 {F : Type*} [Field F] {K : Subring F}
+  (hK : (1 : F) ∈ K) : IsDomain K := by
+  have : IsDomain K := by
+    -- Since K is a subring of F, we can use the fact that F is a field to infer that K is an integral domain.
+    exact?
+  exact this
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_7_1_12 {F : Type*} [Field F] {K : Subring F}
+  (hK : (1 : F) ∈ K) : IsDomain K := by
+  have : IsDomain K := by
+    -- Since K is a subring of F, we can use the fact that F is a field to infer that K is an integral domain.
+    exact?
+  exact this
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 17 (Lemma 128)
+  Statement: theorem exercise_7_1_12 {F : Type*} [Field F] {K : Subring F}
+  (hK : (1 : F) ∈ ...
+================================================================================
+================================================================================
+PROOF #18 (Lemma ID: 62)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 10.72619915008545s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_2_32a (A : Set ℕ) : IsClopen A :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Filter Real Function
+open scoped Topology
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_2_32a (A : Set ℕ) : IsClopen A :=
+  let h₀ : IsClopen A := by sorry
+  h₀
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_2_32a (A : Set ℕ) : IsClopen A := by
+  constructor
+  · -- Prove that A is closed
+    exact?
+  · -- Prove that A is open
+    exact?
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_2_32a (A : Set ℕ) : IsClopen A := by
+  constructor
+  · -- Prove that A is closed
+    exact?
+  · -- Prove that A is open
+    exact?
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 18 (Lemma 62)
+  Statement: theorem exercise_2_32a (A : Set ℕ) : IsClopen A :=
+================================================================================
+================================================================================
+PROOF #19 (Lemma ID: 101)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.28476834297180176s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_22b {G: Type*} [Group G] (a b : G) :
+  orderOf (a * b) = orderOf (b * a) :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Fintype Subgroup Set Polynomial Ideal
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_22b {G: Type*} [Group G] (a b : G) :
+  orderOf (a * b) = orderOf (b * a) := by
+  -- Use the fact that the order of an element in a group is the smallest positive integer n such that a^n = e.
+  have h := orderOf_injective (MulAut.conj a).toMonoidHom (MulAut.conj a).injective (b * a)
+  simp_all [MulAut.conj_apply, mul_assoc, mul_left_inj, mul_right_inj]
+  <;> aesop
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_22b {G: Type*} [Group G] (a b : G) :
+  orderOf (a * b) = orderOf (b * a) := by
+  have h := orderOf_injective (MulAut.conj a).toMonoidHom (MulAut.conj a).injective (b * a)
+  simp_all [MulAut.conj_apply, mul_assoc, mul_left_inj, mul_right_inj]
+  <;> aesop
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_22b {G: Type*} [Group G] (a b : G) :
+  orderOf (a * b) = orderOf (b * a) := by
+  have h := orderOf_injective (MulAut.conj a).toMonoidHom (MulAut.conj a).injective (b * a)
+  simp_all [MulAut.conj_apply, mul_assoc, mul_left_inj, mul_right_inj]
+  <;> aesop
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 19 (Lemma 101)
+  Statement: theorem exercise_1_1_22b {G: Type*} [Group G] (a b : G) :
+  orderOf (a * b) = or...
+================================================================================
+================================================================================
+PROOF #20 (Lemma ID: 96)
+================================================================================
+
+Status: ✓ VERIFIED
+
+Labels: Proofnet test
+Verify Time: 0.03640007972717285s
+
+--------------------------------------------------------------------------------
+STATEMENT:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_2a : ∃ a b : ℤ, a - b ≠ b - a :=
+
+--------------------------------------------------------------------------------
+HEADER:
+--------------------------------------------------------------------------------
+import Mathlib
+
+open Fintype Subgroup Set Polynomial Ideal
+open scoped BigOperators
+
+
+
+--------------------------------------------------------------------------------
+PROOF SKETCH:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_2a : ∃ a b : ℤ, a - b ≠ b - a := by
+  have h : ∃ a b : ℤ, a - b ≠ b - a := by
+    /-
+    We start by using the fact that for any two distinct integers \(a\) and \(b\), the expression \(a - b\) is not equal to \(b - a\). To find such integers, we can consider specific examples. For instance, if we choose \(a = 1\) and \(b = 0\), we get:
+    
+    \[ 1 - 0 = 1 \]
+    \[ 0 - 1 = -1 \]
+    
+    Clearly, \(1 \neq -1\), so \(a - b \neq b - a\). This choice satisfies the requirement.
+    
+    Next, we formalize this intuition. Let \(a = 1\) and \(b = 0\). We need to show that:
+    
+    \[ 1 - 0 \neq 0 - 1 \]
+    
+    Simplifying both sides:
+    
+    \[ 1 - 0 = 1 \]
+    \[ 0 - 1 = -1 \]
+    
+    Since \(1 \neq -1\), the proof is complete.
+    -/
+    use 1, 0
+    norm_num
+  exact h
+
+--------------------------------------------------------------------------------
+PROOF:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_2a : ∃ a b : ℤ, a - b ≠ b - a := by
+  have h : ∃ a b : ℤ, a - b ≠ b - a := by
+    -- We choose specific integers a = 1 and b = 0 to demonstrate the inequality.
+    refine ⟨1, 0,?_⟩
+    -- We need to show that 1 - 0 ≠ 0 - 1.
+    -- Simplifying both sides: 1 - 0 = 1 and 0 - 1 = -1.
+    -- Since 1 ≠ -1, the inequality holds.
+    norm_num
+  -- The proof is complete as we have shown the existence of such integers.
+  exact h
+
+--------------------------------------------------------------------------------
+VERIFIED CODE:
+--------------------------------------------------------------------------------
+theorem exercise_1_1_2a : ∃ a b : ℤ, a - b ≠ b - a := by
+  have h : ∃ a b : ℤ, a - b ≠ b - a := by
+    -- We choose specific integers a = 1 and b = 0 to demonstrate the inequality.
+    refine ⟨1, 0,?_⟩
+    -- We need to show that 1 - 0 ≠ 0 - 1.
+    -- Simplifying both sides: 1 - 0 = 1 and 0 - 1 = -1.
+    -- Since 1 ≠ -1, the inequality holds.
+    norm_num
+  -- The proof is complete as we have shown the existence of such integers.
+  exact h
+
+--------------------------------------------------------------------------------
+RESULT OVERVIEW:
+--------------------------------------------------------------------------------
+✓ Proof 20 (Lemma 96)
+  Statement: theorem exercise_1_1_2a : ∃ a b : ℤ, a - b ≠ b - a :=
+================================================================================
