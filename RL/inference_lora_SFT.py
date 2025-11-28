@@ -1,144 +1,109 @@
 #!/usr/bin/env python
 """
-Wrapper script for `inference_single_model.py` that optionally merges LoRA checkpoints.
+SFT inference script with LoRA support.
 
-This lets us keep lightweight LoRA adapters and only materialize merged weights when
-running inference. When `--lora_checkpoint` is provided we:
-  1. Merge the adapter into the specified base model (or reuse an existing merge unless
-     `--force_merge` is set)
-  2. Forward the merged model path into the standard inference pipeline
+Uses the <sketch> and <proof> special tokens that the model was trained on.
 
-If no LoRA checkpoint is given, the script behaves like the vanilla driver.
+Workflow:
+1. Merge LoRA adapters into base model (if provided)
+2. Decomposer: <sketch>{preamble}</sketch> → sketch with sorry
+3. Prover: <proof>{preamble}</proof> → complete proof
+4. Verify with Lean4
+
+Usage:
+    python inference_lora_SFT.py \
+        --model deepseek-ai/DeepSeek-Prover-V2-7B \
+        --lora_checkpoint ./SFT/checkpoints/sketch-prover \
+        --exp_dir ./results/sft-test \
+        --raw_dataset_config ./dataset_configs/miniF2F-test.json
 """
 
 from __future__ import annotations
 
 import argparse
+import json
 import logging
 import os
 import shutil
-from typing import Optional, Tuple
+from typing import Dict, List, Tuple
 
 import torch
 from peft import PeftModel
+from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from inference_single_model import run_pipeline
-from utils.RL_utils_gpu import MAX_LENGTH
+
+from utils.RL_utils_gpu import (
+    SimpleLLMPredictor,
+    SimpleLean4Verifier,
+    direct_completion,
+    get_result_items,
+    MAX_LENGTH,
+    REPO_DIR,
+    split_test_blocks,
+)
+from utils.gcloud_utils import read_file, write_data
 
 
-def _add_inference_arguments(parser: argparse.ArgumentParser) -> None:
-    """Reuse the single-model inference arguments so downstream logic stays untouched."""
-    parser.add_argument("--model", required=True, help="Base model path or HF repo id")
-    parser.add_argument(
-        "--tokenizer_path",
-        required=False,
-        help="Tokenizer path (defaults to model or merged dir when LoRA is applied)",
-    )
-    parser.add_argument("--exp_dir", required=True, help="Directory to store outputs")
-    parser.add_argument(
-        "--raw_dataset_config",
-        required=True,
-        help="Dataset config JSON consumed by inference_single_model",
-    )
-    parser.add_argument(
-        "--save_file_name",
-        default="test_results",
-        help="Output filename (without extension)",
-    )
-    parser.add_argument(
-        "--max_examples",
-        type=int,
-        default=8,
-        help="Max number of examples per dataset",
-    )
-    parser.add_argument(
-        "--generation_batch_size",
-        type=int,
-        default=8,
-        help="Batch size for decomposer/prover generation",
-    )
-    parser.add_argument(
-        "--verify_batch_size",
-        type=int,
-        default=16,
-        help="Batch size for Lean4 verification",
-    )
-    parser.add_argument(
-        "--decomposer_temperature",
-        type=float,
-        default=1.0,
-        help="Sampling temperature for decomposer role",
-    )
-    parser.add_argument(
-        "--prover_temperature",
-        type=float,
-        default=1.0,
-        help="Sampling temperature for prover role",
-    )
-    parser.add_argument(
-        "--max_tokens",
-        type=int,
-        default=MAX_LENGTH,
-        help="Max tokens generated for each completion",
-    )
-    parser.add_argument("--seed", type=int, default=0, help="Base random seed")
-    parser.add_argument(
-        "--timeout",
-        type=int,
-        default=300,
-        help="Lean verification timeout (seconds)",
-    )
-    parser.add_argument(
-        "--collect_premises",
-        action="store_true",
-        help="Collect premise info for verified proofs",
-    )
-    parser.add_argument(
-        "--cache_dir",
-        type=str,
-        default=None,
-        help="Optional directory for prompt/completion caching",
-    )
+# ============================================================================
+# SFT-style prompts using special tokens
+# ============================================================================
+
+# Standard Lean4 header used in training
+LEAN_HEADER = """import Mathlib
+import Aesop
+
+set_option maxHeartbeats 0
+
+open BigOperators Real Nat Topology Rat
+"""
 
 
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Run single-model inference with optional LoRA merging."
-    )
-    _add_inference_arguments(parser)
+def build_sft_decomposer_prompt(test_info: Dict) -> str:
+    """
+    Build decomposer prompt using <sketch> tokens.
+    
+    Format matches SFT training:
+        <sketch>
+        {header}
+        {statement}
+        </sketch>
+    """
+    header = test_info.get("header", LEAN_HEADER)
+    statement = test_info["statement"].strip()
+    
+    # Ensure statement ends with `:= by` for consistency
+    if not statement.rstrip().endswith(":= by"):
+        if ":= by" not in statement:
+            statement = statement + " := by"
+    
+    return f"<sketch>\n{header}\n{statement}\n</sketch>\n"
 
-    parser.add_argument(
-        "--lora_checkpoint",
-        type=str,
-        default=None,
-        help="Path to LoRA adapter checkpoint directory (adapter_config + weights).",
-    )
-    parser.add_argument(
-        "--merged_model_dir",
-        type=str,
-        default=None,
-        help="Directory to save merged model (defaults to <exp_dir>/merged_lora_model).",
-    )
-    parser.add_argument(
-        "--lora_dtype",
-        type=str,
-        default="float16",
-        choices=["float16", "float32", "bfloat16"],
-        help="dtype used while merging LoRA weights.",
-    )
-    parser.add_argument(
-        "--lora_device_map",
-        type=str,
-        default="auto",
-        help="device_map passed to transformers when merging LoRA weights.",
-    )
-    parser.add_argument(
-        "--force_merge",
-        action="store_true",
-        help="Force re-merging even if merged_model_dir already exists.",
-    )
-    return parser.parse_args()
 
+def build_sft_prover_prompt(sketch: str, test_info: Dict) -> str:
+    """
+    Build prover prompt using <proof> tokens.
+    
+    Format matches SFT training:
+        <proof>
+        {header}
+        {statement}
+        </proof>
+    
+    Note: We use the original statement (not the sketch) to prompt for full proof.
+    """
+    header = test_info.get("header", LEAN_HEADER)
+    statement = test_info["statement"].strip()
+    
+    if not statement.rstrip().endswith(":= by"):
+        if ":= by" not in statement:
+            statement = statement + " := by"
+    
+    return f"<proof>\n{header}\n{statement}\n</proof>\n"
+
+
+# ============================================================================
+# LoRA merging utilities
+# ============================================================================
 
 def _string_to_dtype(dtype_str: str) -> torch.dtype:
     mapping = {
@@ -219,9 +184,7 @@ def _merge_lora_checkpoint(
 
 
 def _prepare_model_paths(args: argparse.Namespace) -> Tuple[str, str | None]:
-    """
-    Merge LoRA weights if needed and return the model/tokenizer paths to use.
-    """
+    """Merge LoRA weights if needed and return the model/tokenizer paths."""
     if not args.lora_checkpoint:
         logging.info("No LoRA checkpoint provided; running base model directly.")
         return args.model, args.tokenizer_path
@@ -250,19 +213,197 @@ def _prepare_model_paths(args: argparse.Namespace) -> Tuple[str, str | None]:
     return merged_dir, args.tokenizer_path or merged_dir
 
 
+# ============================================================================
+# Inference pipeline with SFT prompts
+# ============================================================================
+
+def load_lemmas(config_path: str, max_examples: int) -> List[Dict]:
+    """Load lemmas from dataset configuration."""
+    dataset_configs = read_file(config_path)
+    if dataset_configs is None:
+        raise ValueError(f"Failed to read dataset config from {config_path}")
+
+    lemmas = []
+    idx = 0
+    for config in dataset_configs:
+        data = read_file(config["dataset_path"])
+        if data is None:
+            logging.warning("Could not read %s", config["dataset_path"])
+            continue
+
+        for item_or_items in get_result_items(data):
+            for test_info in split_test_blocks(item_or_items):
+                if max_examples and idx >= max_examples:
+                    break
+                test_info["dataset_label"] = config.get("label", [])
+                lemmas.append(test_info)
+                idx += 1
+            if max_examples and idx >= max_examples:
+                break
+        if max_examples and idx >= max_examples:
+            break
+
+    logging.info("Loaded %d lemmas from %s", len(lemmas), config_path)
+    return lemmas
+
+
+def run_sft_pipeline(args: argparse.Namespace) -> None:
+    """
+    Run the SFT decomposer → prover pipeline using <sketch>/<proof> tokens.
+    """
+    # Load lemmas
+    lemmas = load_lemmas(args.raw_dataset_config, args.max_examples)
+    if not lemmas:
+        logging.error("No lemmas loaded!")
+        return
+
+    # Initialize model
+    logging.info("Loading model from %s", args.model)
+    tokenizer_path = args.tokenizer_path or args.model
+    predictor = SimpleLLMPredictor(args.model, tokenizer_path, enable_prefix_caching=False)
+
+    # Initialize verifier
+    logging.info("Initializing Lean4 verifier")
+    verifier = SimpleLean4Verifier(
+        project_dir=REPO_DIR,
+        num_workers=args.verify_batch_size,
+        timeout=args.timeout,
+    )
+
+    # --- Phase 1: Decomposer (generate sketches) ---
+    logging.info("Phase 1: Generating sketches with <sketch> prompts")
+    sketches = []
+    decomposer_pbar = tqdm(total=len(lemmas), desc="Generating sketches")
+
+    for i in range(0, len(lemmas), args.generation_batch_size):
+        batch_lemmas = lemmas[i : i + args.generation_batch_size]
+        prompts = [build_sft_decomposer_prompt(t) for t in batch_lemmas]
+
+        batch_outputs = direct_completion(
+            predictor,
+            prompts,
+            temperature=args.decomposer_temperature,
+            max_tokens=args.max_tokens,
+        )
+        sketches.extend(batch_outputs)
+        decomposer_pbar.update(len(batch_lemmas))
+    decomposer_pbar.close()
+
+    # --- Phase 2: Prover (complete proofs) ---
+    logging.info("Phase 2: Completing proofs with <proof> prompts")
+    proofs = []
+    prover_prompts_list = [
+        build_sft_prover_prompt(sketch, test_info)
+        for sketch, test_info in zip(sketches, lemmas)
+    ]
+
+    prover_pbar = tqdm(total=len(lemmas), desc="Completing proofs")
+    for i in range(0, len(lemmas), args.generation_batch_size):
+        batch_prompts = prover_prompts_list[i : i + args.generation_batch_size]
+
+        batch_outputs = direct_completion(
+            predictor,
+            batch_prompts,
+            temperature=args.prover_temperature,
+            max_tokens=args.max_tokens,
+        )
+        proofs.extend(batch_outputs)
+        prover_pbar.update(len(batch_prompts))
+    prover_pbar.close()
+
+    # --- Phase 3: Verify with Lean4 ---
+    logging.info("Phase 3: Verifying proofs with Lean4")
+    verification_results = verifier.verify_batch(proofs)
+
+    # --- Collect results ---
+    results = []
+    verified_count = 0
+    for lemma, sketch, proof, verify_result in zip(lemmas, sketches, proofs, verification_results):
+        decomposer_prompt = build_sft_decomposer_prompt(lemma)
+        prover_prompt = build_sft_prover_prompt(sketch, lemma)
+
+        proof_info = {
+            "statement": lemma["statement"],
+            "dataset_label": lemma.get("dataset_label", []),
+            "decomposer_prompt": decomposer_prompt,
+            "proof_sketch": sketch,
+            "prover_prompt": prover_prompt,
+            "proof": proof,
+            "verified": verify_result.get("verified", False),
+            "error": verify_result.get("error"),
+        }
+        results.append(proof_info)
+        if proof_info["verified"]:
+            verified_count += 1
+
+    logging.info("Verified %d / %d proofs (%.1f%%)", verified_count, len(results), 100 * verified_count / len(results) if results else 0)
+
+    # --- Save results ---
+    os.makedirs(args.exp_dir, exist_ok=True)
+    output_path = os.path.join(args.exp_dir, f"{args.save_file_name}.json")
+    write_data(results, output_path)
+    logging.info("Results saved to %s", output_path)
+
+    # Cleanup
+    del predictor
+    del verifier
+
+
+# ============================================================================
+# CLI
+# ============================================================================
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="SFT inference with <sketch>/<proof> prompts and optional LoRA merging."
+    )
+    
+    # Model arguments
+    parser.add_argument("--model", required=True, help="Base model path or HF repo id")
+    parser.add_argument("--tokenizer_path", required=False, help="Tokenizer path")
+    parser.add_argument("--exp_dir", required=True, help="Directory to store outputs")
+    parser.add_argument("--raw_dataset_config", required=True, help="Dataset config JSON")
+    parser.add_argument("--save_file_name", default="test_results", help="Output filename")
+    parser.add_argument("--max_examples", type=int, default=8, help="Max examples per dataset")
+    
+    # Generation arguments
+    parser.add_argument("--generation_batch_size", type=int, default=8)
+    parser.add_argument("--verify_batch_size", type=int, default=16)
+    parser.add_argument("--decomposer_temperature", type=float, default=0.7)
+    parser.add_argument("--prover_temperature", type=float, default=0.7)
+    parser.add_argument("--max_tokens", type=int, default=MAX_LENGTH)
+    parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--timeout", type=int, default=300)
+    
+    # LoRA arguments
+    parser.add_argument("--lora_checkpoint", type=str, default=None,
+                        help="Path to LoRA adapter checkpoint")
+    parser.add_argument("--merged_model_dir", type=str, default=None,
+                        help="Directory to save merged model")
+    parser.add_argument("--lora_dtype", type=str, default="float16",
+                        choices=["float16", "float32", "bfloat16"])
+    parser.add_argument("--lora_device_map", type=str, default="auto")
+    parser.add_argument("--force_merge", action="store_true",
+                        help="Force re-merging even if merged model exists")
+    
+    return parser.parse_args()
+
+
 def main() -> None:
     logging.basicConfig(
         format="[%(asctime)s - %(levelname)s] %(message)s",
         level=logging.INFO,
     )
     args = parse_args()
+    
+    # Merge LoRA if provided
     model_path, tokenizer_path = _prepare_model_paths(args)
     args.model = model_path
     if tokenizer_path and not args.tokenizer_path:
         args.tokenizer_path = tokenizer_path
 
-    logging.info("Starting inference with model: %s", args.model)
-    run_pipeline(args)
+    logging.info("Starting SFT inference with model: %s", args.model)
+    run_sft_pipeline(args)
 
 
 if __name__ == "__main__":
