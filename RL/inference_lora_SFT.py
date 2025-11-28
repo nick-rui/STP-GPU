@@ -158,12 +158,19 @@ def _merge_lora_checkpoint(
         trust_remote_code=True,
     )
 
-    # Load tokenizer from checkpoint to check for added special tokens
+    # Load tokenizer from checkpoint and resize embeddings to match
+    # This is critical when special tokens were added during training
     try:
         checkpoint_tokenizer = AutoTokenizer.from_pretrained(checkpoint)
-        if len(checkpoint_tokenizer) > base.get_input_embeddings().weight.shape[0]:
-            logging.info("Resizing embeddings to match checkpoint tokenizer (%d tokens)", len(checkpoint_tokenizer))
-            base.resize_token_embeddings(len(checkpoint_tokenizer))
+        checkpoint_vocab_size = len(checkpoint_tokenizer)
+        current_vocab_size = base.get_input_embeddings().weight.shape[0]
+        
+        if checkpoint_vocab_size != current_vocab_size:
+            logging.info(
+                "Resizing embeddings from %d to %d to match checkpoint tokenizer",
+                current_vocab_size, checkpoint_vocab_size
+            )
+            base.resize_token_embeddings(checkpoint_vocab_size)
     except Exception as e:
         logging.warning("Could not check tokenizer for embedding resize: %s", e)
 
@@ -225,21 +232,30 @@ def load_lemmas(config_path: str, max_examples: int) -> List[Dict]:
 
     lemmas = []
     idx = 0
-    for config in dataset_configs:
-        data = read_file(config["dataset_path"])
-        if data is None:
-            logging.warning("Could not read %s", config["dataset_path"])
+    for dataset_config in dataset_configs:
+        raw_dataset = read_file(os.path.join(REPO_DIR, dataset_config["dataset_path"]))
+        if raw_dataset is None:
+            logging.warning("Could not read %s", dataset_config["dataset_path"])
             continue
 
-        for item_or_items in get_result_items(data):
-            for test_info in split_test_blocks(item_or_items):
-                if max_examples and idx >= max_examples:
-                    break
-                test_info["dataset_label"] = config.get("label", [])
-                lemmas.append(test_info)
-                idx += 1
+        for raw in raw_dataset:
             if max_examples and idx >= max_examples:
                 break
+            
+            # Extract statement from formal_statement, removing trailing 'sorry'
+            statement = raw.get("formal_statement", "")
+            if "sorry" in statement:
+                statement = statement.rsplit("sorry", 1)[0].strip()
+            
+            lemmas.append({
+                "lemma_id": idx,
+                "statement": statement,
+                "label": [raw.get("split")] + (raw.get("tags") or []),
+                "header": raw.get("header"),
+                "dataset": dataset_config["dataset_path"],
+            })
+            idx += 1
+        
         if max_examples and idx >= max_examples:
             break
 
@@ -265,8 +281,7 @@ def run_sft_pipeline(args: argparse.Namespace) -> None:
     # Initialize verifier
     logging.info("Initializing Lean4 verifier")
     verifier = SimpleLean4Verifier(
-        project_dir=REPO_DIR,
-        num_workers=args.verify_batch_size,
+        collect_premises=False,
         timeout=args.timeout,
     )
 
@@ -311,37 +326,62 @@ def run_sft_pipeline(args: argparse.Namespace) -> None:
         prover_pbar.update(len(batch_prompts))
     prover_pbar.close()
 
-    # --- Phase 3: Verify with Lean4 ---
+    # Build proof infos for verification
+    proof_infos: List[Dict] = []
+    for lemma, sketch_output, proof_output in zip(lemmas, sketches, proofs):
+        # Extract text from completion outputs
+        sketch_text = sketch_output["text"].strip() if isinstance(sketch_output, dict) else str(sketch_output).strip()
+        proof_text = proof_output["text"].strip() if isinstance(proof_output, dict) else str(proof_output).strip()
+        
+        proof_info = lemma.copy()
+        proof_info["proof_sketch"] = sketch_text
+        proof_info["proof"] = proof_text
+        proof_info["decomposer_prompt"] = build_sft_decomposer_prompt(lemma)
+        proof_info["prover_prompt"] = build_sft_prover_prompt(sketch_text, lemma)
+        # Full Lean code sent to the verifier
+        proof_info["code"] = proof_text
+        proof_infos.append(proof_info)
+
+    # --- Phase 3: Verification (batched, with graceful fallback) ---
     logging.info("Phase 3: Verifying proofs with Lean4")
-    verification_results = verifier.verify_batch(proofs)
+    results: List[Dict] = []
+    verify_batch_size = max(1, args.verify_batch_size)
 
-    # --- Collect results ---
-    results = []
-    verified_count = 0
-    for lemma, sketch, proof, verify_result in zip(lemmas, sketches, proofs, verification_results):
-        decomposer_prompt = build_sft_decomposer_prompt(lemma)
-        prover_prompt = build_sft_prover_prompt(sketch, lemma)
+    batches = split_test_blocks(proof_infos, batch_size=verify_batch_size, group_by_header=False)
+    verify_pbar = tqdm(total=len(proof_infos), desc="Verifying proofs")
 
-        proof_info = {
-            "statement": lemma["statement"],
-            "dataset_label": lemma.get("dataset_label", []),
-            "decomposer_prompt": decomposer_prompt,
-            "proof_sketch": sketch,
-            "prover_prompt": prover_prompt,
-            "proof": proof,
-            "verified": verify_result.get("verified", False),
-            "error": verify_result.get("error"),
-        }
-        results.append(proof_info)
-        if proof_info["verified"]:
-            verified_count += 1
+    for block in batches:
+        try:
+            verified_block = verifier.run(block, batched=len(block) > 1)
+        except Exception as exc:
+            logging.error(f"Lean batch verification failed: {exc}")
+            verified_block = []
+            for proof_info in block:
+                try:
+                    single_verified = verifier.run([proof_info], batched=False)[0]
+                except Exception as single_exc:
+                    logging.error(f"Lean single verification failed: {single_exc}")
+                    fallback = proof_info.copy()
+                    fallback["complete"] = False
+                    fallback["system_errors"] = str(single_exc)
+                    single_verified = fallback
+                verified_block.append(single_verified)
 
-    logging.info("Verified %d / %d proofs (%.1f%%)", verified_count, len(results), 100 * verified_count / len(results) if results else 0)
+        for verified in verified_block:
+            results.append(verified)
+
+        verify_pbar.update(len(block))
+
+    verify_pbar.close()
+
+    # Summary
+    complete_count = sum(1 for r in results if r.get("complete", False))
+    logging.info("Verified %d / %d proofs (%.1f%%)", complete_count, len(results), 100 * complete_count / len(results) if results else 0)
 
     # --- Save results ---
     os.makedirs(args.exp_dir, exist_ok=True)
-    output_path = os.path.join(args.exp_dir, f"{args.save_file_name}.json")
-    write_data(results, output_path)
+    output_path = os.path.join(args.exp_dir, f"{args.save_file_name}.jsonl")
+    write_data("\n".join(json.dumps(r) for r in results), output_path, "jsonl")
     logging.info("Results saved to %s", output_path)
 
     # Cleanup
