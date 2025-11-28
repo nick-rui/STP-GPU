@@ -1,0 +1,12 @@
+# Requirements for SFT cold start data generation and training
+datasets>=2.14.0
+huggingface_hub>=0.17.0
+
+# QLoRA training requirements
+torch>=2.0.0
+transformers>=4.36.0
+peft>=0.7.0
+bitsandbytes>=0.41.0
+accelerate>=0.25.0
+trl>=0.7.0
+scipy

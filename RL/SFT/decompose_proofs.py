@@ -6,16 +6,25 @@ Supported input formats:
   1. JSONL: each line is a JSON object with a "proof" field
   2. JSON:  a single JSON array of such objects
 
-For each proof, every top-level occurrence of
+For each proof, inner lemmas (have, let, etc.) that use `:= by` are
+replaced with `:= by sorry`, while the main theorem's proof structure
+is preserved.
 
-    := by <tactics...>
+Example transformation:
+    theorem foo : P := by
+      have h1 : Q := by
+        tactic1
+        tactic2
+      have h2 : R := by
+        tactic3
+      exact h1
 
-is replaced by
+    becomes:
 
-    := by sorry
-
-This is a simple, indentation-based transformation that treats `:= by`
-as the start of a block and collapses the entire block to a single line.
+    theorem foo : P := by
+      have h1 : Q := by sorry
+      have h2 : R := by sorry
+      exact h1
 
 Usage:
     python SFT/decompose_proofs.py \
@@ -37,57 +46,87 @@ from typing import Any, Dict
 
 BY_LINE_PATTERN = re.compile(r":=\s*by\b.*")
 
+# Patterns that indicate an inner lemma/definition (have, let, etc.)
+INNER_LEMMA_KEYWORDS = re.compile(r"^\s*(have|let|suffices|show)\b")
+
 
 def _indent_width(line: str) -> int:
     """Return the number of leading spaces in a line."""
     return len(line) - len(line.lstrip(" "))
 
 
+def _is_main_theorem_line(line: str) -> bool:
+    """Check if this line starts a main theorem/lemma/def declaration."""
+    stripped = line.lstrip()
+    return stripped.startswith(("theorem ", "lemma ", "def ", "example "))
+
+
+def _is_inner_lemma_line(line: str) -> bool:
+    """Check if this line is an inner lemma (have, let, suffices, show)."""
+    return bool(INNER_LEMMA_KEYWORDS.match(line))
+
+
 def decompose_proof(proof: str) -> str:
     """
-    Replace each top-level `:= by ...` block with a single `:= by sorry` line.
+    Replace inner `:= by ...` blocks with `:= by sorry`, preserving main proof structure.
 
-    We treat a `:= by` block as:
-      - the line containing `:= by`, plus
-      - all immediately following lines that are more indented than the
-        `:= by` line (or blank).
-
-    All of those lines are collapsed into a single line where everything
-    from `:= by` to end-of-line is replaced with `:= by sorry`.
+    Inner lemmas are identified by keywords like `have`, `let`, `suffices`, `show`.
+    The main theorem's `:= by` block is preserved, only nested blocks are replaced.
     """
     lines = proof.splitlines()
     new_lines = []
     i = 0
+    main_theorem_indent = None  # Track the indent of the main theorem's := by
 
     while i < len(lines):
         line = lines[i]
 
+        # Check if this line contains `:= by`
         if ":= by" not in line:
             new_lines.append(line)
             i += 1
             continue
 
-        # We found the start of a `:= by` block.
-        base_indent = _indent_width(line)
+        current_indent = _indent_width(line)
+
+        # Determine if this is the main theorem or an inner lemma
+        is_main = _is_main_theorem_line(line)
+        is_inner = _is_inner_lemma_line(line)
+
+        # If it's the main theorem, just record its indent and keep the line
+        if is_main:
+            main_theorem_indent = current_indent
+            new_lines.append(line)
+            i += 1
+            continue
+
+        # If it's an inner lemma (have, let, etc.), replace with sorry
+        if is_inner or (main_theorem_indent is not None and current_indent > main_theorem_indent):
         # Replace from := by ... up to end-of-line with := by sorry
         replaced_line = BY_LINE_PATTERN.sub(":= by sorry", line)
         new_lines.append(replaced_line)
         i += 1
 
-        # Skip all lines that are part of this block: blank lines or
-        # lines indented more than the `:= by` line.
+            # Skip all lines that are part of this inner block
+            base_indent = current_indent
         while i < len(lines):
             next_line = lines[i]
             if not next_line.strip():
-                # Treat blank lines as part of the block.
+                    # Blank line - check if next non-blank line is still in block
                 i += 1
                 continue
             next_indent = _indent_width(next_line)
             if next_indent > base_indent:
+                    # More indented = part of the block, skip it
                 i += 1
                 continue
-            # We've reached a line that is not part of the block.
+                # We've reached a line that is not part of the block
             break
+            continue
+
+        # Default: keep the line as-is (shouldn't normally reach here)
+        new_lines.append(line)
+        i += 1
 
     return "\n".join(new_lines)
 

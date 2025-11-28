@@ -7,7 +7,6 @@ python GRPO/train_reinforce.py   \
  --dataset_config dataset_configs/leanworkbook.json   \
  --output_dir experiments/REINFORCE_full2   \
  --max_tokens 512   \
- --max_examples_per_dataset 300   \
+ --max_examples_per_dataset 500   \
  --batch_size 1   \
- --num_epochs 2 \
- --no_quantization
+ --num_epochs 1 \
