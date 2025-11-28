@@ -102,26 +102,26 @@ def decompose_proof(proof: str) -> str:
 
         # If it's an inner lemma (have, let, etc.), replace with sorry
         if is_inner or (main_theorem_indent is not None and current_indent > main_theorem_indent):
-        # Replace from := by ... up to end-of-line with := by sorry
-        replaced_line = BY_LINE_PATTERN.sub(":= by sorry", line)
-        new_lines.append(replaced_line)
-        i += 1
+            # Replace from := by ... up to end-of-line with := by sorry
+            replaced_line = BY_LINE_PATTERN.sub(":= by sorry", line)
+            new_lines.append(replaced_line)
+            i += 1
 
             # Skip all lines that are part of this inner block
             base_indent = current_indent
-        while i < len(lines):
-            next_line = lines[i]
-            if not next_line.strip():
+            while i < len(lines):
+                next_line = lines[i]
+                if not next_line.strip():
                     # Blank line - check if next non-blank line is still in block
-                i += 1
-                continue
-            next_indent = _indent_width(next_line)
-            if next_indent > base_indent:
+                    i += 1
+                    continue
+                next_indent = _indent_width(next_line)
+                if next_indent > base_indent:
                     # More indented = part of the block, skip it
-                i += 1
-                continue
+                    i += 1
+                    continue
                 # We've reached a line that is not part of the block
-            break
+                break
             continue
 
         # Default: keep the line as-is (shouldn't normally reach here)

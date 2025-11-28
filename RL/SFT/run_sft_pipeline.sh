@@ -18,7 +18,7 @@ if [ ! -f "cold_start_data.jsonl" ]; then
     echo ""
     echo "[Step 1/3] Generating cold start data..."
     python generate_cold_start_data.py \
-        --n 1000 \
+        --n 5000 \
         --output cold_start_data.jsonl \
         --strip-comments \
         --shuffle \
