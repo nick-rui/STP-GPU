@@ -101,6 +101,67 @@ def build_sft_prover_prompt(sketch: str, test_info: Dict) -> str:
     return f"<proof>\n{header}\n{statement}\n</proof>\n"
 
 
+def _strip_header_from_output(text: str) -> str:
+    """
+    Strip header/imports from model output.
+    
+    The model was trained to output complete Lean code including imports.
+    However, the verifier adds headers separately, so we need to strip them
+    from the model's output to avoid duplicate imports.
+    
+    This removes:
+    - import statements
+    - set_option statements
+    - open statements
+    - 'None' or 'none' on its own line (model artifact)
+    """
+    if not text:
+        return text
+    
+    lines = text.strip().splitlines()
+    result_lines = []
+    
+    for line in lines:
+        stripped = line.strip().lower()
+        # Skip import/header lines
+        if stripped.startswith("import "):
+            continue
+        if stripped.startswith("set_option "):
+            continue
+        if stripped.startswith("open "):
+            continue
+        # Skip 'None' artifact (model sometimes outputs this)
+        if stripped in ("none", "none."):
+            continue
+        result_lines.append(line)
+    
+    # Remove leading empty lines
+    while result_lines and not result_lines[0].strip():
+        result_lines.pop(0)
+    
+    return "\n".join(result_lines)
+
+
+def _strip_code_fences(text: str) -> str:
+    """
+    Remove leading/trailing Markdown code fences from a completion.
+    """
+    if not text:
+        return text
+    
+    lines = text.strip().splitlines()
+    
+    # Remove leading code fence
+    if lines and lines[0].strip().startswith("```"):
+        lines = lines[1:]
+    
+    # Remove trailing code fence
+    if lines and lines[-1].strip() == "```":
+        lines = lines[:-1]
+    
+    return "\n".join(lines)
+
+
 # ============================================================================
 # LoRA merging utilities
 # ============================================================================
@@ -330,15 +391,23 @@ def run_sft_pipeline(args: argparse.Namespace) -> None:
     proof_infos: List[Dict] = []
     for lemma, sketch_output, proof_output in zip(lemmas, sketches, proofs):
         # Extract text from completion outputs
-        sketch_text = sketch_output["text"].strip() if isinstance(sketch_output, dict) else str(sketch_output).strip()
-        proof_text = proof_output["text"].strip() if isinstance(proof_output, dict) else str(proof_output).strip()
+        sketch_raw = sketch_output["text"].strip() if isinstance(sketch_output, dict) else str(sketch_output).strip()
+        proof_raw = proof_output["text"].strip() if isinstance(proof_output, dict) else str(proof_output).strip()
+        
+        # Clean up model outputs:
+        # 1. Strip markdown code fences if present
+        # 2. Strip header/imports (verifier adds these separately)
+        sketch_text = _strip_header_from_output(_strip_code_fences(sketch_raw))
+        proof_text = _strip_header_from_output(_strip_code_fences(proof_raw))
         
         proof_info = lemma.copy()
+        proof_info["proof_sketch_raw"] = sketch_raw  # Keep raw for debugging
+        proof_info["proof_raw"] = proof_raw
         proof_info["proof_sketch"] = sketch_text
         proof_info["proof"] = proof_text
         proof_info["decomposer_prompt"] = build_sft_decomposer_prompt(lemma)
         proof_info["prover_prompt"] = build_sft_prover_prompt(sketch_text, lemma)
-        # Full Lean code sent to the verifier
+        # Cleaned proof code sent to the verifier (header added by verifier)
         proof_info["code"] = proof_text
         proof_infos.append(proof_info)
 
