@@ -1,6 +1,6 @@
-# Fork of "Self-play LLM Theorem Provers with Iterative Conjecturing and Proving"
+Code for LeMMA paper (Learning Math by Meta-Adaptation)
 
-For Stanford CS229 Final Project.
+Code is not comprehensive & still being cleaned up. 
 
 Forked this paper: [https://arxiv.org/abs/2502.00212](https://arxiv.org/abs/2502.00212). 
 
